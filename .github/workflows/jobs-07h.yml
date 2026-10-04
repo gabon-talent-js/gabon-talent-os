@@ -1,0 +1,33 @@
+name: Bot Emploi Gabon 07h00
+on:
+  schedule:
+    - cron: '0 6 * * *' # 06h UTC = 07h00 Libreville
+  workflow_dispatch:
+
+jobs:
+  scrape-and-update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install tools
+        run: pip install requests beautifulsoup4
+
+      - name: Lancer le scraper branché à ton Sheet
+        run: python scripts/scrape_jobs.py
+
+      - name: Publier les offres sur le site
+        run: |
+          git config user.name "Gabon Talent Bot"
+          git config user.email "bot@gabontalent.ga"
+          git add index.html jobs.json
+          git diff --staged --quiet || git commit -m "🤖 MAJ offres $(date +'%d-%m-%Y %H:%M')"
+          git push
