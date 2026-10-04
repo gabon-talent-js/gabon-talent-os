@@ -40,12 +40,14 @@ nav a{color:white;text-decoration:none;margin-left:16px;font-size:13px;font-weig
 <div id="modal" class="modal" onclick="if(event.target==this)closeModal()"><div class="modal-box" id="modal-content"></div></div>
 <script>
 const PAYMENT_LINKS = {
-  CV_1000: "https://pay.wave.com/TON_LIEN_CV_1000",
-  CV_PACK_2000: "https://pay.wave.com/TON_LIEN_PACK_2000",
-  AUTO_APPLY_5000: "https://pay.wave.com/TON_LIEN_AUTO_5000",
-  ENTREPRISE_2500: "https://pay.wave.com/TON_LIEN_ENTREPRISE_2500"
+  CV_1000: "https://wgswpgri.mychariow.com/prd_1avtsfwc/checkout",
+  CV_PACK_2000: "https://wgswpgri.mychariow.com/prd_i0t95cv0/checkout",
+  AUTO_APPLY_5000: "https://wgswpgri.mychariow.com/prd_voveq098/checkout",
+  ENTREPRISE_2500: "https://wgswpgri.mychariow.com/prd_d40es2g3/checkout"
 };
-function pay(type){ window.open(PAYMENT_LINKS[type], '_blank'); }
+function pay(type){
+  window.open(PAYMENT_LINKS[type], '_blank');
+}
 const JOBS = [
   {id:1, title:"Développeur Full-Stack JS", company:"Gabon Talent JS", city:"Libreville", salary:"800k - 1.2M", source:"LinkedIn", tag:"NOUVEAU", desc:"Construction de Gabon Talent OS. React / Supabase.", email:"recrutement@gabontalent.ga", link:"https://gabon-talent-js.github.io/gabon-talent-os/"},
   {id:2, title:"Comptable Senior", company:"TotalEnergies Gabon", city:"Port-Gentil", salary:"650k", source:"Facebook", tag:"CDI", desc:"Sage 100, fiscalité pétrolière.", email:"rh@total.ga", link:"https://totalenergies.ga/recrutement"},
