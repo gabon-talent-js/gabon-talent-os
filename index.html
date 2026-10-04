@@ -69,9 +69,18 @@ function pay(type){
   window.open(PAYMENT_LINKS[type], '_blank');
 }
 const JOBS = [
-  {id:1, title:"Développeur Full-Stack JS", company:"Gabon Talent JS", city:"Libreville", salary:"800k - 1.2M", source:"LinkedIn", tag:"NOUVEAU", desc:"Construction de Gabon Talent OS. React / Supabase.", email:"recrutement@gabontalent.ga", link:"https://gabon-talent-js.github.io/gabon-talent-os/"},
-  {id:2, title:"Comptable Senior", company:"TotalEnergies Gabon", city:"Port-Gentil", salary:"650k", source:"Facebook", tag:"CDI", desc:"Sage 100, fiscalité pétrolière.", email:"rh@total.ga", link:"https://totalenergies.ga/recrutement"},
-  {id:3, title:"Community Manager", company:"Agence 241 Com", city:"Libreville", salary:"300k", source:"Instagram", tag:"URGENT", desc:"Gestion TikTok/Insta pour 5 marques.", email:"contact@241com.ga", link:"https://forms.gle/xxx"}
+  {
+    "id": 1,
+    "title": "Développeur Full-Stack JS",
+    "company": "Gabon Talent JS",
+    "city": "Libreville",
+    "salary": "800k - 1.2M",
+    "source": "LinkedIn",
+    "tag": "NOUVEAU",
+    "desc": "React / Supabase",
+    "link": "https://gabon-talent-js.github.io/gabon-talent-os/",
+    "updated": "2026-10-04T11:09:24.816261"
+  }
 ];
 function renderJobs(list){
   document.getElementById('jobs-list').innerHTML = list.map(j=>`
@@ -231,9 +240,18 @@ document.getElementById('cv-depot-form').addEventListener('submit', function(e){
 });
 
 const JOBS = [
-  {id:1, title:"Développeur Full-Stack JS", company:"Gabon Talent JS", city:"Libreville", salary:"800k - 1.2M", source:"LinkedIn", tag:"NOUVEAU", desc:"Construction de Gabon Talent OS. React / Supabase.", email:"recrutement@gabontalent.ga"},
-  {id:2, title:"Comptable Senior", company:"TotalEnergies Gabon", city:"Port-Gentil", salary:"650k", source:"Facebook", tag:"CDI", desc:"Sage 100, fiscalité pétrolière.", email:"rh@total.ga"},
-  {id:3, title:"Community Manager", company:"Agence 241 Com", city:"Libreville", salary:"300k", source:"Instagram", tag:"URGENT", desc:"Gestion TikTok/Insta pour 5 marques.", email:"contact@241com.ga"}
+  {
+    "id": 1,
+    "title": "Développeur Full-Stack JS",
+    "company": "Gabon Talent JS",
+    "city": "Libreville",
+    "salary": "800k - 1.2M",
+    "source": "LinkedIn",
+    "tag": "NOUVEAU",
+    "desc": "React / Supabase",
+    "link": "https://gabon-talent-js.github.io/gabon-talent-os/",
+    "updated": "2026-10-04T11:09:24.816261"
+  }
 ];
 function renderJobs(list){
   document.getElementById('jobs-list').innerHTML = list.map(j=>`
