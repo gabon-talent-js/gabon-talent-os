@@ -83,24 +83,169 @@ function renderJobs(list){
   `).join('');
 }
 renderJobs(JOBS);
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gabon Talent OS - L'OS de l'Emploi</title>
+<style>
+:root{--dark:#0f172a;--green:#22c55e;--bg:#f8fafc}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--dark)}
+header{background:var(--dark);color:white;padding:14px 20px;position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center}
+nav a{color:white;text-decoration:none;margin-left:12px;font-size:12px;font-weight:600;opacity:.7}nav a.active{opacity:1;border-bottom:2px solid var(--green)}
+.hero{background:linear-gradient(135deg,#0f172a,#1e293b);color:white;padding:40px 20px;text-align:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 20px;border-radius:10px;font-weight:700;text-decoration:none;cursor:pointer;border:0}
+.btn-green{background:var(--green);color:white}.btn-dark{background:var(--dark);color:white}.btn-white{background:white;color:var(--dark);border:1px solid #e2e8f0}
+.container{max-width:900px;margin:0 auto;padding:16px}
+.card{background:white;border-radius:16px;padding:18px;border:1px solid #e2e8f0;margin-bottom:14px}
+.pack{border:2px solid #e2e8f0;border-radius:16px;padding:18px;text-align:center;cursor:pointer}
+.pack.best{border-color:var(--green);background:#f0fdf4}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
+.modal.active{display:flex}.modal-box{background:white;border-radius:20px;max-width:500px;width:100%;padding:24px;max-height:90vh;overflow-y:auto}
+input,textarea,select{width:100%;padding:12px;margin:6px 0;border:1px solid #e2e8f0;border-radius:10px}
+</style>
+</head>
+<body>
+<header>
+<b>🇬🇦 Gabon Talent <span style="color:#22c55e">OS</span></b>
+<nav>
+<a href="#" onclick="showTab('offres')" id="nav-offres" class="active">Offres</a>
+<a href="#" onclick="showTab('candidat')" id="nav-candidat">Candidat</a>
+<a href="#" onclick="showTab('entreprise')" id="nav-entreprise">Entreprise</a>
+</nav>
+</header>
+
+<div id="tab-offres">
+<div class="hero">
+<h1>Toutes les offres du Gabon.<br><span style="color:#22c55e">En un seul endroit.</span></h1>
+<p style="opacity:.7;margin-top:10px;font-size:14px">Scanné auto depuis Facebook, LinkedIn, sites d'emploi • MAJ 07:00</p>
+</div>
+<div class="container" id="jobs-list"></div>
+</div>
+
+<div id="tab-candidat" style="display:none">
+<div class="container">
+<h2>Espace Candidat</h2>
+
+<div id="paywall-cv" class="card" style="border:2px dashed #22c55e">
+<h3>🔒 Générateur CV Pro - Débloque après paiement</h3>
+<p style="font-size:13px;color:#64748b;margin:8px 0">Tu as payé sur Chariow? Clique sur "J'ai payé" ou refais un paiement, le CV se débloque auto.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+<div class="pack" onclick="pay('CV_1000')"><b>CV Pro</b><br><span style="font-size:22px;font-weight:800">1000</span> FCFA</div>
+<div class="pack best" onclick="pay('CV_PACK_2000')"><b>CV + Lien Direct</b><br><span style="font-size:22px;font-weight:800">2000</span> FCFA</div>
+</div>
+<button class="btn btn-white" style="width:100%;margin-top:10px" onclick="forceUnlock()">✅ J'ai déjà payé - Débloquer</button>
+</div>
+
+<div id="cv-generator-section" style="display:none">
+<div class="card" style="background:#f0fdf4;border-color:#22c55e">
+<h3>✅ Paiement confirmé - Générateur Débloqué</h3>
+<p style="font-size:12px">Produit: <span id="paid-product-label">CV_1000</span></p>
+<input id="cv-nom" placeholder="Nom complet">
+<input id="cv-tel" placeholder="WhatsApp ex: 074...">
+<input id="cv-metier" placeholder="Métier visé ex: Comptable">
+<textarea id="cv-exp" rows="4" placeholder="Expériences : Poste - Entreprise - Années"></textarea>
+<button class="btn btn-green" style="width:100%" onclick="generateCV()">Générer mon CV PDF</button>
+<div id="cv-output" style="margin-top:16px"></div>
+</div>
+</div>
+
+<div class="card" style="margin-top:20px">
+<h3>📥 Déposer votre CV (Gratuit) - Base recruteurs</h3>
+<p style="font-size:13px;color:#64748b">Les entreprises gabonaises consultent cette base tous les jours</p>
+<form id="cv-depot-form" style="margin-top:10px">
+<input type="text" id="depot-nom" placeholder="Nom complet" required>
+<input type="tel" id="depot-tel" placeholder="WhatsApp 074..." required>
+<input type="text" id="depot-metier" placeholder="Métier (ex: Comptable, Dev)" required>
+<input type="file" id="depot-file" accept=".pdf,.docx" required>
+<button type="submit" class="btn btn-dark" style="width:100%;margin-top:8px">Déposer mon CV gratuitement</button>
+</form>
+<div id="depot-msg" style="margin-top:10px;font-weight:700"></div>
+</div>
+
+</div>
+</div>
+
+<div id="tab-entreprise" style="display:none"><div class="container"><h2>Espace Entreprise</h2><div class="card"><h3>Publier une offre - 2500 FCFA</h3><button class="btn btn-green" style="width:100%;margin-top:10px" onclick="pay('ENTREPRISE_2500')">Payer 2500 FCFA & Publier</button></div></div></div>
+
+<div id="modal" class="modal" onclick="if(event.target==this)closeModal()"><div class="modal-box" id="modal-content"></div></div>
+
+<script>
+const PAYMENT_LINKS = {
+  CV_1000: "https://wgswpgri.mychariow.com/prd_1avtsfwc/checkout",
+  CV_PACK_2000: "https://wgswpgri.mychariow.com/prd_i0t95cv0/checkout",
+  AUTO_APPLY_5000: "https://wgswpgri.mychariow.com/prd_voveq098/checkout",
+  ENTREPRISE_2500: "https://wgswpgri.mychariow.com/prd_d40es2g3/checkout"
+};
+
+function pay(type){
+  localStorage.setItem('gt_pending_product', type);
+  window.open(PAYMENT_LINKS[type], '_blank');
+}
+
+function checkPaymentSuccess(){
+  const params = new URLSearchParams(window.location.search);
+  const isSuccess = params.get('payment')==='success' || params.get('status')==='paid' || localStorage.getItem('gt_paid')==='true';
+  if(params.get('payment')==='success'){
+    localStorage.setItem('gt_paid','true');
+    localStorage.setItem('gt_product', params.get('product')|| localStorage.getItem('gt_pending_product') || 'CV_1000');
+    window.history.replaceState({}, document.title, "/gabon-talent-os/");
+  }
+  if(isSuccess){ unlockCV(); }
+}
+function unlockCV(){
+  document.getElementById('paywall-cv').style.display='none';
+  document.getElementById('cv-generator-section').style.display='block';
+  document.getElementById('paid-product-label').innerText = localStorage.getItem('gt_product') || 'CV_1000';
+  showTab('candidat');
+}
+function forceUnlock(){
+  if(confirm("Confirme que tu as payé sur Chariow?")){
+    localStorage.setItem('gt_paid','true');
+    localStorage.setItem('gt_product', localStorage.getItem('gt_pending_product')||'CV_1000');
+    unlockCV();
+  }
+}
+window.addEventListener('load', checkPaymentSuccess);
+
+function generateCV(){
+  const nom=document.getElementById('cv-nom').value, tel=document.getElementById('cv-tel').value, metier=document.getElementById('cv-metier').value, exp=document.getElementById('cv-exp').value;
+  if(!nom||!tel){alert('Remplis nom et tel');return}
+  document.getElementById('cv-output').innerHTML = `
+    <div style="border:1px solid #000;padding:20px;background:white">
+    <h2>${nom}</h2><p>${metier} | ${tel}</p><hr style="margin:10px 0">
+    <h4>Expériences</h4><p style="white-space:pre-wrap">${exp}</p>
+    <p style="margin-top:20px;font-size:11px;color:#666">CV généré par Gabon Talent OS - ${new Date().toLocaleDateString()}</p>
+    </div>
+    <button class="btn btn-dark" style="width:100%;margin-top:10px" onclick="window.print()">📄 Télécharger / Imprimer PDF</button>
+  `;
+}
+
+// DEPOT CV
+document.getElementById('cv-depot-form').addEventListener('submit', function(e){
+  e.preventDefault();
+  const nom=document.getElementById('depot-nom').value;
+  document.getElementById('depot-msg').innerHTML = "✅ Merci "+nom+"! CV reçu. Recruteurs notifiés.";
+  // TODO: brancher Google Sheet / n8n / Telegram ici
+  this.reset();
+});
+
+const JOBS = [
+  {id:1, title:"Développeur Full-Stack JS", company:"Gabon Talent JS", city:"Libreville", salary:"800k - 1.2M", source:"LinkedIn", tag:"NOUVEAU", desc:"Construction de Gabon Talent OS. React / Supabase.", email:"recrutement@gabontalent.ga"},
+  {id:2, title:"Comptable Senior", company:"TotalEnergies Gabon", city:"Port-Gentil", salary:"650k", source:"Facebook", tag:"CDI", desc:"Sage 100, fiscalité pétrolière.", email:"rh@total.ga"},
+  {id:3, title:"Community Manager", company:"Agence 241 Com", city:"Libreville", salary:"300k", source:"Instagram", tag:"URGENT", desc:"Gestion TikTok/Insta pour 5 marques.", email:"contact@241com.ga"}
+];
+function renderJobs(list){
+  document.getElementById('jobs-list').innerHTML = list.map(j=>`
+    <div class="card" onclick="openJob(${j.id})" style="cursor:pointer">
+      <span style="font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;background:#dcfce7">${j.tag} • ${j.source}</span>
+      <h3 style="margin:8px 0 4px">${j.title}</h3>
+      <div style="font-size:13px;color:#64748b">📍 ${j.city} • 💰 ${j.salary} • 🏢 ${j.company}</div>
+    </div>
+  `).join('');
+}
+renderJobs(JOBS);
 function openJob(id){
   const j = JOBS.find(x=>x.id==id);
   document.getElementById('modal-content').innerHTML = `
-    <h2>${j.title}</h2><p style="color:#64748b;font-size:13px;margin:6px 0 12px">📍 ${j.city} • ${j.company} • Source: ${j.source}</p>
-    <div style="background:#f8fafc;padding:12px;border-radius:10px;font-size:14px">${j.desc}</div>
-    <h3 style="margin:18px 0 10px">Choisis ton pack pour postuler :</h3>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      <div class="pack" onclick="pay('CV_1000')"><b>CV Pro</b><br><span style="font-size:22px;font-weight:800">1000</span> FCFA</div>
-      <div class="pack best" onclick="pay('CV_PACK_2000')"><b>CV + Lien Direct</b><br><span style="font-size:22px;font-weight:800">2000</span> FCFA</div>
-    </div>
-    <div class="pack" style="margin-top:10px" onclick="pay('AUTO_APPLY_5000')"><b>🔥 Pack Automatique 10 Candidatures</b><br><span style="font-size:22px;font-weight:800">5000</span> FCFA</div>
-    <button class="btn btn-white" style="width:100%;margin-top:12px" onclick="closeModal()">Fermer</button>
-  `;
-  document.getElementById('modal').classList.add('active');
-}
-function closeModal(){document.getElementById('modal').classList.remove('active')}
-function openPack(){openJob(1)}
-function showTab(t){document.getElementById('tab-offres').style.display=t=='offres'?'block':'none';document.getElementById('tab-candidat').style.display=t=='candidat'?'block':'none';document.getElementById('tab-entreprise').style.display=t=='entreprise'?'block':'none'}
-</script>
-</body>
-</html>
+    <h2>${j.title
