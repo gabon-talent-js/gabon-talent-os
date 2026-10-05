@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Espace Recruteur - Gabon Talent OS</title><script src="https://cdn.tailwindcss.com"></script></head>
+<body class="bg-[#f8fafc]">
+<header class="h-20 bg-white border-b flex items-center px-6"><a href="index.html" class="font-bold">Gabon Talent OS</a></header>
+<div class="max-w-3xl mx-auto px-6 py-12">
+<h1 class="text-3xl font-bold">Publier une offre - 10 000 FCFA / offre</h1>
+<div class="bg-white border rounded-xl p-6 mt-8 space-y-3">
+<input id="title" placeholder="Titre poste ex: Comptable Senior" class="w-full border rounded p-2.5 text-sm">
+<input id="company" placeholder="Entreprise ex: Sobraga" class="w-full border rounded p-2.5 text-sm">
+<select id="type" class="w-full border rounded p-2.5 text-sm"><option>CDI</option><option>CDD</option><option>Stage</option></select>
+<textarea id="desc" placeholder="Description missions + profil" class="w-full border rounded p-2.5 text-sm h-24"></textarea>
+<input id="email" placeholder="Email RH pour recevoir CV" class="w-full border rounded p-2.5 text-sm">
+<hr class="my-4">
+<h3 class="font-bold text-sm">Paiement Chariow obligatoire pour publier</h3>
+<input id="telR" placeholder="Tel payeur GA - ex: 74995745" class="w-full border rounded p-2.5 text-sm mt-2">
+<button onclick="publish()" class="w-full bg-[#0f172a] text-white py-3 rounded text-sm mt-3">Payer 10 000 FCFA & Publier</button>
+<p id="msg" class="text-xs text-center mt-2"></p>
+</div>
+</div>
+<script>
+function publish(){
+const job={id:Date.now().toString(),title:document.getElementById('title').value,company:document.getElementById('company').value,type:document.getElementById('type').value,category:'Offre payante',location:'Libreville',date:new Date().toLocaleDateString(),description:document.getElementById('desc').value,missions:['À définir'],profil:['À définir'],email:document.getElementById('email').value};
+let jobs=JSON.parse(localStorage.getItem('localJobs')||'[]'); jobs.push(job); localStorage.setItem('localJobs',JSON.stringify(jobs));
+document.getElementById('msg').innerText='✓ Offre payée (simulé) et ajoutée. Elle apparaîtra en local, puis via n8n vers Supabase.';
+setTimeout(()=>location.href='index.html',1500)
+}
+</script>
+</body></html>
