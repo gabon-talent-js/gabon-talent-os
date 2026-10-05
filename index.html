@@ -1,142 +1,47 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gabon Talent OS - L'OS de l'Emploi</title>
-<style>
-:root{--dark:#0f172a;--green:#22c55e;--bg:#f8fafc}
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--dark)}
-header{background:var(--dark);color:white;padding:14px 20px;position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center}
-nav a{color:white;text-decoration:none;margin-left:16px;font-size:13px;font-weight:600;opacity:.8}nav a.active{opacity:1;border-bottom:2px solid var(--green)}
-.hero{background:linear-gradient(135deg,#0f172a,#1e293b);color:white;padding:40px 20px;text-align:center}
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 20px;border-radius:10px;font-weight:700;text-decoration:none;cursor:pointer;border:0}
-.btn-green{background:var(--green);color:white}.btn-dark{background:var(--dark);color:white}.btn-white{background:white;color:var(--dark);border:1px solid #e2e8f0}
-.container{max-width:900px;margin:0 auto;padding:16px}
-.card{background:white;border-radius:16px;padding:18px;border:1px solid #e2e8f0;margin-bottom:14px}
-.pack{border:2px solid #e2e8f0;border-radius:16px;padding:18px;text-align:center;cursor:pointer}
-.pack.best{border-color:var(--green);background:#f0fdf4}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
-.modal.active{display:flex}.modal-box{background:white;border-radius:20px;max-width:500px;width:100%;padding:24px;max-height:90vh;overflow-y:auto}
-</style>
-</head>
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gabon Talent OS</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,sans-serif}body{background:#f6f7f9}
+header{background:#0b0f1a;color:#fff;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+.btn{padding:9px 16px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none}
+.btn1{background:#1f2937;color:#fff}.btn2{background:#5eead4;color:#0b0f1a}
+.hero{text-align:center;padding:48px 16px 10px}.hero h1{font-size:38px;font-weight:900;line-height:1.05;letter-spacing:-1px}
+.hero p{color:#64748b;margin-top:10px;font-size:14px}
+.search{max-width:860px;margin:22px auto;background:#fff;border:1px solid #e5e7eb;border-radius:16px;display:flex;padding:6px;box-shadow:0 10px 30px rgba(0,0,0,.07)}
+.search input{flex:1;border:0;outline:0;padding:14px;font-size:14px}.search button{background:#0f766e;color:#fff;border:0;border-radius:12px;padding:12px 18px;font-weight:700}
+.grid{max-width:1200px;margin:20px auto;padding:0 16px 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.card{background:#fff;border:1px solid #eef2f7;border-radius:18px;padding:16px;box-shadow:0 6px 20px rgba(0,0,0,.05)}
+.top{display:flex;justify-content:space-between}.logoC{width:44px;height:44px;border-radius:10px;background:#f1f5f9;display:grid;place-items:center;font-weight:800;font-size:13px}
+.badge{font-size:11px;padding:4px 8px;border-radius:99px;font-weight:700}.n{background:#dcfce7;color:#166534}.f{background:#dbeafe;color:#1e40af}.u{background:#ffedd5;color:#9a3412}
+.t{font-weight:800;margin-top:12px;font-size:16px}.tag{display:inline-block;font-size:11px;border:1px solid #e5e7eb;background:#f8fafc;padding:5px 9px;border-radius:99px;margin-top:8px;margin-right:6px}
+.loc{font-size:12px;color:#64748b;margin-top:10px}.pay{font-size:13px;font-weight:700;margin-top:8px;border-top:1px solid #f1f5f9;padding-top:8px}
+.foot{display:flex;justify-content:space-between;margin-top:10px;font-size:12px;color:#94a3b8}.apply{background:#f1f5f9;padding:6px 10px;border-radius:8px;color:#0f172a;text-decoration:none;font-weight:700}
+</style></head>
 <body>
-<header>
-<b>🇬🇦 Gabon Talent <span style="color:#22c55e">OS</span></b>
-<nav>
-<a href="#" onclick="showTab('offres')" id="nav-offres" class="active">Offres</a>
-<a href="#" onclick="showTab('candidat')">Candidat</a>
-<a href="#" onclick="showTab('entreprise')">Entreprise</a>
-</nav>
-</header>
-<div id="tab-offres">
-<div class="hero">
-<h1>Toutes les offres du Gabon.<br><span style="color:#22c55e">En un seul endroit.</span></h1>
-<p style="opacity:.7;margin-top:10px;font-size:14px">Scanné auto depuis Facebook, LinkedIn, sites d'emploi • MAJ 07:00</p>
-</div>
-<div class="container" id="jobs-list"></div>
-</div>
-<div id="tab-candidat" style="display:none"><div class="container"><h2>Espace Candidat</h2><div class="card"><h3>Mon CV Pro</h3><a class="btn btn-dark" href="#" onclick="openPack()">Créer mon CV Pro - 1000 FCFA</a></div></div></div>
-<div id="tab-entreprise" style="display:none"><div class="container"><h2>Espace Entreprise</h2><div class="card"><h3>Publier une offre - 2500 FCFA</h3><button class="btn btn-green" style="width:100%;margin-top:10px" onclick="pay('ENTREPRISE_2500')">Payer 2500 FCFA & Publier</button></div></div></div>
-<div id="modal" class="modal" onclick="if(event.target==this)closeModal()"><div class="modal-box" id="modal-content"></div></div>
+<header><b>🇬🇦 Gabon Talent OS</b><div><a class="btn btn1" href="candidat.html">Candidat</a> <a class="btn btn2" href="recruteur.html">Poster +</a></div></header>
+<div class="hero"><h1>Toutes les offres du Gabon.<br><span style="color:#0f766e">En un seul endroit.</span></h1><p>8 offres vérifiées • Scanné Facebook, LinkedIn, Emploi.ga • MAJ 07:00</p>
+<div class="search"><input id="q" placeholder="Rechercher poste, entreprise..." oninput="filter()"><button onclick="filter()">Search</button></div></div>
+<div id="grid" class="grid"></div>
 <script>
-const PAYMENT_LINKS = {
-  CV_1000: "https://wgswpgri.mychariow.com/prd_1avtsfwc/checkout",
-  CV_PACK_2000: "https://wgswpgri.mychariow.com/prd_i0t95cv0/checkout",
-  AUTO_APPLY_5000: "https://wgswpgri.mychariow.com/prd_voveq098/checkout",
-  ENTREPRISE_2500: "https://wgswpgri.mychariow.com/prd_d40es2g3/checkout"
-};
-function pay(type){
-  window.open(PAYMENT_LINKS[type], '_blank');
-}
-  // --- AUTO-DEBLOCAGE APRES PAIEMENT ---
-function checkPaymentSuccess(){
-  const params = new URLSearchParams(window.location.search);
-  if(params.get('payment') === 'success' || params.get('status') === 'paid'){
-    localStorage.setItem('gt_paid', 'true');
-    const type = params.get('product') || 'CV_1000';
-    localStorage.setItem('gt_product', type);
-    alert('Paiement reçu! Génération du CV débloquée ✅');
-    // on nettoie l'url
-    window.history.replaceState({}, document.title, "/gabon-talent-os/");
-    document.getElementById('cv-generator-section')?.scrollIntoView();
-  }
-}
-window.addEventListener('load', checkPaymentSuccess);
-
-function pay(type){
-  // on sauvegarde ce qu'il veut acheter avant d'aller sur Chariow
-  localStorage.setItem('gt_pending_product', type);
-  window.open(PAYMENT_LINKS[type], '_blank');
-}
-const JOBS = [
-  {
-    "id": 1,
-    "title": "Développeur Full-Stack JS",
-    "company": "Gabon Talent JS",
-    "city": "Libreville",
-    "salary": "800k - 1.2M",
-    "source": "LinkedIn",
-    "tag": "NOUVEAU",
-    "desc": "React / Supabase",
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Gabon Talent OS - Top opportunités au Gabon</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,Inter,Segoe UI,sans-serif}
-body{background:#f6f7f9;color:#0b1120}
-header{background:#0b0f1a;color:#fff;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:20}
-.logo{font-weight:800;letter-spacing:-0.5px;display:flex;align-items:center;gap:10px}
-.logo i{width:28px;height:28px;background:linear-gradient(135deg,#5eead4,#0e7490);display:inline-block;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
-.btn{border-radius:10px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
-.btn-dark{background:#111827;color:#fff;border:1px solid #111827}
-.btn-teal{background:#5eead4;color:#0b1120}
-.hero{text-align:center;padding:54px 20px 22px}
-.hero h1{font-size:42px;line-height:1.05;letter-spacing:-1.2px;font-weight:800}
-.hero p{color:#475569;margin-top:12px;font-size:15px}
-.search{max-width:860px;margin:26px auto;background:#fff;border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,.08);display:flex;align-items:center;padding:8px;gap:8px;border:1px solid #e5e7eb}
-.search input{flex:1;border:0;outline:0;padding:14px 14px;font-size:15px}
-.search .sep{width:1px;height:28px;background:#e5e7eb}
-.search button{background:#0f766e;color:#fff;border:0;border-radius:12px;padding:13px 22px;font-weight:700;cursor:pointer}
-.filters{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0}
-.chip{background:#fff;border:1px solid #e5e7eb;border-radius:999px;padding:8px 14px;font-size:13px}
-.grid{max-width:1220px;margin:0 auto;padding:18px 18px 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
-.card{background:#fff;border:1px solid #eef2f7;border-radius:18px;padding:18px;box-shadow:0 8px 20px rgba(0,0,0,.05);transition:.2s;cursor:pointer}
-.card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.1)}
-.top{display:flex;justify-content:space-between;align-items:start}
-.logoCo{width:48px;height:48px;border-radius:12px;background:#f1f5f9;display:grid;place-items:center;font-weight:800}
-.badge{font-size:11px;padding:5px 9px;border-radius:999px;font-weight:600}
-.b-new{background:#d1fae5;color:#065f46}.b-feat{background:#e0e7ff;color:#3730a3}.b-urg{background:#ffedd5;color:#9a3412}
-.title{font-weight:750;margin-top:14px;font-size:18px;letter-spacing:-.3px}
-.tags{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.tag{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid #e5e7eb;background:#f8fafc}
-.loc{font-size:13px;color:#475569;margin-top:12px}
-.pay{font-size:14px;font-weight:600;margin-top:10px;border-top:1px solid #eef2f7;padding-top:10px}
-.foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:13px;color:#64748b}
-.apply{background:#f1f5f9;border-radius:10px;padding:7px 12px;font-weight:600;color:#0f172a;text-decoration:none}
-</style>
-</head>
-<body>
-<header><div class="logo"><i></i> Gabon Talent OS</div><div style="display:flex;gap:10px"><a href="candidat.html" class="btn" style="background:#1f2937;color:#fff">Sign in</a><a href="recruteur.html" class="btn btn-teal">Post a Job +</a></div></header>
-<div class="hero"><h1>Discover top opportunities<br>across Gabon</h1><p>Build your future — vetted roles, local impact, global standards. <b id="count">8 open roles</b> • Verified employers • MAJ 07:00</p>
-<div class="search"><input id="q" placeholder="Search jobs, skills, or companies"><div class="sep"></div><input id="loc" value="Libreville, Gabon" style="max-width:200px"><button onclick="doSearch()">Search jobs</button></div>
-<div class="filters"><span class="chip">Popular filters:</span><span class="chip">🌐 Remote</span><span class="chip">💼 Full-time</span><span class="chip">💻 Engineering</span><span class="chip">📈 Finance</span></div>
-</div>
-<div id="jobs" class="grid"></div>
-<script>
-let all=[];
-async function load(){const r=await fetch('./data/jobs.json?v='+Date.now());const d=await r.json();all=d.map((j,i)=>({...j,salary:j.salary||`${(2+i*0.5).toFixed(1)} — ${(3.5+i*0.5).toFixed(1)}M XAF / yr`,badge:j.badge||['New','Featured','Urgent'][i%3]}));document.getElementById('count').innerText=all.length+' open roles';render(all)}
-function render(list){document.getElementById('jobs').innerHTML=list.map(j=>`
-<a href="offre.html?id=${j.id}" style="text-decoration:none;color:inherit"><div class="card">
-<div class="top"><div style="display:flex;gap:12px;align-items:center"><div class="logoCo">${j.company.slice(0,2).toUpperCase()}</div><div><div style="font-weight:700">${j.company}</div><div style="font-size:12px;color:#64748b">${j.category}</div></div></div><span class="badge ${j.badge==='New'?'b-new':j.badge==='Featured'?'b-feat':'b-urg'}">${j.badge}</span></div>
-<div class="title">${j.title}</div>
-<div class="tags"><span class="tag">${j.category}</span><span class="tag">${j.type}</span></div>
-<div class="loc">📍 ${j.location} • ${j.type}</div>
-<div class="pay">💵 ${j.salary}</div>
+const JOBS=[
+{id:"1",title:"Comptable Senior - Sobraga",company:"Sobraga",loc:"Libreville",type:"CDI",cat:"Finance",badge:"New",pay:"3.5 — 5.2M XAF / an",date:"03 Oct"},
+{id:"2",title:"Développeur Web Fullstack",company:"Mbighe Technologie",loc:"Libreville",type:"CDI",cat:"Tech",badge:"Featured",pay:"2.8 — 4.5M XAF / an",date:"04 Oct"},
+{id:"3",title:"Chargé RH - PNPE",company:"PNPE",loc:"Port-Gentil",type:"CDD",cat:"RH",badge:"Urgent",pay:"2.0 — 3.0M XAF / an",date:"03 Oct"},
+{id:"4",title:"Commercial Terrain",company:"Solsem Afrique",loc:"Franceville",type:"CDI",cat:"Commercial",badge:"New",pay:"1.5 — 2.8M XAF / an",date:"02 Oct"},
+{id:"5",title:"Stagiaire Marketing Digital",company:"CCTI",loc:"Libreville",type:"Stage",cat:"Marketing",badge:"Featured",pay:"500k — 800k XAF / an",date:"01 Oct"},
+{id:"6",title:"Technicien Maintenance",company:"Sobraga",loc:"Owendo",type:"CDI",cat:"Technique",badge:"Urgent",pay:"1.8 — 2.5M XAF / an",date:"30 Sep"},
+{id:"7",title:"Assistante de Direction",company:"Ministère FP",loc:"Libreville",type:"CDD",cat:"Administratif",badge:"New",pay:"2.2 — 3.1M XAF / an",date:"29 Sep"},
+{id:"8",title:"Agent Call Center",company:"Airtel Gabon",loc:"Libreville",type:"CDI",cat:"Service Client",badge:"Featured",pay:"1.2 — 1.8M XAF / an",date:"28 Sep"}
+];
+function render(list){document.getElementById('grid').innerHTML=list.map(j=>`
+<div class="card" onclick="location.href='offre.html?id=${j.id}'">
+<div class="top"><div style="display:flex;gap:10px;align-items:center"><div class="logoC">${j.company.slice(0,2).toUpperCase()}</div><div><b style="font-size:13px">${j.company}</b><div style="font-size:11px;color:#64748b">${j.cat}</div></div></div><span class="badge ${j.badge=='New'?'n':j.badge=='Featured'?'f':'u'}">${j.badge}</span></div>
+<div class="t">${j.title}</div>
+<div><span class="tag">${j.cat}</span><span class="tag">${j.type}</span></div>
+<div class="loc">📍 ${j.loc} • ${j.type}</div>
+<div class="pay">💵 ${j.pay}</div>
 <div class="foot"><span>Posted ${j.date}</span><span class="apply">Apply →</span></div>
-</div></a>`).join('')}
-function doSearch(){const q=document.getElementById('q').value.toLowerCase();render(all.filter(j=>j.title.toLowerCase().includes(q)||j.company.toLowerCase().includes(q)))}
-load();
+</div>`).join('')}
+function filter(){let q=document.getElementById('q').value.toLowerCase();render(JOBS.filter(j=>j.title.toLowerCase().includes(q)||j.company.toLowerCase().includes(q)))}
+render(JOBS);
 </script>
 </body></html>
