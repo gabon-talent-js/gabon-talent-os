@@ -6,73 +6,1186 @@
 <title>Gabon Talent OS – Offres d'emploi au Gabon, CV et formation</title>
 <meta name="description" content="Toutes les offres d'emploi du Gabon dans les 9 provinces. Postulez, publiez une offre, boostez votre CV et formez-vous aux métiers du numérique.">
 <meta name="theme-color" content="#0b6b4a">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Gabon Talent OS – L'emploi au Gabon, au même endroit">
+<meta property="og:description" content="Offres d'emploi, profils candidats, CV professionnel et formation dev. 9 provinces.">
+<meta property="og:url" content="https://gabon-talent-js.github.io/gabon-talent-os/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b6b4a'/%3E%3Crect y='62' width='100' height='19' fill='%23f5b800'/%3E%3Crect y='81' width='100' height='19' fill='%231f5fa8'/%3E%3Ctext x='50' y='50' font-size='44' font-weight='800' fill='white' text-anchor='middle' font-family='sans-serif'%3EGT%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--green:#0b6b4a;--green2:#0e8a60;--bg:#f4f7f5;--card:#fff;--text:#0f221b;--muted:#6b7d75;--line:#e3ebe7}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--text)}
-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:10px 16px}
-.logo{display:flex;gap:10px;align-items:center;font-weight:900}
-.badge{background:var(--green);color:#fff;padding:2px 8px;border-radius:999px;font-size:11px}
-.btn{border:1px solid var(--line);background:#fff;padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer}
-.btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
-.hero{padding:22px 16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
-.grid{display:grid;gap:12px}
-@media(min-width:900px){.grid{grid-template-columns:1.1fr .9fr}}
-.list{display:grid;gap:10px}
-.item{padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}
-.muted{color:var(--muted)} .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+:root{
+  --green:#0b6b4a;--green-d:#084f37;--sun:#f5b800;--sea:#1f5fa8;
+  --bg:#f3f6f4;--card:#fff;--ink:#12201a;--mute:#5a6b63;--line:#e0e7e3;--soft:#eaf1ed;
+  --ok:#166534;--okbg:#dcfce7;--warn:#9a3412;--warnbg:#ffedd5;--info:#1e40af;--infobg:#dbeafe;--danger:#b91c1c;
+  --r:14px;--rs:9px;
+  --fh:'Bricolage Grotesque','Instrument Sans',system-ui,sans-serif;--fb:'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+:root[data-theme="dark"]{--bg:#0d1511;--card:#14201a;--ink:#e8f1ec;--mute:#93a79c;--line:#243229;--soft:#1a2820;--okbg:#12361f;--ok:#86efac;--warnbg:#3a2210;--warn:#fdba74;--infobg:#14284a;--info:#93c5fd;--green:#14a06f;--green-d:#0f7f58}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-padding-top:70px}
+body{font-family:var(--fb);background:var(--bg);color:var(--ink);line-height:1.5;overflow-x:hidden;-webkit-text-size-adjust:100%}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.skip{position:absolute;left:-999px;top:8px;background:var(--sun);color:#000;padding:8px 12px;border-radius:8px;z-index:300;font-weight:700}
+.skip:focus{left:8px}
+
+/* Header */
+header{background:#0b1a13;color:#fff;position:sticky;top:0;z-index:100}
+header::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--green) 33.3%,var(--sun) 33.3% 66.6%,var(--sea) 66.6%)}
+.bar{max-width:1200px;margin:0 auto;height:56px;display:flex;align-items:center;gap:10px;padding:0 14px}
+.logo{font-family:var(--fh);font-weight:800;font-size:17px;text-decoration:none;white-space:nowrap;margin-right:auto}
+nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav a{padding:7px 11px;border-radius:99px;font-size:13px;font-weight:600;text-decoration:none;color:#cfe0d7;white-space:nowrap}
+nav a:hover{background:#1c2f25}
+nav a[aria-current="page"]{background:var(--sun);color:#1a1300}
+.iconbtn{background:#1c2f25;color:#fff;border:0;width:36px;height:36px;border-radius:50%;font-size:16px;flex-shrink:0}
+
+/* Hero */
+.hero{max-width:820px;margin:0 auto;padding:34px 14px 8px;text-align:center}
+.hero h1{font-family:var(--fh);font-size:clamp(26px,6vw,44px);font-weight:800;line-height:1.1;letter-spacing:-.02em}
+.hero p{color:var(--mute);margin-top:10px;font-size:15px;max-width:560px;margin-inline:auto}
+.search{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:5px;margin:18px auto 0;box-shadow:0 6px 24px rgba(11,107,74,.08)}
+.search input{flex:1;border:0;outline:0;padding:11px;font-size:15px;background:transparent;color:var(--ink);min-width:0;margin:0}
+.search button{background:var(--green);color:#fff;border:0;border-radius:var(--rs);padding:0 18px;font-weight:700}
+
+/* Layout */
+main{min-height:60vh}
+.wrap{max-width:1200px;margin:0 auto;padding:0 14px}
+.sec{margin:26px auto}
+.sec h2{font-family:var(--fh);font-size:20px;font-weight:800;margin-bottom:4px}
+.sec .sub{color:var(--mute);font-size:13px;margin-bottom:12px}
+.page{display:none}.page.active{display:block}
+.narrow{max-width:760px;margin:0 auto;padding:18px 14px 30px}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:22px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 6px;text-align:center}
+.stat b{font-family:var(--fh);font-size:24px;color:var(--green);display:block;line-height:1.1}
+.stat span{font-size:11px;color:var(--mute)}
+
+/* Bandeaux */
+.ad{display:flex;align-items:center;height:54px;border-radius:var(--r);overflow:hidden;text-decoration:none;color:#fff;margin:14px 0;position:relative}
+.ad.a1{background:linear-gradient(120deg,#0b6b4a,#14a06f)}
+.ad.a2{background:linear-gradient(120deg,#12304f,#1f5fa8)}
+.ad.a3{background:linear-gradient(120deg,#3d2f00,#8a6a00)}
+.ad .track{display:flex;align-items:center;white-space:nowrap;animation:slide 32s linear infinite;will-change:transform}
+.ad:hover .track,.ad:focus-visible .track{animation-play-state:paused}
+.ad .item{display:inline-flex;align-items:center;gap:14px;padding-right:48px;font-weight:600;font-size:13px}
+.ad .pill{background:#fff;color:#111;padding:5px 12px;border-radius:99px;font-weight:700;font-size:12px}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* Filtres */
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 13px;border-radius:99px;font-size:13px;font-weight:600;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 4px}
+.filters select{margin:0}
+@media(min-width:700px){.filters{grid-template-columns:repeat(3,1fr)}}
+
+/* Cartes offres */
+.hscroll{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+.card{scroll-snap-align:start;min-width:270px;max-width:270px;flex-shrink:0}
+.job{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:block;text-decoration:none;position:relative;transition:border-color .15s}
+.job:hover{border-color:var(--green)}
+.job .top{display:flex;gap:10px;align-items:center}
+.lg{width:38px;height:38px;border-radius:10px;background:var(--soft);display:grid;place-items:center;font-weight:800;font-size:12px;color:var(--green);flex-shrink:0}
+.job .co{font-size:12px;font-weight:700}
+.job .ct{font-size:11px;color:var(--mute)}
+.job h3{font-size:15px;font-weight:700;margin:10px 0 6px;line-height:1.3}
+.meta{font-size:12px;color:var(--mute);display:flex;flex-wrap:wrap;gap:4px 12px}
+.tags{margin-top:8px;display:flex;gap:5px;flex-wrap:wrap}
+.tag{font-size:11px;border:1px solid var(--line);background:var(--soft);padding:2px 8px;border-radius:99px}
+.badge{font-size:10px;padding:3px 8px;border-radius:99px;font-weight:700;margin-left:auto;flex-shrink:0}
+.b-new{background:var(--okbg);color:var(--ok)}.b-feat{background:var(--infobg);color:var(--info)}.b-urg{background:var(--warnbg);color:var(--warn)}
+.fav{position:absolute;right:10px;bottom:10px;background:none;border:0;font-size:20px;line-height:1;color:var(--mute);padding:4px}
+.fav[aria-pressed="true"]{color:#e11d48}
+.grid{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:760px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1050px){.grid{grid-template-columns:repeat(3,1fr)}}
+.grid .job{padding-bottom:30px}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:var(--r);padding:26px;text-align:center;color:var(--mute);font-size:14px}
+
+/* Formulaires */
+.box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.box h2,.box h1{font-family:var(--fh);font-weight:800}
+label{font-size:13px;font-weight:600;margin-top:12px;display:block}
+label small{font-weight:400;color:var(--mute)}
+input,textarea,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:var(--rs);margin-top:6px;font-size:15px;font-family:inherit;background:var(--bg);color:var(--ink)}
+textarea{min-height:100px;resize:vertical}
+input:invalid:not(:placeholder-shown):not([type=checkbox]){border-color:var(--danger)}
+.row2{display:grid;grid-template-columns:1fr;gap:0 12px}
+@media(min-width:600px){.row2{grid-template-columns:1fr 1fr}}
+.btn{display:block;width:100%;text-align:center;background:var(--green);color:#fff;border:0;border-radius:12px;padding:13px;font-weight:700;font-size:15px;margin-top:16px;text-decoration:none}
+.btn:hover{background:var(--green-d)}
+.btn.dark{background:#12201a}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.wa{background:#1fa855}
+.btn.sm{display:inline-block;width:auto;padding:8px 14px;font-size:13px;margin:0}
+.btn[disabled]{opacity:.6;cursor:wait}
+.hp{position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden}
+.back{display:inline-block;margin-bottom:12px;font-size:13px;font-weight:600;text-decoration:none;color:var(--green)}
+.note{font-size:12px;color:var(--mute);margin-top:10px}
+.ok-box{background:var(--okbg);color:var(--ok);border-radius:var(--r);padding:16px;margin-top:14px;font-size:14px}
+.ok-box b{display:block;font-size:16px;margin-bottom:4px}
+.err{color:var(--danger);font-size:12px;margin-top:4px;min-height:0}
+
+/* Détail offre */
+.detail h1{font-size:24px;line-height:1.2;margin:6px 0 8px}
+.detail h3{font-size:15px;margin:18px 0 6px;font-family:var(--fh)}
+.detail ul{padding-left:20px;font-size:14px}
+.detail p{font-size:14px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.actions .btn{margin-top:10px}
+
+/* Services & infos */
+.price{font-family:var(--fh);font-size:34px;font-weight:800;color:var(--green)}
+.steps{display:grid;gap:10px;margin-top:10px}
+@media(min-width:700px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;font-size:14px}
+.step b{display:block;font-family:var(--fh);font-size:16px;margin-bottom:2px}
+.testi{min-width:250px;max-width:250px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;flex-shrink:0}
+.testi p{font-size:13px;margin-top:4px}
+details{background:var(--card);border:1px solid var(--line);border-radius:var(--rs);padding:12px 14px;margin-bottom:8px;font-size:14px}
+summary{font-weight:700;cursor:pointer}
+details p{margin-top:8px;color:var(--mute)}
+ul.list{padding-left:20px;font-size:14px;margin-top:8px}
+
+/* Admin */
+.tabs{display:flex;gap:6px;overflow-x:auto;margin:12px 0}
+.tabs .chip{flex-shrink:0}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media(min-width:700px){.kpis{grid-template-columns:repeat(4,1fr)}}
+.rec{border-top:1px solid var(--line);padding:10px 0;font-size:13px;display:flex;gap:10px;justify-content:space-between;align-items:flex-start}
+.rec .acts{display:flex;gap:6px;flex-shrink:0}
+.rec .btn{margin:0}
+
+[hidden]{display:none!important}
+.flow{display:flex;gap:4px;margin-top:12px}
+.flow span{flex:1;font-size:10px;text-align:center;color:var(--mute);border-top:4px solid var(--line);padding-top:5px;line-height:1.2}
+.flow span.on{border-color:var(--green);color:var(--ink);font-weight:700}
+.app{margin-bottom:10px;padding:14px}
+.app .note{margin-top:8px}
+/* Toast */
+#toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,40px);background:#12201a;color:#fff;padding:11px 18px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:400;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+footer{background:#0b1a13;color:#9db3a7;padding:30px 14px;margin-top:30px;font-size:13px;line-height:1.9;text-align:center}
+footer a{color:#cfe0d7}
+footer .fl{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
+@media(prefers-reduced-motion:reduce){.ad .track{animation:none}*{transition:none!important;scroll-behavior:auto!important}}
+@media print{header,footer,.ad,.search,.actions,#toast{display:none}}
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Aller au contenu</a>
+
 <header>
-<div class="logo"><span style="width:32px;height:32px;background:var(--green);color:#fff;display:grid;place-items:center;border-radius:9px">GT</span> Gabon Talent OS <span class="badge" id="modeBadge">DEMO</span></div>
+  <div class="bar">
+    <a class="logo" href="#/">Gabon Talent OS</a>
+    <nav aria-label="Navigation principale">
+      <a href="#/" data-nav="home">Offres</a>
+      <a href="#/candidat" data-nav="candidat">Candidat</a>
+      <a href="#/recruteur" data-nav="recruteur">Recruteur</a>
+      <a href="#/boost" data-nav="boost">Mon CV</a>
+      <a href="#/formation" data-nav="formation">Formation</a>
+      <a href="#/compte" data-nav="compte" id="navAcc">Connexion</a>
+    </nav>
+    <button class="iconbtn" id="themeBtn" aria-label="Changer de thème">🌙</button>
+  </div>
 </header>
-<div class="hero grid">
-<div class="card">
-<h2>Offres d'emploi – 9 provinces</h2>
-<div class="row"><input id="q" placeholder="Rechercher..."><select id="province"><option value="">Toutes provinces</option><option>Estuaire</option><option>Haut-Ogooué</option><option>Moyen-Ogooué</option><option>Ngounié</option><option>Nyanga</option><option>Ogooué-Ivindo</option><option>Ogooué-Lolo</option><option>Ogooué-Maritime</option><option>Woleu-Ntem</option></select><button class="btn primary" onclick="filtrer()">Filtrer</button></div>
-<div id="offres" class="list" style="margin-top:14px"></div>
-</div>
-<div class="card">
-<h2>Publier une offre</h2>
-<input id="titre" placeholder="Titre"><input id="entreprise" placeholder="Entreprise"><select id="prov2"><option>Estuaire</option><option>Haut-Ogooué</option><option>Moyen-Ogooué</option><option>Ngounié</option><option>Nyanga</option><option>Ogooué-Ivindo</option><option>Ogooué-Lolo</option><option>Ogooué-Maritime</option><option>Woleu-Ntem</option></select><input id="contrat" placeholder="CDI / CDD / Stage"><textarea id="desc" placeholder="Description" rows="4"></textarea>
-<button class="btn primary" style="margin-top:10px;width:100%" onclick="publierOffre()">Publier → Firebase</button>
-</div>
-</div>
+
+<main id="main">
+
+<!-- ACCUEIL -->
+<section id="page-home" class="page active">
+  <div class="hero">
+    <h1>Toutes les offres d'emploi du Gabon, dans un seul endroit</h1>
+    <p>Neuf provinces, tous les secteurs. Trouvez un poste, publiez une offre ou faites relire votre CV.</p>
+    <form class="search" role="search" onsubmit="return false">
+      <label class="sr" for="q">Rechercher une offre</label>
+      <input id="q" type="search" placeholder="Poste, entreprise ou ville" autocomplete="off">
+      <button type="submit" aria-label="Rechercher">Chercher</button>
+    </form>
+  </div>
+
+  <div class="wrap">
+    <div class="stats" id="stats" aria-label="Chiffres clés">
+      <div class="stat"><b data-count="0" id="s1">0</b><span>Offres actives</span></div>
+      <div class="stat"><b data-count="0" id="s2">0</b><span>Entreprises</span></div>
+      <div class="stat"><b data-count="9">9</b><span>Provinces</span></div>
+      <div class="stat"><b data-count="0" id="s4">0</b><span>Secteurs</span></div>
+    </div>
+
+    <a class="ad a1" href="#/boost" aria-label="Boostez votre CV avec GT Business">
+      <div class="track" aria-hidden="true"></div>
+    </a>
+
+    <div class="sec" id="secFeat"><h2>À la une</h2><p class="sub">Glissez pour voir plus d'offres</p><div id="hs1" class="hscroll"></div></div>
+
+    <a class="ad a2" href="#/formation" aria-label="Formation développeur en 3 mois avec CCTI Gabon">
+      <div class="track" aria-hidden="true"></div>
+    </a>
+
+    <div class="sec" id="secUrg"><h2>Urgent</h2><p class="sub">Recrutements à pourvoir rapidement</p><div id="hs2" class="hscroll"></div></div>
+
+    <div class="sec" id="all">
+      <h2>Toutes les offres <span id="count" style="font-size:13px;color:var(--mute);font-weight:500"></span></h2>
+      <div class="chips" id="catChips" role="group" aria-label="Filtrer par catégorie"></div>
+      <div class="filters">
+        <label class="sr" for="fVille">Ville</label><select id="fVille"></select>
+        <label class="sr" for="fType">Contrat</label><select id="fType"></select>
+        <label class="sr" for="fSort">Tri</label><select id="fSort"><option value="recent">Plus récentes</option><option value="az">Titre A–Z</option></select>
+      </div>
+      <div class="chips"><button class="chip" id="favOnly" aria-pressed="false">♥ Mes favoris</button><button class="chip" id="resetF">Réinitialiser</button></div>
+      <div id="grid" class="grid" aria-live="polite"></div>
+    </div>
+
+    <a class="ad a3" href="#/recruteur" aria-label="Publiez vos offres">
+      <div class="track" aria-hidden="true"></div>
+    </a>
+
+    <div class="sec"><h2>Comment ça marche</h2>
+      <div class="steps">
+        <div class="step"><b>1. Créez votre profil</b>Renseignez votre expérience et votre poste recherché en quelques minutes.</div>
+        <div class="step"><b>2. Postulez</b>Choisissez une offre et envoyez votre candidature par WhatsApp ou e-mail.</div>
+        <div class="step"><b>3. Soyez contacté</b>Les recruteurs vérifiés vous répondent directement.</div>
+      </div>
+    </div>
+
+    <div class="sec"><h2>Ils nous ont fait confiance</h2><p class="sub">Retours d'utilisateurs</p><div class="hscroll" id="testi"></div></div>
+
+    <div class="sec"><h2>Questions fréquentes</h2>
+      <details><summary>Est-ce gratuit pour les candidats ?</summary><p>Oui. Créer un profil et postuler est gratuit. Seul le service « Mon CV » (relecture et mise en forme) est payant.</p></details>
+      <details><summary>Comment publier une offre ?</summary><p>Rendez-vous dans l'espace Recruteur, remplissez le formulaire. Notre équipe vérifie l'offre avant publication.</p></details>
+      <details><summary>Comment envoyer mon CV ?</summary><p>Après validation de votre profil, un bouton WhatsApp ou e-mail s'ouvre avec votre message prêt. Joignez-y votre CV en PDF.</p></details>
+      <details><summary>Comment supprimer mes données ?</summary><p>Écrivez-nous par e-mail ou WhatsApp. Voir la <a href="#/confidentialite">politique de confidentialité</a>.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- DÉTAIL OFFRE -->
+<section id="page-offre" class="page"><div class="narrow"><a class="back" href="#/">← Retour aux offres</a><div id="offreDetail"></div></div></section>
+
+<!-- CANDIDAT -->
+<section id="page-candidat" class="page"><div class="narrow">
+  <a class="back" href="#/">← Retour aux offres</a>
+  <h1 style="font-family:var(--fh);font-size:26px">Espace candidat</h1>
+  <p class="note" style="margin-top:4px">Créez votre profil et postulez. Les champs marqués * sont obligatoires.</p>
+  <form class="box" id="formCandidat" data-type="cands" novalidate style="margin-top:12px">
+    <div id="applyBanner"></div>
+    <input type="hidden" name="offre" id="c_offre">
+    <div class="row2">
+      <div><label for="c_nom">Nom *</label><input id="c_nom" name="nom" required autocomplete="family-name" placeholder="Ex : Mba"></div>
+      <div><label for="c_prenom">Prénom *</label><input id="c_prenom" name="prenom" required autocomplete="given-name" placeholder="Ex : Jean"></div>
+    </div>
+    <div class="row2">
+      <div><label for="c_tel">WhatsApp *</label><input id="c_tel" name="tel" type="tel" required value="+241 " autocomplete="tel" inputmode="tel"></div>
+      <div><label for="c_email">E-mail *</label><input id="c_email" name="email" type="email" required autocomplete="email" placeholder="vous@exemple.com"></div>
+    </div>
+    <label for="c_ville">Ville / province *</label><select id="c_ville" name="ville" required></select>
+    <div class="row2">
+      <div><label for="c_niv">Niveau d'études</label><select id="c_niv" name="niveau"><option>Bac</option><option>BTS / DUT</option><option>Licence</option><option>Master</option><option>Doctorat</option><option>Autre</option></select></div>
+      <div><label for="c_exp">Expérience</label><select id="c_exp" name="experience"><option>Débutant</option><option>1 à 2 ans</option><option>3 à 5 ans</option><option>6 à 10 ans</option><option>Plus de 10 ans</option></select></div>
+    </div>
+    <label for="c_cat">Domaine *</label><select id="c_cat" name="categorie" required></select>
+    <label for="c_poste">Poste recherché *</label><input id="c_poste" name="poste" required placeholder="Ex : Comptable senior">
+    <label for="c_cv">Lien vers votre CV <small>(Drive, Dropbox, LinkedIn – optionnel)</small></label><input id="c_cv" name="cv" type="url" placeholder="https://">
+    <label for="c_msg">Présentation <small>(3 à 4 lignes)</small></label><textarea id="c_msg" name="message" maxlength="800"></textarea>
+    <label style="display:flex;gap:8px;align-items:flex-start;font-weight:400"><input type="checkbox" name="consent" required style="width:auto;margin-top:3px"><span>J'accepte que mes données soient transmises aux recruteurs, selon la <a href="#/confidentialite">politique de confidentialité</a>. *</span></label>
+    <div class="hp" aria-hidden="true"><label>Ne pas remplir<input name="website" tabindex="-1" autocomplete="off"></label></div>
+    <button class="btn" type="submit">Créer mon profil</button>
+    <div class="err" role="alert" data-err></div>
+  </form>
+  <div id="doneCands"></div>
+</div></section>
+
+<!-- RECRUTEUR -->
+<section id="page-recruteur" class="page"><div class="narrow">
+  <a class="back" href="#/">← Retour aux offres</a>
+  <h1 style="font-family:var(--fh);font-size:26px">Espace recruteur</h1>
+  <p class="note" style="margin-top:4px">Publiez une offre en 2 minutes. Elle est vérifiée avant d'être mise en ligne.</p>
+  <form class="box" id="formRec" data-type="recs" novalidate style="margin-top:12px">
+    <label for="r_co">Entreprise *</label><input id="r_co" name="company" required placeholder="Ex : Sobraga">
+    <label for="r_sec">Secteur d'activité *</label>
+    <select id="r_sec" name="secteur" required><option>Boisson / Industrie</option><option>Tech / Informatique</option><option>Pétrole / Énergie</option><option>BTP / Construction</option><option>Banque / Finance</option><option>Commerce / Distribution</option><option>Administration / ONG</option><option>Autre</option></select>
+    <div class="row2">
+      <div><label for="r_nom">Contact RH *</label><input id="r_nom" name="contact" required placeholder="Ex : Mme Annie"></div>
+      <div><label for="r_tel">WhatsApp *</label><input id="r_tel" name="tel" type="tel" required value="+241 " inputmode="tel"></div>
+    </div>
+    <label for="r_email">E-mail professionnel *</label><input id="r_email" name="email" type="email" required placeholder="rh@entreprise.ga">
+    <label for="r_poste">Poste à pourvoir *</label><input id="r_poste" name="poste" required placeholder="Ex : Comptable senior">
+    <div class="row2">
+      <div><label for="r_type">Contrat *</label><select id="r_type" name="type"><option>CDI</option><option>CDD</option><option>Stage</option><option>Freelance</option><option>Alternance</option></select></div>
+      <div><label for="r_ville">Ville *</label><select id="r_ville" name="ville" required></select></div>
+    </div>
+    <div class="row2">
+      <div><label for="r_cat">Catégorie *</label><select id="r_cat" name="categorie" required></select></div>
+      <div><label for="r_pay">Salaire <small>(optionnel)</small></label><input id="r_pay" name="pay" placeholder="Ex : 3,5 – 5,2 M XAF"></div>
+    </div>
+    <label for="r_desc">Description du poste *</label><textarea id="r_desc" name="description" required style="min-height:130px" placeholder="Missions, profil recherché, avantages…" maxlength="2000"></textarea>
+    <label style="display:flex;gap:8px;align-items:flex-start;font-weight:400"><input type="checkbox" name="consent" required style="width:auto;margin-top:3px"><span>Je certifie que cette offre est réelle et que je suis habilité(e) à la publier. *</span></label>
+    <div class="hp" aria-hidden="true"><label>Ne pas remplir<input name="website" tabindex="-1" autocomplete="off"></label></div>
+    <button class="btn dark" type="submit">Envoyer l'offre pour vérification</button>
+    <div class="err" role="alert" data-err></div>
+  </form>
+  <div id="doneRecs"></div>
+</div></section>
+
+<!-- BOOST CV -->
+<section id="page-boost" class="page"><div class="narrow">
+  <a class="back" href="#/">← Retour aux offres</a>
+  <div class="box">
+    <h1 style="font-size:24px">Boostez votre CV avec GT Business</h1>
+    <p class="price" style="margin-top:8px">5 000 FCFA</p>
+    <p class="note" style="margin-top:0">Livraison sous 24 h après réception de votre CV.</p>
+    <ul class="list"><li>CV professionnel mis en forme</li><li>Lettre de motivation adaptée à votre poste</li><li>Optimisation de votre profil LinkedIn</li></ul>
+  </div>
+  <form class="box" id="formBoost" data-type="boosts" novalidate style="margin-top:12px">
+    <h2 style="font-size:18px">Commander</h2>
+    <label for="b_nom">Nom complet *</label><input id="b_nom" name="nom" required autocomplete="name">
+    <div class="row2">
+      <div><label for="b_tel">WhatsApp *</label><input id="b_tel" name="tel" type="tel" required value="+241 " inputmode="tel"></div>
+      <div><label for="b_email">E-mail *</label><input id="b_email" name="email" type="email" required></div>
+    </div>
+    <label for="b_poste">Poste visé *</label><input id="b_poste" name="poste" required>
+    <label for="b_msg">Message <small>(optionnel)</small></label><textarea id="b_msg" name="message" maxlength="800"></textarea>
+    <p class="note">Après validation, envoyez votre CV actuel sur WhatsApp. Le paiement est confirmé avec notre équipe avant le démarrage.</p>
+    <div class="hp" aria-hidden="true"><label>Ne pas remplir<input name="website" tabindex="-1" autocomplete="off"></label></div>
+    <button class="btn" type="submit">Envoyer ma demande</button>
+    <div class="err" role="alert" data-err></div>
+  </form>
+  <div id="doneBoosts"></div>
+</div></section>
+
+<!-- FORMATION -->
+<section id="page-formation" class="page"><div class="narrow">
+  <a class="back" href="#/">← Retour aux offres</a>
+  <div class="box">
+    <h1 style="font-size:24px">Devenez développeur en 3 mois</h1>
+    <p style="font-size:14px;margin-top:6px">Formation certifiante CCTI Gabon, 15 places maximum par session. Inscriptions ouvertes.</p>
+  </div>
+  <form class="box" id="formDev" data-type="devs" novalidate style="margin-top:12px">
+    <h2 style="font-size:18px">S'inscrire</h2>
+    <label for="d_nom">Nom complet *</label><input id="d_nom" name="nom" required autocomplete="name">
+    <div class="row2">
+      <div><label for="d_tel">WhatsApp *</label><input id="d_tel" name="tel" type="tel" required value="+241 " inputmode="tel"></div>
+      <div><label for="d_email">E-mail</label><input id="d_email" name="email" type="email"></div>
+    </div>
+    <div class="row2">
+      <div><label for="d_ville">Ville *</label><select id="d_ville" name="ville" required></select></div>
+      <div><label for="d_niv">Niveau en informatique *</label><select id="d_niv" name="niveau"><option>Débutant total</option><option>Intermédiaire</option><option>Avancé</option></select></div>
+    </div>
+    <label for="d_motif">Votre motivation *</label><textarea id="d_motif" name="motivation" required maxlength="800"></textarea>
+    <div class="hp" aria-hidden="true"><label>Ne pas remplir<input name="website" tabindex="-1" autocomplete="off"></label></div>
+    <button class="btn dark" type="submit">M'inscrire</button>
+    <div class="err" role="alert" data-err></div>
+  </form>
+  <div id="doneDevs"></div>
+</div></section>
+
+<!-- COMPTE CANDIDAT -->
+<section id="page-compte" class="page"><div class="narrow">
+  <a class="back" href="#/">← Retour aux offres</a>
+
+  <div class="box" id="accDemo" hidden>
+    <h1 style="font-size:22px">Comptes candidats</h1>
+    <p class="note">Cette fonction nécessite Firebase. Renseignez la configuration (voir le README) pour l'activer.</p>
+  </div>
+
+  <div id="accOff" hidden>
+    <div class="box">
+      <h1 style="font-size:24px">Mon compte candidat</h1>
+      <p class="note" style="margin-top:4px">Postulez en un clic et suivez l'avancement de vos candidatures.</p>
+      <div class="tabs" role="group" aria-label="Connexion ou inscription">
+        <button type="button" class="chip" data-auth="login" aria-pressed="true">Connexion</button>
+        <button type="button" class="chip" data-auth="signup" aria-pressed="false">Créer un compte</button>
+      </div>
+      <form id="formAuthLogin" novalidate>
+        <label for="l_email">E-mail</label><input id="l_email" type="email" autocomplete="username">
+        <label for="l_pass">Mot de passe</label><input id="l_pass" type="password" autocomplete="current-password">
+        <button class="btn" type="submit">Se connecter</button>
+        <button class="btn ghost" type="button" id="forgotBtn">Mot de passe oublié</button>
+        <div class="err" role="alert" data-err></div>
+      </form>
+      <form id="formAuthSignup" novalidate hidden>
+        <div class="row2">
+          <div><label for="s_prenom">Prénom *</label><input id="s_prenom" autocomplete="given-name"></div>
+          <div><label for="s_nom">Nom *</label><input id="s_nom" autocomplete="family-name"></div>
+        </div>
+        <div class="row2">
+          <div><label for="s_tel">WhatsApp *</label><input id="s_tel" type="tel" value="+241 " inputmode="tel" autocomplete="tel"></div>
+          <div><label for="s_email">E-mail *</label><input id="s_email" type="email" autocomplete="email"></div>
+        </div>
+        <label for="s_pass">Mot de passe * <small>(8 caractères minimum)</small></label><input id="s_pass" type="password" autocomplete="new-password">
+        <label style="display:flex;gap:8px;align-items:flex-start;font-weight:400"><input id="s_consent" type="checkbox" style="width:auto;margin-top:3px"><span>J'accepte la <a href="#/confidentialite">politique de confidentialité</a>. *</span></label>
+        <button class="btn" type="submit">Créer mon compte</button>
+        <div class="err" role="alert" data-err></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="accOn" hidden>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <h1 id="accHello" style="font-family:var(--fh);font-size:24px"></h1>
+      <button class="btn sm ghost" id="accLogout" type="button">Déconnexion</button>
+    </div>
+    <p class="note" id="accAdminLink" hidden><a href="#/admin">Ouvrir le tableau de bord administrateur</a></p>
+    <div class="tabs" role="group" aria-label="Espace candidat">
+      <button type="button" class="chip" data-acc="apps" aria-pressed="true">Mes candidatures</button>
+      <button type="button" class="chip" data-acc="profile" aria-pressed="false">Mon profil</button>
+    </div>
+    <div id="accApps"></div>
+    <form class="box" id="formProfile" novalidate hidden>
+      <div class="note" id="profileHint" style="margin:0 0 4px"></div>
+      <div class="row2">
+        <div><label for="p_prenom">Prénom *</label><input id="p_prenom" name="prenom" autocomplete="given-name"></div>
+        <div><label for="p_nom">Nom *</label><input id="p_nom" name="nom" autocomplete="family-name"></div>
+      </div>
+      <div class="row2">
+        <div><label for="p_email">E-mail</label><input id="p_email" disabled></div>
+        <div><label for="p_tel">WhatsApp *</label><input id="p_tel" name="tel" type="tel" inputmode="tel"></div>
+      </div>
+      <label for="p_ville">Ville / province *</label><select id="p_ville" name="ville"></select>
+      <div class="row2">
+        <div><label for="p_niveau">Niveau d'études</label><select id="p_niveau" name="niveau"><option>Bac</option><option>BTS / DUT</option><option>Licence</option><option>Master</option><option>Doctorat</option><option>Autre</option></select></div>
+        <div><label for="p_experience">Expérience</label><select id="p_experience" name="experience"><option>Débutant</option><option>1 à 2 ans</option><option>3 à 5 ans</option><option>6 à 10 ans</option><option>Plus de 10 ans</option></select></div>
+      </div>
+      <label for="p_categorie">Domaine *</label><select id="p_categorie" name="categorie"></select>
+      <label for="p_poste">Poste recherché *</label><input id="p_poste" name="poste" placeholder="Ex : Comptable senior">
+      <label for="p_cv">Lien vers votre CV <small>(Drive, Dropbox, LinkedIn)</small></label><input id="p_cv" name="cv" type="url" placeholder="https://">
+      <label for="p_bio">Présentation</label><textarea id="p_bio" name="bio" maxlength="1000"></textarea>
+      <button class="btn" type="submit">Enregistrer mon profil</button>
+      <div class="err" role="alert" data-err></div>
+      <hr style="border:0;border-top:1px solid var(--line);margin:18px 0 6px">
+      <p class="note">Vous pouvez supprimer votre compte, votre profil et toutes vos candidatures.</p>
+      <button class="btn sm ghost" type="button" id="delAccBtn" style="color:var(--danger);margin-top:8px">Supprimer mon compte</button>
+    </form>
+  </div>
+</div></section>
+
+<!-- CONFIDENTIALITÉ -->
+<section id="page-confidentialite" class="page"><div class="narrow">
+  <a class="back" href="#/">← Retour</a>
+  <div class="box">
+    <h1 style="font-size:24px">Politique de confidentialité</h1>
+    <h3 style="margin-top:14px">Ce que nous collectons</h3>
+    <p style="font-size:14px">Nom, prénom, téléphone WhatsApp, e-mail, ville, parcours et lien vers votre CV, uniquement pour vous mettre en relation avec des recruteurs ou traiter votre demande de service.</p>
+    <h3 style="margin-top:14px">Ce que nous ne faisons pas</h3>
+    <p style="font-size:14px">Nous ne vendons jamais vos données. Elles ne sont partagées qu'avec les recruteurs pour une candidature que vous initiez.</p>
+    <h3 style="margin-top:14px">Où elles sont stockées</h3>
+    <p style="font-size:14px">Vos informations sont enregistrées dans une base de données sécurisée (Google Firebase), accessible uniquement à notre équipe. Vous pouvez aussi nous les transmettre par WhatsApp ou e-mail. Le site est hébergé sur GitHub Pages. Si vous créez un compte, vous pouvez modifier votre profil, retirer une candidature ou supprimer l'ensemble de vos données à tout moment depuis « Mon compte ».</p>
+    <h3 style="margin-top:14px">Vos droits</h3>
+    <p style="font-size:14px">Vous pouvez demander l'accès, la correction ou la suppression de vos données à tout moment : <b id="pEmail"></b> ou WhatsApp <b id="pTel"></b>.</p>
+  </div>
+</div></section>
+
+<!-- ADMIN -->
+<section id="page-admin-login" class="page"><div class="narrow">
+  <div class="box">
+    <h1 style="font-size:22px">Administration</h1>
+    <form id="formLogin" novalidate>
+      <label for="adminUser">E-mail administrateur</label><input id="adminUser" type="email" autocomplete="username">
+      <label for="adminPass">Mot de passe</label><input id="adminPass" type="password" autocomplete="current-password">
+      <button class="btn dark" type="submit">Se connecter</button>
+      <div class="err" role="alert" id="loginErr"></div>
+    </form>
+  </div>
+</div></section>
+
+<section id="page-admin" class="page"><div class="narrow" style="max-width:900px">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <h1 style="font-family:var(--fh);font-size:24px">Tableau de bord</h1>
+    <button class="btn sm ghost" id="logoutBtn">Déconnexion</button>
+  </div>
+  <p class="note" id="adminNote"></p>
+  <div class="kpis" id="kpis" style="margin-top:12px"></div>
+  <div class="tabs" id="adminTabs" role="tablist"></div>
+  <div class="box" id="adminList"></div>
+</div></section>
+
+</main>
+
+<footer>
+  <div class="fl"><a href="#/">Offres</a><a href="#/candidat">Candidats</a><a href="#/compte">Mon compte</a><a href="#/recruteur">Recruteurs</a><a href="#/confidentialite">Confidentialité</a><a href="#/admin">Admin</a></div>
+  Tél : <a id="fTel" href="#"></a> · E-mail : <a id="fMail" href="#"></a><br>
+  <a id="fSite" href="#"></a><br>
+  <span style="color:#5eead4">© 2026 Gabon Talent OS</span>
+</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-
-const CONFIG = {
-  FIREBASE:{apiKey:"AIzaSyATIRQPYhVPFpId1v13zk4axeJA_IQ70",authDomain:"gabon-talent-os.firebaseapp.com",projectId:"gabon-talent-os",storageBucket:"gabon-talent-os.firebasestorage.app",messagingSenderId:"66563433244",appId:"1:66563433244:web:1c6e82435544d7a839ee59",measurementId:"G-7FVW7XZMC"},
+/* =====================================================================
+   CONFIGURATION – à modifier ici
+   ===================================================================== */
+const CONFIG={
+  PHONE:"24174995745", PHONE_DISPLAY:"+241 74995745",
+  EMAIL:"gabontalent9provinces@gmail.com",
+  SITE:"https://gabon-talent-js.github.io/gabon-talent-os/",
+  // Firebase : collez ici la config de votre application web
+  // (Console Firebase > Paramètres du projet > Vos applications > Configuration SDK).
+  // Ces valeurs sont publiques par conception : la sécurité vient des règles Firestore (firestore.rules).
+  // Laissez apiKey vide pour tester en mode démo (données stockées sur l'appareil).
+  FIREBASE:{apiKey:"",authDomain:"",projectId:"",storageBucket:"",messagingSenderId:"",appId:""},
+  // Optionnel : clé reCAPTCHA v3 pour Firebase App Check (anti-spam renforcé)
+  RECAPTCHA_SITE_KEY:""
 };
 
-let db, allJobs = [
-  {titre:"Développeur Web", entreprise:"SEE G Gabon", province:"Estuaire", contrat:"CDI", description:"React / Firebase"},
-  {titre:"Comptable", entreprise:"TotalEnergies", province:"Ogooué-Maritime", contrat:"CDI", description:"Port-Gentil"}
+const PROVINCES=["Libreville – Estuaire","Owendo – Estuaire","Akanda – Estuaire","Port-Gentil – Ogooué-Maritime","Franceville – Haut-Ogooué","Oyem – Woleu-Ntem","Lambaréné – Moyen-Ogooué","Mouila – Ngounié","Tchibanga – Nyanga","Koulamoutou – Ogooué-Lolo","Makokou – Ogooué-Ivindo","Autre"];
+const CATS=["Finance","Tech","RH","Commercial","Marketing","Technique","Autre"];
+
+/* Offres de démonstration : remplacez-les par vos vraies offres.
+   `days` = ancienneté en jours (la date est calculée automatiquement). */
+const JOBS=[
+ {id:"1",title:"Comptable senior",company:"Sobraga",loc:"Libreville",type:"CDI",cat:"Finance",badge:"New",pay:"3,5 – 5,2 M XAF",days:1,
+  desc:"Rattaché(e) à la direction financière, vous assurez la tenue de la comptabilité générale et analytique et la préparation des clôtures.",
+  missions:["Tenue de la comptabilité générale","Rapprochements bancaires et suivi de trésorerie","Préparation des déclarations fiscales","Appui aux commissaires aux comptes"],
+  profil:["Bac+3 minimum en comptabilité ou finance","5 ans d'expérience sur un poste similaire","Maîtrise d'un ERP et d'Excel"]},
+ {id:"2",title:"Développeur web fullstack",company:"Mbighe Tech",loc:"Libreville",type:"CDI",cat:"Tech",badge:"Featured",pay:"2,8 – 4,5 M XAF",days:2,
+  desc:"Vous rejoignez l'équipe produit pour concevoir et maintenir des applications web destinées aux entreprises gabonaises.",
+  missions:["Développement front et back","Revue de code et tests","Déploiement et maintenance","Participation aux choix techniques"],
+  profil:["Maîtrise de JavaScript et d'une base de données","Connaissance de Git","Autonomie et goût du travail en équipe"]},
+ {id:"3",title:"Chargé RH",company:"PNPE",loc:"Port-Gentil",type:"CDD",cat:"RH",badge:"Urgent",pay:"2,0 – 3,0 M XAF",days:0,
+  desc:"Au sein de l'antenne de Port-Gentil, vous accompagnez les demandeurs d'emploi et gérez les relations avec les entreprises partenaires.",
+  missions:["Accueil et orientation des candidats","Suivi des offres des entreprises","Organisation d'ateliers emploi","Reporting mensuel"],
+  profil:["Bac+3 en RH ou équivalent","Bon relationnel et sens de l'écoute","Expérience en recrutement appréciée"]},
+ {id:"4",title:"Commercial terrain",company:"Solsem",loc:"Franceville",type:"CDI",cat:"Commercial",badge:"New",pay:"1,5 – 2,8 M XAF",days:3,
+  desc:"Vous développez le portefeuille clients sur la région du Haut-Ogooué et assurez le suivi des ventes.",
+  missions:["Prospection de nouveaux clients","Suivi du portefeuille existant","Négociation et conclusion des ventes","Remontée d'informations terrain"],
+  profil:["Première expérience en vente terrain","Permis B exigé","Esprit d'équipe et sens du résultat"]}
 ];
-async function initFirebase(){
-  const app = initializeApp(CONFIG.FIREBASE);
-  db = getFirestore(app);
-  const auth = getAuth(app);
-  await signInAnonymously(auth);
-  document.getElementById('modeBadge').textContent='CONNECTÉ FIREBASE';
-  const snap = await getDocs(query(collection(db,"jobs"), orderBy("date","desc")));
-  const fjobs = snap.docs.map(d=>d.data());
-  allJobs = [...fjobs, ...allJobs];
-  renderOffres(allJobs);
-}
-function renderOffres(list){
-  document.getElementById('offres').innerHTML=list.map(j=>`<div class="item"><strong>${j.titre}</strong> – ${j.entreprise} <span class="badge">${j.province}</span><p>${j.description}</p></div>`).join('');
-}
-window.filtrer=()=>{const q=document.getElementById('q').value.toLowerCase();const p=document.getElementById('province').value;renderOffres(allJobs.filter(j=>(!q||j.titre.toLowerCase().includes(q))&&(!p||j.province===p)));};
-window.publierOffre=async()=>{
-  const job={titre:titre.value, entreprise:entreprise.value, province:prov2.value, contrat:contrat.value, description:desc.value, date:Date.now()};
-  await addDoc(collection(db,"jobs"), job); alert("Publié dans Firebase !"); allJobs.unshift(job); renderOffres(allJobs);
+const TESTIS=[ /* Exemples : remplacez par de vrais témoignages avec accord des personnes */
+ {n:"Annie L.",t:"J'ai trouvé un CDI en deux semaines.",r:"Comptable"},
+ {n:"Moussa K.",t:"CV refait en 24 h, bien plus professionnel.",r:"Développeur fullstack"},
+ {n:"Sarah M.",t:"Des candidatures qualifiées dès la première semaine.",r:"Recruteuse"}
+];
+const ADS={
+ a1:["Boostez votre CV avec GT Business","CV pro, lettre et LinkedIn · 5 000 FCFA · livraison 24 h","Voir l'offre"],
+ a2:["Devenez développeur en 3 mois avec CCTI Gabon","Formation certifiante · 15 places max · inscriptions ouvertes","S'inscrire"],
+ a3:["Recruteurs : publiez vos offres","Publication en 2 minutes · offres vérifiées","Publier"]
 };
-initFirebase().catch(()=>{renderOffres(allJobs); document.getElementById('modeBadge').textContent='MODE LOCAL';});
+
+/* =====================================================================
+   UTILITAIRES
+   ===================================================================== */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const store={
+  get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
+};
+let toastT;
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),2800)}
+const dateStr=days=>{const d=new Date();d.setDate(d.getDate()-days);return d}
+const ago=d=>{const n=Math.floor((Date.now()-new Date(d))/864e5);return n<=0?"Aujourd'hui":n===1?"Hier":`Il y a ${n} jours`};
+const wa=txt=>`https://wa.me/${CONFIG.PHONE}?text=${encodeURIComponent(txt)}`;
+
+const FB=!!(CONFIG.FIREBASE.apiKey&&CONFIG.FIREBASE.projectId);
+let fb=null,isAdmin=false,started=false,currentUser=null,profile=null,myApps=[];
+let JOBS_CACHE=[],jobsAt=0,jobsErr=false;
+const allJobs=()=>JOBS_CACHE;
+
+async function initFirebase(){
+  if(!FB)return;
+  const base="https://www.gstatic.com/firebasejs/10.12.2/";
+  const [app,fs,au]=await Promise.all([import(base+"firebase-app.js"),import(base+"firebase-firestore.js"),import(base+"firebase-auth.js")]);
+  const a=app.initializeApp(CONFIG.FIREBASE);
+  if(CONFIG.RECAPTCHA_SITE_KEY){
+    const ac=await import(base+"firebase-app-check.js");
+    ac.initializeAppCheck(a,{provider:new ac.ReCaptchaV3Provider(CONFIG.RECAPTCHA_SITE_KEY),isTokenAutoRefreshEnabled:true});
+  }
+  fb={db:fs.getFirestore(a),auth:au.getAuth(a),fs,au};
+}
+const tsISO=t=>t&&t.toDate?t.toDate().toISOString():(t||null);
+const fromDoc=d=>{const x=d.data();return {...x,id:d.id,posted:tsISO(x.posted),createdAt:tsISO(x.createdAt),updatedAt:tsISO(x.updatedAt),statusAt:tsISO(x.statusAt)}};
+
+const COL={cands:"candidates",recs:"offers",boosts:"boosts",devs:"devs",jobs:"jobs",apps:"applications",profiles:"profiles"};
+const ORDER={jobs:"posted",profiles:"updatedAt"};
+const LKEY={cands:"cands",recs:"recs",boosts:"boosts",devs:"devs",jobs:"jobs_published",apps:"apps_local",profiles:"profiles_local"};
+const FIELDS={
+  cands:["nom","prenom","tel","email","ville","niveau","experience","categorie","poste","cv","message","offre"],
+  recs:["company","secteur","contact","tel","email","poste","type","ville","categorie","pay","description"],
+  boosts:["nom","tel","email","poste","message"],
+  devs:["nom","tel","email","ville","niveau","motivation"]
+};
+const MAXL={email:150,cv:300,message:800,motivation:800,description:2000,offre:200,pay:100,nom:100,prenom:100,company:150,contact:100,poste:150,tel:30};
+
+const DB={
+  async publicJobs(){
+    if(!FB){
+      const base=JOBS.map(j=>({...j,posted:dateStr(j.days).toISOString()}));
+      return [...store.get("jobs_published",[]),...base];
+    }
+    const {collection,getDocs,query,where,limit}=fb.fs;
+    const s=await getDocs(query(collection(fb.db,"jobs"),where("status","==","published"),limit(100)));
+    return s.docs.map(fromDoc);
+  },
+  async submit(type,p){
+    if(!FB){const l=store.get(LKEY[type],[]);l.unshift({...p,id:Date.now().toString(36),date:new Date().toISOString()});store.set(LKEY[type],l);return}
+    const {collection,addDoc,serverTimestamp}=fb.fs;
+    await addDoc(collection(fb.db,COL[type]),{...p,createdAt:serverTimestamp()});
+  },
+  async list(type){
+    if(!FB)return store.get(LKEY[type],[]);
+    const {collection,getDocs,query,orderBy,limit}=fb.fs;
+    const s=await getDocs(query(collection(fb.db,COL[type]),orderBy(ORDER[type]||"createdAt","desc"),limit(200)));
+    return s.docs.map(fromDoc);
+  },
+  async remove(type,id){
+    if(!FB){store.set(LKEY[type],store.get(LKEY[type],[]).filter(x=>x.id!==id));return}
+    await fb.fs.deleteDoc(fb.fs.doc(fb.db,COL[type],id));
+  },
+  async publishOffer(r){
+    const job={title:r.poste,company:r.company,loc:(r.ville||"").split(" – ")[0],type:r.type,cat:r.categorie,badge:"New",pay:r.pay||"",desc:r.description||""};
+    if(!FB){
+      const l=store.get("recs",[]),o=l.find(x=>x.id===r.id);if(o)o.published=true;store.set("recs",l);
+      const j=store.get("jobs_published",[]);j.unshift({...job,id:"u"+r.id,posted:new Date().toISOString()});store.set("jobs_published",j);return;
+    }
+    const {collection,addDoc,updateDoc,doc,serverTimestamp}=fb.fs;
+    await addDoc(collection(fb.db,"jobs"),{...job,status:"published",posted:serverTimestamp()});
+    await updateDoc(doc(fb.db,"offers",r.id),{published:true});
+  },
+  async count(type){
+    if(!FB)return store.get(LKEY[type],[]).length;
+    const {collection,getCountFromServer}=fb.fs;
+    return (await getCountFromServer(collection(fb.db,COL[type]))).data().count;
+  },
+  async myApps(){
+    const {collection,getDocs,query,where}=fb.fs;
+    const s=await getDocs(query(collection(fb.db,"applications"),where("uid","==",fb.auth.currentUser.uid)));
+    return s.docs.map(fromDoc).sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));
+  },
+  async apply(job,message){
+    const u=fb.auth.currentUser,{doc,setDoc,serverTimestamp}=fb.fs;
+    await setDoc(doc(fb.db,"applications",u.uid+"_"+job.id),{
+      uid:u.uid,jobId:job.id,jobTitle:String(job.title).slice(0,150),company:String(job.company).slice(0,150),
+      nom:profile.nom,prenom:profile.prenom,tel:profile.tel,email:u.email,cv:profile.cv||"",message,
+      status:"envoyee",createdAt:serverTimestamp()});
+  },
+  async withdraw(id){await fb.fs.updateDoc(fb.fs.doc(fb.db,"applications",id),{status:"retiree"})},
+  async setStatus(id,status){await fb.fs.updateDoc(fb.fs.doc(fb.db,"applications",id),{status,statusAt:fb.fs.serverTimestamp()})},
+  async saveProfile(p){
+    const u=fb.auth.currentUser,{doc,setDoc,serverTimestamp}=fb.fs;
+    await setDoc(doc(fb.db,"profiles",u.uid),{...p,email:u.email,consent:true,updatedAt:serverTimestamp()});
+  },
+  async seed(){
+    const {collection,addDoc,Timestamp}=fb.fs;
+    for(const j of JOBS){
+      const {id,days,...rest}=j;
+      await addDoc(collection(fb.db,"jobs"),{...rest,status:"published",posted:Timestamp.fromDate(dateStr(days))});
+    }
+  }
+};
+async function ensureJobs(force){
+  if(!force&&jobsAt&&Date.now()-jobsAt<120000)return;
+  try{
+    JOBS_CACHE=(await DB.publicJobs()).sort((a,b)=>new Date(b.posted)-new Date(a.posted));
+    jobsErr=false;jobsAt=Date.now();
+  }catch(e){console.error(e);jobsErr=true;JOBS_CACHE=[]}
+}
+
+/* =====================================================================
+   THÈME
+   ===================================================================== */
+function applyTheme(t){document.documentElement.dataset.theme=t;$("#themeBtn").textContent=t==="dark"?"☀️":"🌙";$('meta[name=theme-color]').content=t==="dark"?"#0d1511":"#0b6b4a"}
+applyTheme(store.get("theme",matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light"));
+$("#themeBtn").onclick=()=>{const t=document.documentElement.dataset.theme==="dark"?"light":"dark";store.set("theme",t);applyTheme(t)};
+
+/* =====================================================================
+   RENDU DES OFFRES
+   ===================================================================== */
+const state={q:"",cat:"Toutes",ville:"Toutes les villes",type:"Tous les contrats",sort:"recent",fav:false};
+const favs=()=>store.get("favs",[]);
+const badgeCls=b=>b==="New"?"b-new":b==="Featured"?"b-feat":"b-urg";
+const badgeTxt=b=>b==="New"?"Nouveau":b==="Featured"?"À la une":"Urgent";
+
+const card=j=>`<a class="job card" href="#/offre/${esc(j.id)}">
+ <div class="top"><div class="lg">${esc(j.company.slice(0,2).toUpperCase())}</div><div><div class="co">${esc(j.company)}</div><div class="ct">${esc(j.cat)}</div></div>${j.badge?`<span class="badge ${badgeCls(j.badge)}">${badgeTxt(j.badge)}</span>`:""}</div>
+ <h3>${esc(j.title)}</h3>
+ <div class="tags"><span class="tag">${esc(j.type)}</span><span class="tag">${esc(j.cat)}</span></div>
+ <div class="meta" style="margin-top:8px"><span>📍 ${esc(j.loc)}</span>${j.pay?`<span>💵 ${esc(j.pay)}</span>`:""}</div></a>`;
+
+const vcard=j=>{const f=favs().includes(j.id);return `<div style="position:relative"><a class="job" href="#/offre/${esc(j.id)}">
+ <div class="top"><div class="lg">${esc(j.company.slice(0,2).toUpperCase())}</div><div><div class="co">${esc(j.company)}</div><div class="ct">${ago(j.posted)}</div></div>${j.badge?`<span class="badge ${badgeCls(j.badge)}">${badgeTxt(j.badge)}</span>`:""}</div>
+ <h3>${esc(j.title)}</h3>
+ <div class="meta"><span>📍 ${esc(j.loc)}</span><span>${esc(j.type)}</span>${j.pay?`<span>💵 ${esc(j.pay)}</span>`:""}</div></a>
+ <button class="fav" data-fav="${esc(j.id)}" aria-pressed="${f}" aria-label="${f?"Retirer des favoris":"Ajouter aux favoris"}">${f?"♥":"♡"}</button></div>`};
+
+function filtered(){
+  const q=state.q.trim().toLowerCase(), fv=favs();
+  let l=allJobs().filter(j=>
+    (!q||[j.title,j.company,j.loc,j.cat].join(" ").toLowerCase().includes(q))&&
+    (state.cat==="Toutes"||j.cat===state.cat)&&
+    (state.ville==="Toutes les villes"||j.loc===state.ville)&&
+    (state.type==="Tous les contrats"||j.type===state.type)&&
+    (!state.fav||fv.includes(j.id)));
+  if(state.sort==="az")l.sort((a,b)=>a.title.localeCompare(b.title,"fr"));
+  return l;
+}
+function renderJobs(){
+  const all=allJobs(), l=filtered();
+  const feat=all.filter(j=>j.badge==="Featured"||j.badge==="New").slice(0,8);
+  const urg=all.filter(j=>j.badge==="Urgent");
+  $("#hs1").innerHTML=feat.map(card).join("");$("#secFeat").hidden=!feat.length;
+  $("#hs2").innerHTML=urg.map(card).join("");$("#secUrg").hidden=!urg.length;
+  $("#grid").innerHTML=l.length?l.map(vcard).join(""):`<div class="empty" style="grid-column:1/-1">${jobsErr?"Impossible de charger les offres. Vérifiez votre connexion puis rechargez la page.":`Aucune offre ne correspond. Modifiez vos filtres ou <a href="#/candidat">créez votre profil</a> pour être contacté.`}</div>`;
+  $("#count").textContent=`(${l.length})`;
+  $("#favOnly").setAttribute("aria-pressed",state.fav);
+}
+function buildFilters(){
+  const all=allJobs();
+  const cats=["Toutes",...new Set(all.map(j=>j.cat))];
+  $("#catChips").innerHTML=cats.map(c=>`<button class="chip" data-cat="${esc(c)}" aria-pressed="${c===state.cat}">${esc(c)}</button>`).join("");
+  const villes=["Toutes les villes",...new Set(all.map(j=>j.loc))];
+  const types=["Tous les contrats",...new Set(all.map(j=>j.type))];
+  $("#fVille").innerHTML=villes.map(v=>`<option${v===state.ville?" selected":""}>${esc(v)}</option>`).join("");
+  $("#fType").innerHTML=types.map(v=>`<option${v===state.type?" selected":""}>${esc(v)}</option>`).join("");
+  $("#s1").dataset.count=all.length;
+  $("#s2").dataset.count=new Set(all.map(j=>j.company)).size;
+  $("#s4").dataset.count=new Set(all.map(j=>j.cat)).size;
+}
+$("#q").addEventListener("input",e=>{state.q=e.target.value;renderJobs()});
+$("#fVille").onchange=e=>{state.ville=e.target.value;renderJobs()};
+$("#fType").onchange=e=>{state.type=e.target.value;renderJobs()};
+$("#fSort").onchange=e=>{state.sort=e.target.value;renderJobs()};
+$("#favOnly").onclick=()=>{state.fav=!state.fav;renderJobs()};
+$("#resetF").onclick=()=>{Object.assign(state,{q:"",cat:"Toutes",ville:"Toutes les villes",type:"Tous les contrats",sort:"recent",fav:false});$("#q").value="";$("#fSort").value="recent";buildFilters();renderJobs()};
+$("#catChips").addEventListener("click",e=>{const b=e.target.closest("[data-cat]");if(!b)return;state.cat=b.dataset.cat;$$("#catChips .chip").forEach(c=>c.setAttribute("aria-pressed",c===b));renderJobs()});
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-fav]");if(!b)return;e.preventDefault();
+  let f=favs();const id=b.dataset.fav;f=f.includes(id)?f.filter(x=>x!==id):[...f,id];store.set("favs",f);
+  if(location.hash.startsWith("#/offre/"))renderOffre(id);else renderJobs();
+  toast(f.includes(id)?"Ajouté aux favoris":"Retiré des favoris");
+});
+
+/* =====================================================================
+   DÉTAIL D'UNE OFFRE
+   ===================================================================== */
+function renderOffre(id){
+  const j=allJobs().find(x=>x.id===id), el=$("#offreDetail");
+  $("#jsonld")?.remove();
+  if(!j){el.innerHTML=`<div class="empty">Cette offre n'existe plus. <a href="#/">Voir toutes les offres</a>.</div>`;document.title="Offre introuvable – Gabon Talent OS";return}
+  const f=favs().includes(j.id), url=`${CONFIG.SITE}#/offre/${j.id}`;
+  const li=a=>a&&a.length?`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:"";
+  el.innerHTML=`<div class="box detail">
+   <div class="top" style="display:flex;gap:10px;align-items:center"><div class="lg">${esc(j.company.slice(0,2).toUpperCase())}</div><div><b>${esc(j.company)}</b><div class="ct" style="font-size:12px;color:var(--mute)">${ago(j.posted)}</div></div>${j.badge?`<span class="badge ${badgeCls(j.badge)}">${badgeTxt(j.badge)}</span>`:""}</div>
+   <h1>${esc(j.title)}</h1>
+   <div class="meta"><span>📍 ${esc(j.loc)}</span><span>📄 ${esc(j.type)}</span><span>🏷️ ${esc(j.cat)}</span>${j.pay?`<span>💵 ${esc(j.pay)}</span>`:""}</div>
+   <h3>Le poste</h3><p>${esc(j.desc||"")}</p>
+   ${j.missions?`<h3>Missions</h3>${li(j.missions)}`:""}
+   ${j.profil?`<h3>Profil recherché</h3>${li(j.profil)}`:""}
+   <div id="applySlot"></div>
+   <div class="actions">
+     <a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(j.title+" chez "+j.company+" – "+url)}">Partager</a>
+     <button class="btn ghost" data-fav="${esc(j.id)}" aria-pressed="${f}">${f?"♥ Favori":"♡ Favori"}</button>
+   </div>
+   <a class="btn ghost" href="#/boost">Faire relire mon CV avant de postuler</a>
+  </div>`;
+  document.title=`${j.title} – ${j.company} | Gabon Talent OS`;
+  renderApplySlot(j);
+  const s=document.createElement("script");s.type="application/ld+json";s.id="jsonld";
+  s.textContent=JSON.stringify({"@context":"https://schema.org","@type":"JobPosting",title:j.title,description:j.desc||j.title,datePosted:j.posted,employmentType:j.type==="CDI"?"FULL_TIME":j.type==="CDD"?"CONTRACTOR":j.type==="Stage"?"INTERN":"OTHER",hiringOrganization:{"@type":"Organization",name:j.company},jobLocation:{"@type":"Place",address:{"@type":"PostalAddress",addressLocality:j.loc,addressCountry:"GA"}}});
+  document.head.appendChild(s);
+}
+
+/* =====================================================================
+   ROUTEUR (hash) – le bouton retour du téléphone fonctionne
+   ===================================================================== */
+const TITLES={home:"Gabon Talent OS – Offres d'emploi au Gabon, CV et formation",candidat:"Espace candidat – Gabon Talent OS",recruteur:"Espace recruteur – Gabon Talent OS",boost:"Boostez votre CV – Gabon Talent OS",formation:"Formation développeur – Gabon Talent OS",confidentialite:"Confidentialité – Gabon Talent OS",admin:"Administration – Gabon Talent OS",compte:"Mon compte – Gabon Talent OS"};
+async function route(){
+  const h=(location.hash||"#/").replace(/^#\/?/,"").split("/"), name=h[0]||"home";
+  let page=name;
+  if(name==="admin")page=(isAdmin||!FB)?"admin":"admin-login";
+  if(!$("#page-"+page)){page="home"}
+  $$(".page").forEach(p=>p.classList.toggle("active",p.id==="page-"+page));
+  $$("nav a").forEach(a=>a.toggleAttribute("aria-current",a.dataset.nav===(page==="offre"?"home":page)));
+  $$("nav a").forEach(a=>{if(a.hasAttribute("aria-current"))a.setAttribute("aria-current","page")});
+  if(page!=="offre")$("#jsonld")?.remove();
+  document.title=TITLES[page]||TITLES.home;
+  if(page==="home"){
+    if(!jobsAt)$("#grid").innerHTML='<div class="empty" style="grid-column:1/-1">Chargement des offres…</div>';
+    await ensureJobs();buildFilters();renderJobs();countUp();
+  }
+  if(page==="offre"){await ensureJobs();renderOffre(h[1])}
+  if(page==="candidat"){await ensureJobs();prefillApply(h[1])}
+  if(page==="compte")renderAccount();
+  if(page==="admin")renderAdmin();
+  if(name!=="home"||h[0]!=="")window.scrollTo(0,0);
+}
+function prefillApply(id){
+  const j=id&&allJobs().find(x=>x.id===id);
+  $("#c_offre").value=j?`${j.title} – ${j.company}`:"";
+  $("#applyBanner").innerHTML=j?`<div class="ok-box" style="margin:0 0 6px;background:var(--infobg);color:var(--info)">Candidature pour : <b style="display:inline">${esc(j.title)}</b> chez ${esc(j.company)}</div>`:"";
+  if(j&&!$("#c_poste").value)$("#c_poste").value=j.title;
+  if(FB)$("#applyBanner").insertAdjacentHTML("beforeend",currentUser?'<p class="note" style="margin:6px 0 0">Vous êtes connecté : postulez en un clic depuis l\'offre pour suivre votre candidature.</p>':'<p class="note" style="margin:6px 0 0">Astuce : <a href="#/compte">créez un compte</a> pour suivre vos candidatures.</p>');
+}
+addEventListener("hashchange",route);
+
+/* =====================================================================
+   FORMULAIRES
+   ===================================================================== */
+function fill(){
+  $$("#c_ville,#r_ville,#d_ville,#p_ville").forEach(s=>s.innerHTML=PROVINCES.map(p=>`<option>${esc(p)}</option>`).join(""));
+  $$("#c_cat,#r_cat,#p_categorie").forEach(s=>s.innerHTML=CATS.map(p=>`<option>${esc(p)}</option>`).join(""));
+  $("#pEmail").textContent=CONFIG.EMAIL;$("#pTel").textContent=CONFIG.PHONE_DISPLAY;
+  $("#fTel").textContent=CONFIG.PHONE_DISPLAY;$("#fTel").href="tel:+"+CONFIG.PHONE;
+  $("#fMail").textContent=CONFIG.EMAIL;$("#fMail").href="mailto:"+CONFIG.EMAIL;
+  $("#fSite").textContent=CONFIG.SITE.replace(/^https?:\/\//,"");$("#fSite").href=CONFIG.SITE;
+  $("#testi").innerHTML=TESTIS.map(t=>`<div class="testi"><b style="font-size:14px">${esc(t.n)}</b><div style="font-size:11px;color:var(--mute)">${esc(t.r)}</div><p>« ${esc(t.t)} »</p></div>`).join("");
+  $$(".ad").forEach(a=>{
+    const k=[...a.classList].find(c=>/^a\d$/.test(c)),[t,s,b]=ADS[k];
+    const item=`<span class="item"><b>${esc(t)}</b><span>${esc(s)}</span><span class="pill">${esc(b)}</span></span>`;
+    a.querySelector(".track").innerHTML=item.repeat(6);
+  });
+}
+const phoneOk=v=>/^\+?[\d\s().-]{8,18}$/.test(v)&&v.replace(/\D/g,"").length>=9;
+const emailOk=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+const LABELS={cands:"Candidature",recs:"Offre recruteur",boosts:"Boost CV",devs:"Formation Dev CCTI"};
+let lastSubmit=0;
+
+function summary(type,d){
+  const lines=[`*${LABELS[type]}* – Gabon Talent OS`];
+  Object.entries(d).forEach(([k,v])=>{if(v&&!["consent","website"].includes(k))lines.push(`${k} : ${v}`)});
+  return lines.join("\n");
+}
+async function onSubmit(e){
+  e.preventDefault();
+  const form=e.currentTarget, type=form.dataset.type, err=$("[data-err]",form), btn=$("button[type=submit]",form);
+  const d=Object.fromEntries(new FormData(form).entries());
+  err.textContent="";
+  if(d.website)return;                                   // anti-spam (honeypot)
+  const required=$$("[required]",form).filter(i=>i.type!=="checkbox"&&!i.value.trim());
+  if(required.length){required[0].focus();err.textContent="Complétez les champs obligatoires (*).";return}
+  if(d.tel&&!phoneOk(d.tel)){$("[name=tel]",form).focus();err.textContent="Numéro WhatsApp invalide. Exemple : +241 74 99 57 45";return}
+  if(d.email&&!emailOk(d.email)){$("[name=email]",form).focus();err.textContent="Adresse e-mail invalide.";return}
+  if(d.cv&&!/^https?:\/\//i.test(d.cv)){err.textContent="Le lien du CV doit commencer par https://";return}
+  if($("[name=consent]",form)&&!$("[name=consent]",form).checked){err.textContent="Veuillez accepter les conditions pour continuer.";return}
+  if(Date.now()-lastSubmit<8000){err.textContent="Patientez quelques secondes avant un nouvel envoi.";return}
+  lastSubmit=Date.now();
+  const p={};FIELDS[type].forEach(k=>p[k]=String(d[k]??"").trim().slice(0,MAXL[k]||200));
+  if(type==="cands"||type==="recs")p.consent=true;
+  btn.disabled=true;const old=btn.textContent;btn.textContent="Envoi…";
+  let sent=false;
+  try{await DB.submit(type,p);sent=true}catch(ex){console.error(ex)}
+  btn.disabled=false;btn.textContent=old;
+  const txt=summary(type,p), mail=`mailto:${CONFIG.EMAIL}?subject=${encodeURIComponent(LABELS[type])}&body=${encodeURIComponent(txt)}`;
+  const box=$("#done"+type.charAt(0).toUpperCase()+type.slice(1));
+  const online=FB&&sent;
+  const title=!sent?"L'enregistrement a échoué.":online?"Demande enregistrée.":"Enregistré sur cet appareil (mode démo).";
+  const body=!sent?"Envoyez votre demande directement par WhatsApp ou e-mail.":online?"Notre équipe la traite rapidement. Pour aller plus vite, envoyez-nous aussi un message.":"Envoyez le message ci-dessous pour que l'équipe le reçoive.";
+  box.innerHTML=`<div class="ok-box"${sent?"":' style="background:var(--warnbg);color:var(--warn)"'}><b>${title}</b>${body}${type==="cands"||type==="boosts"?" Pensez à joindre votre CV en PDF.":""}
+    <a class="btn wa" target="_blank" rel="noopener" href="${wa(txt)}">Envoyer par WhatsApp</a>
+    <a class="btn ghost" href="${mail}">Envoyer par e-mail</a></div>`;
+  if(sent){form.reset();$$("[type=tel]",form).forEach(i=>i.value="+241 ")}
+  box.scrollIntoView({behavior:"smooth",block:"center"});
+  toast(sent?"Enregistré":"Échec de l'envoi");
+}
+$$("form[data-type]").forEach(f=>f.addEventListener("submit",onSubmit));
+
+/* =====================================================================
+   COMPTE CANDIDAT : connexion, profil, suivi des candidatures
+   ===================================================================== */
+const STATUS={
+  envoyee:{l:"Envoyée",c:"b-feat",d:"Votre candidature a bien été reçue."},
+  vue:{l:"Vue",c:"b-feat",d:"Votre dossier a été consulté."},
+  preselection:{l:"Présélectionné(e)",c:"b-new",d:"Votre profil est retenu pour la suite."},
+  entretien:{l:"Entretien",c:"b-new",d:"Un entretien est prévu. Surveillez WhatsApp et vos e-mails."},
+  embauche:{l:"Embauché(e)",c:"b-new",d:"Félicitations !"},
+  refusee:{l:"Non retenue",c:"b-urg",d:"Votre profil n'a pas été retenu pour ce poste."},
+  retiree:{l:"Retirée",c:"b-urg",d:"Vous avez retiré cette candidature."}
+};
+const FLOW=["envoyee","vue","preselection","entretien","embauche"];
+const MAXP={prenom:100,nom:100,tel:30,ville:100,niveau:100,experience:100,categorie:100,poste:150,cv:300,bio:1000};
+const PFIELDS=Object.keys(MAXP);
+const profileComplete=()=>!!(profile&&profile.nom&&profile.prenom&&profile.tel&&profile.poste);
+let accTab="apps";
+
+function authMsg(e){
+  const m={"auth/invalid-credential":"E-mail ou mot de passe incorrect.","auth/wrong-password":"E-mail ou mot de passe incorrect.","auth/user-not-found":"E-mail ou mot de passe incorrect.",
+   "auth/email-already-in-use":"Un compte existe déjà avec cet e-mail. Connectez-vous.","auth/weak-password":"Mot de passe trop court (8 caractères minimum).",
+   "auth/invalid-email":"Adresse e-mail invalide.","auth/too-many-requests":"Trop de tentatives. Réessayez dans quelques minutes.",
+   "auth/network-request-failed":"Connexion impossible. Vérifiez votre réseau.","permission-denied":"Action refusée par le serveur."};
+  return m[e&&e.code]||`Une erreur est survenue (${(e&&(e.code||e.message))||"inconnue"}).`;
+}
+function updateNav(){$("#navAcc").textContent=currentUser?((profile&&profile.prenom)||"Mon compte"):"Connexion"}
+
+async function onUser(u){
+  if(!u||(currentUser&&currentUser.uid!==u.uid)){profile=null;myApps=[]}
+  currentUser=u||null;isAdmin=false;
+  if(u){
+    try{isAdmin=(await fb.fs.getDoc(fb.fs.doc(fb.db,"admins",u.uid))).exists()}catch(_){}
+    try{const p=await fb.fs.getDoc(fb.fs.doc(fb.db,"profiles",u.uid));if(p.exists())profile=p.data()}catch(_){}
+    try{myApps=await DB.myApps()}catch(_){}
+  }
+  updateNav();
+}
+function goNext(){
+  const n=sessionStorage.getItem("gt_next");
+  if(n&&profileComplete()){sessionStorage.removeItem("gt_next");location.hash=n;return true}
+  return false;
+}
+
+function renderAccount(){
+  $("#accDemo").hidden=FB;
+  const on=FB&&!!currentUser;
+  $("#accOff").hidden=!FB||on;
+  $("#accOn").hidden=!on;
+  if(!on)return;
+  $("#accHello").textContent=profile&&profile.prenom?`Bonjour ${profile.prenom}`:"Mon espace";
+  $("#accAdminLink").hidden=!isAdmin;
+  $$("[data-acc]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.acc===accTab));
+  $("#accApps").hidden=accTab!=="apps";
+  $("#formProfile").hidden=accTab!=="profile";
+  if(accTab==="apps")renderMyApps();else fillProfileForm();
+}
+function appCard(a){
+  const st=STATUS[a.status]||{l:a.status,c:"b-feat",d:""};
+  const idx=FLOW.indexOf(a.status);
+  const flow=idx>=0?`<div class="flow" aria-label="Avancement">${FLOW.map((k,i)=>`<span class="${i<=idx?"on":""}">${STATUS[k].l}</span>`).join("")}</div>`:"";
+  const canW=["envoyee","vue","preselection","entretien"].includes(a.status);
+  const canD=a.status==="retiree"||a.status==="refusee";
+  const d=x=>x?new Date(x).toLocaleDateString("fr-FR"):"";
+  return `<div class="box app"><div style="display:flex;gap:8px;align-items:flex-start;justify-content:space-between">
+    <div><a href="#/offre/${esc(a.jobId)}" style="font-weight:700;text-decoration:none">${esc(a.jobTitle)}</a>
+    <div style="font-size:12px;color:var(--mute)">${esc(a.company)}${a.createdAt?" · envoyée le "+d(a.createdAt):""}</div></div>
+    <span class="badge ${st.c}">${esc(st.l)}</span></div>${flow}
+    <p class="note">${esc(st.d)}${a.statusAt?" Mis à jour le "+d(a.statusAt)+".":""}</p>
+    <div style="display:flex;gap:8px;margin-top:8px">${canW?`<button class="btn sm ghost" data-withdraw="${esc(a.id)}">Retirer ma candidature</button>`:""}${canD?`<button class="btn sm ghost" data-delapp="${esc(a.id)}">Supprimer</button>`:""}</div></div>`;
+}
+function renderMyApps(){
+  $("#accApps").innerHTML=myApps.length?myApps.map(appCard).join(""):
+    `<div class="empty">Vous n'avez pas encore postulé. <a href="#/">Voir les offres</a></div>`;
+}
+function fillProfileForm(){
+  const p=profile||{};
+  PFIELDS.forEach(k=>{const el=$("#p_"+k);if(el)el.value=p[k]||(k==="tel"?"+241 ":el.tagName==="SELECT"?el.options[0].value:"")});
+  $("#p_email").value=currentUser?currentUser.email:"";
+  $("#profileHint").textContent=profileComplete()?"":"Complétez prénom, nom, téléphone et poste recherché pour pouvoir postuler.";
+}
+
+/* Onglets connexion / inscription / espace */
+$$("[data-auth]").forEach(b=>b.onclick=()=>{
+  const m=b.dataset.auth;$$("[data-auth]").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  $("#formAuthLogin").hidden=m!=="login";$("#formAuthSignup").hidden=m!=="signup";
+});
+$$("[data-acc]").forEach(b=>b.onclick=()=>{accTab=b.dataset.acc;renderAccount()});
+const noFb=err=>{if(fb)return false;err.textContent="Service indisponible. Vérifiez votre connexion et rechargez la page.";return true};
+
+$("#formAuthLogin").addEventListener("submit",async e=>{
+  e.preventDefault();const err=$("[data-err]",e.currentTarget);err.textContent="";
+  if(noFb(err))return;
+  const em=$("#l_email").value.trim(),pw=$("#l_pass").value;
+  if(!emailOk(em)||!pw){err.textContent="Saisissez votre e-mail et votre mot de passe.";return}
+  try{
+    const c=await fb.au.signInWithEmailAndPassword(fb.auth,em,pw);
+    await onUser(c.user);$("#l_pass").value="";
+    accTab=profileComplete()?"apps":"profile";
+    if(!goNext())renderAccount();
+  }catch(ex){err.textContent=authMsg(ex)}
+});
+$("#forgotBtn").onclick=async()=>{
+  const err=$("[data-err]",$("#formAuthLogin")),em=$("#l_email").value.trim();
+  if(noFb(err))return;
+  if(!emailOk(em)){err.textContent="Saisissez d'abord votre e-mail ci-dessus.";return}
+  err.textContent="";
+  try{await fb.au.sendPasswordResetEmail(fb.auth,em)}catch(_){}
+  toast("Si un compte existe, un e-mail de réinitialisation a été envoyé.");
+};
+$("#formAuthSignup").addEventListener("submit",async e=>{
+  e.preventDefault();const err=$("[data-err]",e.currentTarget);err.textContent="";
+  if(noFb(err))return;
+  const prenom=$("#s_prenom").value.trim(),nom=$("#s_nom").value.trim(),tel=$("#s_tel").value.trim(),em=$("#s_email").value.trim(),pw=$("#s_pass").value;
+  if(!prenom||!nom){err.textContent="Prénom et nom sont obligatoires.";return}
+  if(!phoneOk(tel)){err.textContent="Numéro WhatsApp invalide. Exemple : +241 74 99 57 45";return}
+  if(!emailOk(em)){err.textContent="Adresse e-mail invalide.";return}
+  if(pw.length<8){err.textContent="Mot de passe trop court (8 caractères minimum).";return}
+  if(!$("#s_consent").checked){err.textContent="Veuillez accepter la politique de confidentialité.";return}
+  const btn=$("button[type=submit]",e.currentTarget);btn.disabled=true;
+  try{
+    const c=await fb.au.createUserWithEmailAndPassword(fb.auth,em,pw);
+    await DB.saveProfile({prenom:prenom.slice(0,100),nom:nom.slice(0,100),tel:tel.slice(0,30),ville:PROVINCES[0],niveau:"Bac",experience:"Débutant",categorie:CATS[0],poste:"",cv:"",bio:""});
+    await onUser(c.user);
+    $("#s_pass").value="";accTab="profile";renderAccount();
+    toast("Compte créé. Complétez votre profil pour postuler.");
+  }catch(ex){err.textContent=authMsg(ex)}
+  btn.disabled=false;
+});
+$("#accLogout").onclick=async()=>{try{await fb.au.signOut(fb.auth)}catch(_){}toast("Déconnecté");location.hash="#/"};
+
+$("#formProfile").addEventListener("submit",async e=>{
+  e.preventDefault();const f=e.currentTarget,err=$("[data-err]",f);err.textContent="";
+  const d=Object.fromEntries(new FormData(f).entries()),p={};
+  PFIELDS.forEach(k=>p[k]=String(d[k]??"").trim().slice(0,MAXP[k]));
+  if(!p.prenom||!p.nom||!p.poste){err.textContent="Prénom, nom et poste recherché sont obligatoires.";return}
+  if(!phoneOk(p.tel)){err.textContent="Numéro WhatsApp invalide. Exemple : +241 74 99 57 45";return}
+  if(p.cv&&!/^https?:\/\//i.test(p.cv)){err.textContent="Le lien du CV doit commencer par https://";return}
+  try{
+    await DB.saveProfile(p);profile={...p,email:currentUser.email};updateNav();
+    toast("Profil enregistré");
+    if(!goNext()){accTab="apps";renderAccount()}
+  }catch(ex){err.textContent=authMsg(ex)}
+});
+
+$("#accApps").addEventListener("click",async e=>{
+  const w=e.target.closest("[data-withdraw]"),d=e.target.closest("[data-delapp]");
+  try{
+    if(w&&confirm("Retirer cette candidature ?")){await DB.withdraw(w.dataset.withdraw);myApps=await DB.myApps();renderMyApps();toast("Candidature retirée")}
+    if(d&&confirm("Supprimer définitivement cette candidature ?")){await DB.remove("apps",d.dataset.delapp);myApps=await DB.myApps();renderMyApps();toast("Supprimée")}
+  }catch(ex){toast(authMsg(ex))}
+});
+
+$("#delAccBtn").onclick=async()=>{
+  if(!confirm("Supprimer définitivement votre compte, votre profil et toutes vos candidatures ?"))return;
+  const pwd=prompt("Pour confirmer, saisissez votre mot de passe :");if(!pwd)return;
+  try{
+    const u=fb.auth.currentUser,{collection,getDocs,query,where,deleteDoc,doc}=fb.fs;
+    await fb.au.reauthenticateWithCredential(u,fb.au.EmailAuthProvider.credential(u.email,pwd));
+    const s=await getDocs(query(collection(fb.db,"applications"),where("uid","==",u.uid)));
+    await Promise.all(s.docs.map(x=>deleteDoc(x.ref)));
+    await deleteDoc(doc(fb.db,"profiles",u.uid));
+    await fb.au.deleteUser(u);
+    currentUser=null;profile=null;myApps=[];isAdmin=false;updateNav();
+    toast("Compte supprimé");location.hash="#/";
+  }catch(ex){toast(authMsg(ex))}
+};
+
+/* Postuler depuis la fiche d'une offre */
+function renderApplySlot(j){
+  const el=$("#applySlot");if(!el)return;
+  if(!FB){el.innerHTML=`<a class="btn" href="#/candidat/${esc(j.id)}">Postuler à cette offre</a>`;return}
+  const done=myApps.find(a=>a.jobId===j.id);
+  if(done){
+    el.innerHTML=`<div class="ok-box"><b>Candidature : ${esc((STATUS[done.status]||{l:done.status}).l.toLowerCase())}</b>Suivez son avancement dans <a href="#/compte">votre espace</a>.</div>`;return;
+  }
+  el.innerHTML=`<button class="btn" type="button" data-apply="${esc(j.id)}">Postuler avec mon compte</button><a class="btn ghost" href="#/candidat/${esc(j.id)}">Postuler sans compte</a>`;
+}
+document.addEventListener("click",async e=>{
+  const b=e.target.closest("[data-apply]");
+  if(b){
+    const j=allJobs().find(x=>x.id===b.dataset.apply);if(!j)return;
+    if(!currentUser){sessionStorage.setItem("gt_next","#/offre/"+j.id);toast("Connectez-vous pour postuler");location.hash="#/compte";return}
+    if(!profileComplete()){sessionStorage.setItem("gt_next","#/offre/"+j.id);accTab="profile";toast("Complétez votre profil pour postuler");location.hash="#/compte";return}
+    $("#applySlot").innerHTML=`<div class="box" style="margin-top:12px;background:var(--soft)"><b>Confirmer ma candidature</b>
+      <p class="note">Le recruteur recevra votre profil : ${esc(profile.prenom)} ${esc(profile.nom)}, ${esc(profile.tel)}${profile.cv?", lien vers votre CV":""}.</p>
+      <label for="a_msg">Message <small>(optionnel)</small></label><textarea id="a_msg" maxlength="800"></textarea>
+      <button class="btn" type="button" id="applyGo" data-job="${esc(j.id)}">Envoyer ma candidature</button>
+      <div class="err" id="applyErr" role="alert"></div></div>`;
+    $("#a_msg").focus();return;
+  }
+  const g=e.target.closest("#applyGo");
+  if(g){
+    const j=allJobs().find(x=>x.id===g.dataset.job);if(!j)return;
+    g.disabled=true;
+    try{
+      await DB.apply(j,$("#a_msg").value.trim().slice(0,800));
+      myApps=await DB.myApps();toast("Candidature envoyée");renderApplySlot(j);
+    }catch(ex){g.disabled=false;$("#applyErr").textContent=ex.code==="permission-denied"?"Candidature refusée : vous avez peut-être déjà postulé, ou l'offre n'est plus en ligne.":authMsg(ex)}
+  }
+});
+
+/* =====================================================================
+   ADMIN (Firebase Auth + règles Firestore : la vraie protection est côté serveur)
+   ===================================================================== */
+$("#formLogin").addEventListener("submit",async e=>{
+  e.preventDefault();const er=$("#loginErr");er.textContent="";
+  if(!fb){er.textContent="Firebase n'est pas disponible. Vérifiez la configuration.";return}
+  try{
+    const c=await fb.au.signInWithEmailAndPassword(fb.auth,$("#adminUser").value.trim(),$("#adminPass").value);
+    const ok=(await fb.fs.getDoc(fb.fs.doc(fb.db,"admins",c.user.uid))).exists();
+    if(!ok){await fb.au.signOut(fb.auth);er.textContent="Ce compte n'a pas les droits administrateur.";return}
+    isAdmin=true;await onUser(c.user);$("#adminPass").value="";route();
+  }catch(err){er.textContent="E-mail ou mot de passe incorrect."}
+});
+$("#logoutBtn").onclick=async()=>{try{if(fb)await fb.au.signOut(fb.auth)}catch(_){}isAdmin=false;location.hash="#/"};
+
+let adminTab="apps",adminData={},adminCount={};
+const TABS={apps:"Candidatures",profiles:"Comptes",cands:"Sans compte",recs:"Offres reçues",jobs:"Offres en ligne",boosts:"GT Business",devs:"Formation"};
+async function loadTab(k){adminData[k]=await DB.list(k)}
+async function renderAdmin(){
+  $("#adminNote").textContent=FB?"Connecté à Firebase : vous voyez les données de la base en ligne.":"Mode démo : Firebase n'est pas configuré, vous voyez uniquement les données de cet appareil.";
+  $("#adminList").innerHTML='<p class="note">Chargement…</p>';
+  adminData={};
+  try{
+    const ks=Object.keys(TABS),c=await Promise.all(ks.map(k=>DB.count(k)));
+    adminCount=Object.fromEntries(ks.map((k,i)=>[k,c[i]]));
+    await Promise.all([loadTab(adminTab),adminTab==="recs"?Promise.resolve():loadTab("recs")]);
+  }catch(e){$("#adminList").innerHTML=`<p class="note" style="color:var(--danger)">Lecture impossible (${esc(e.code||e.message)}). Vérifiez les règles Firestore et que votre compte figure dans la collection « admins ».</p>`;return}
+  paintAdmin();
+}
+function paintAdmin(){
+  const pend=(adminData.recs||[]).filter(r=>!r.published).length;
+  $("#kpis").innerHTML=Object.entries(TABS).map(([k,v])=>`<div class="stat"><b>${adminCount[k]??0}</b><span>${v}</span></div>`).join("")+`<div class="stat"><b>${pend}</b><span>Offres à valider</span></div>`;
+  $("#adminTabs").innerHTML=Object.entries(TABS).map(([k,v])=>`<button class="chip" data-tab="${k}" aria-pressed="${k===adminTab}">${v}</button>`).join("");
+  const list=adminData[adminTab]||[];
+  const statusSel=x=>`<select data-status="${esc(x.id)}" aria-label="Statut de la candidature" style="margin:0;width:auto;padding:6px">${Object.entries(STATUS).filter(([k])=>k!=="retiree"||x.status==="retiree").map(([k,v])=>`<option value="${k}"${x.status===k?" selected":""}>${v.l}</option>`).join("")}</select>`;
+  const row=x=>{
+    const when=x.createdAt||x.date||x.posted||x.updatedAt, body=x.message||x.description||x.motivation||x.desc||x.bio||"";
+    return `<div class="rec"><div><b>${esc(x.nom||x.title||x.company||"")}${x.prenom?" "+esc(x.prenom):""}</b>${x.published?" ✅":""}<br>
+      <span style="color:var(--mute)">${esc([x.tel,x.email,x.ville||x.loc,x.jobTitle,x.poste||x.company,x.offre,x.type].filter(Boolean).join(" · "))}</span>
+      ${x.cv?`<br><a href="${esc(/^https?:\/\//i.test(x.cv)?x.cv:"#")}" target="_blank" rel="noopener noreferrer" style="font-size:12px">Voir le CV</a>`:""}
+      ${body?`<br><span style="color:var(--mute)">${esc(body.slice(0,160))}${body.length>160?"…":""}</span>`:""}
+      <br><span style="color:var(--mute);font-size:11px">${when?new Date(when).toLocaleString("fr-FR"):""}</span></div>
+      <div class="acts">${adminTab==="apps"?statusSel(x):""}${adminTab==="recs"&&!x.published?`<button class="btn sm" data-pub="${esc(x.id)}">Publier</button>`:""}${adminTab!=="profiles"?`<button class="btn sm ghost" data-del="${esc(x.id)}" aria-label="Supprimer">🗑</button>`:""}</div></div>`;
+  };
+  $("#adminList").innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h2 style="font-size:17px">${TABS[adminTab]} (${adminCount[adminTab]??list.length})</h2><div style="display:flex;gap:6px">${FB&&adminTab==="jobs"?`<button class="btn sm ghost" id="seedBtn">Importer les exemples</button>`:""}<button class="btn sm ghost" id="csvBtn">Exporter CSV</button></div></div>`+(list.length?list.map(row).join(""):`<p class="note">Aucune entrée.</p>`);
+}
+$("#adminTabs").addEventListener("click",async e=>{
+  const b=e.target.closest("[data-tab]");if(!b)return;
+  adminTab=b.dataset.tab;
+  if(!adminData[adminTab]){try{await loadTab(adminTab)}catch(err){toast("Lecture refusée : "+(err.code||err.message));return}}
+  paintAdmin();
+});
+$("#adminList").addEventListener("change",async e=>{
+  const sel=e.target.closest("[data-status]");if(!sel)return;
+  try{
+    await DB.setStatus(sel.dataset.status,sel.value);
+    const a=(adminData.apps||[]).find(x=>x.id===sel.dataset.status);if(a)a.status=sel.value;
+    toast("Statut mis à jour");
+  }catch(err){toast("Action refusée : "+(err.code||err.message))}
+});
+$("#adminList").addEventListener("click",async e=>{
+  const del=e.target.closest("[data-del]"),pub=e.target.closest("[data-pub]");
+  try{
+    if(del&&confirm("Supprimer cette entrée ?")){await DB.remove(adminTab,del.dataset.del);jobsAt=0;await renderAdmin()}
+    if(pub){const r=(adminData.recs||[]).find(x=>x.id===pub.dataset.pub);if(r){await DB.publishOffer(r);jobsAt=0;toast("Offre publiée");await renderAdmin()}}
+    if(e.target.id==="seedBtn"&&confirm("Importer les 4 offres d'exemple dans la base ?")){await DB.seed();jobsAt=0;toast("Exemples importés");await renderAdmin()}
+  }catch(err){console.error(err);toast("Action refusée : "+(err.code||err.message))}
+  if(e.target.id==="csvBtn"){
+    const l=adminData[adminTab]||[];if(!l.length)return;
+    const keys=[...new Set(l.flatMap(Object.keys))];
+    const q=v=>`"${String(v??"").replace(/"/g,'""').replace(/^([=+\-@])/,"'$1")}"`;   // protège contre l'injection de formules Excel
+    const csv=[keys.join(","),...l.map(r=>keys.map(k=>q(r[k])).join(","))].join("\n");
+    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv"}));a.download=`gabon-talent-${adminTab}.csv`;a.click();
+  }
+});
+
+/* =====================================================================
+   COMPTEURS ANIMÉS
+   ===================================================================== */
+function countUp(){
+  const red=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  $$("[data-count]").forEach(el=>{
+    const v=+el.dataset.count;if(red||v<2){el.textContent=v;return}
+    let n=0;const step=Math.max(1,Math.ceil(v/25));
+    const it=setInterval(()=>{n=Math.min(v,n+step);el.textContent=n;if(n>=v)clearInterval(it)},40);
+  });
+}
+
+fill();
+try{await initFirebase()}catch(e){console.error("Firebase :",e);fb=null}
+await new Promise(res=>{
+  if(!fb){res();return}
+  fb.au.onAuthStateChanged(fb.auth,async u=>{await onUser(u);res();if(started)route()});
+});
+await route();started=true;
 </script>
 </body>
 </html>
