@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Espace Candidat - Gabon Talent OS</title><script src="https://cdn.tailwindcss.com"></script></head>
+<body class="bg-[#f8fafc]">
+<header class="h-20 bg-white border-b flex items-center px-6 justify-between"><a href="index.html" class="font-bold">Gabon Talent OS</a><span class="text-sm">Espace Candidat</span></header>
+<div class="max-w-5xl mx-auto px-6 py-12">
+<h1 class="text-3xl font-bold text-center">Boostez votre candidature</h1>
+<div class="grid md:grid-cols-3 gap-6 mt-10">
+<!-- GRATUIT -->
+<div class="bg-white border rounded-xl p-6"><h3 class="font-bold">Gratuit</h3><p class="text-3xl font-bold mt-2">0 FCFA</p><ul class="text-sm mt-4 space-y-2 text-gray-600"><li>✓ 2 candidatures / mois</li><li>✓ Profil visible</li><li>✗ Non prioritaire</li></ul><button onclick="selectPlan(0)" class="w-full border mt-6 py-2 rounded text-sm">Choisir</button></div>
+<!-- 2000 FCFA -->
+<div class="bg-white border-2 border-[#0f172a] rounded-xl p-6 relative"><span class="absolute -top-3 left-6 bg-[#0f172a] text-white text-[10px] px-2 py-1 rounded">POPULAIRE</span><h3 class="font-bold">Essentiel</h3><p class="text-3xl font-bold mt-2">2 000 FCFA</p><ul class="text-sm mt-4 space-y-2 text-gray-600"><li>✓ 10 candidatures / mois</li><li>✓ Profil prioritaire</li><li>✓ Alertes WhatsApp</li></ul><button onclick="selectPlan(2000)" class="w-full bg-[#0f172a] text-white mt-6 py-2 rounded text-sm">Payer via Chariow</button></div>
+<!-- 5000 FCFA -->
+<div class="bg-white border rounded-xl p-6"><h3 class="font-bold">Premium</h3><p class="text-3xl font-bold mt-2">5 000 FCFA</p><ul class="text-sm mt-4 space-y-2 text-gray-600"><li>✓ Candidatures illimitées</li><li>✓ Mise en avant RH</li><li>✓ Coaching CV</li></ul><button onclick="selectPlan(5000)" class="w-full border mt-6 py-2 rounded text-sm">Payer via Chariow</button></div>
+</div>
+
+<!-- PAIEMENT CHARIOW -->
+<div id="pay" class="hidden mt-10 bg-white border rounded-xl p-6 max-w-md mx-auto">
+<h3 class="font-bold">Paiement Chariow - <span id="amount">2000</span> FCFA</h3>
+<p class="text-xs text-gray-500 mt-1">Pays: GA - Gabon uniquement</p>
+<select class="w-full border rounded p-2 mt-3 text-sm"><option>GA - Gabon</option></select>
+<input id="tel" placeholder="Numéro local: 74995745" class="w-full border rounded p-2 mt-2 text-sm">
+<div class="flex gap-2 mt-2"><span class="text-xs border px-2 py-1 rounded">Airtel Money</span><span class="text-xs border px-2 py-1 rounded">Moov Money</span></div>
+<button onclick="pay()" class="w-full bg-[#0f172a] text-white py-2.5 rounded mt-4 text-sm">Confirmer paiement</button>
+<p id="status" class="text-xs mt-3 text-center"></p>
+</div>
+</div>
+<script>
+let current=0;
+function selectPlan(m){current=m; if(m===0){localStorage.setItem('plan','gratuit');alert('Plan gratuit activé'); return;} document.getElementById('amount').innerText=m; document.getElementById('pay').classList.remove('hidden'); window.scrollTo(0,document.body.scrollHeight)}
+function pay(){const tel=document.getElementById('tel').value; if(tel.length<8){alert('Numéro invalide, ex: 74995745');return;}
+document.getElementById('status').innerText='Redirection Chariow... (mode démo, branche API /api/chariow.js)';
+localStorage.setItem('plan',current); localStorage.setItem('tel',tel);
+setTimeout(()=>{document.getElementById('status').innerText='✓ Paiement simulé réussi. Plan activé.'},1000)}
+</script>
+</body></html>
