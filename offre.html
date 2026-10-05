@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Offre - Gabon Talent OS</title><script src="https://cdn.tailwindcss.com"></script></head>
+<body class="bg-[#f8fafc]"><header class="h-20 bg-white border-b flex items-center px-6"><a href="index.html" class="font-bold text-xl">Gabon Talent OS</a></header>
+<div class="max-w-7xl mx-auto px-6 py-8 grid md:grid-cols-[1fr_360px] gap-8">
+<div class="bg-white rounded-xl border p-8"><div id="detail"></div>
+<div class="mt-8 flex gap-4 border-b"><button class="pb-2 border-b-2 border-black">Description</button></div>
+<div id="content" class="mt-6 text-sm leading-6"></div></div>
+<aside class="space-y-4 sticky top-24 h-fit">
+<div class="bg-white rounded-xl border p-5"><h3 class="font-semibold mb-4">Candidater</h3>
+<button onclick="openModal()" class="w-full bg-[#0f172a] text-white py-3 rounded mb-2 text-sm">Candidater sur la plateforme</button>
+<a id="mail" class="block w-full border py-3 rounded text-center text-sm mb-2">Candidater par Email</a>
+<a href="https://wa.me/24174995745" class="block w-full border py-3 rounded text-center text-sm mb-2">Candidater via WhatsApp</a>
+<a id="orig" class="block w-full text-center text-xs text-gray-500 mt-2">Voir offre originale</a>
+<p class="text-xs mt-4">Tel: +241 74 99 57 45</p>
+</div></aside></div>
+<div id="modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4"><div class="bg-white rounded-xl p-6 w-full max-w-md">
+<h3 class="font-bold">Déposer CV</h3>
+<div class="mt-4 border-2 border-dashed p-8 text-center text-sm">Glisser CV PDF (5 Mo max)<input type="file" id="cv" accept=".pdf" class="mt-2"></div>
+<input id="name" placeholder="Nom complet" class="w-full border rounded p-2 mt-3 text-sm">
+<input id="email" placeholder="Email" class="w-full border rounded p-2 mt-2 text-sm">
+<input id="phone" placeholder="74 99 57 45" class="w-full border rounded p-2 mt-2 text-sm">
+<div class="flex gap-2 mt-4"><button onclick="submitCV()" class="bg-[#0f172a] text-white px-4 py-2 rounded text-sm">Envoyer</button><button onclick="closeModal()" class="border px-4 py-2 rounded text-sm">Fermer</button></div>
+<div id="chariow" class="mt-4 p-3 bg-gray-50 rounded text-xs">Paiement Chariow: <br>Pays GA + Numéro local 74995745<br><img src="https://via.placeholder.com/80x20?text=Airtel+Money" class="inline"> <img src="https://via.placeholder.com/80x20?text=Moov" class="inline"></div>
+</div></div>
+<script>
+function openModal(){document.getElementById('modal').classList.remove('hidden')}
+function closeModal(){document.getElementById('modal').classList.add('hidden')}
+async function load(){const id=new URLSearchParams(location.search).get('id');const r=await fetch('./data/jobs.json?v='+Date.now());const jobs=await r.json();const j=jobs.find(x=>x.id===id)||jobs[0];
+document.getElementById('detail').innerHTML=`<span class="text-[11px] uppercase bg-[#f8fafc] border px-2 py-1 rounded">${j.category}</span><h1 class="text-2xl font-bold mt-3">${j.title}</h1><p class="text-sm text-gray-500 mt-1">${j.company} • ${j.location} • ${j.type}</p>`;
+document.getElementById('content').innerHTML=`<p>${j.description}</p><h4 class="font-semibold mt-6">Missions</h4><ul class="list-disc ml-5">${j.missions.map(m=>`<li>${m}</li>`).join('')}</ul><h4 class="font-semibold mt-6">Profil</h4><ul class="list-disc ml-5">${j.profil.map(p=>`<li>${p}</li>`).join('')}</ul>`;
+document.getElementById('mail').href=`mailto:${j.email}?subject=Candidature ${j.title}`;
+document.getElementById('orig').href=`mailto:${j.email}`}
+function submitCV(){const n=document.getElementById('name').value;localStorage.setItem('cand_'+Date.now(),JSON.stringify({name:n,cv:document.getElementById('cv').files[0]?.name}));alert('Candidature enregistrée (localStorage). Intégration Supabase à venir.');closeModal()}
+load();
+</script></body></html>
