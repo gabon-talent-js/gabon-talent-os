@@ -78,132 +78,65 @@ const JOBS = [
     "source": "LinkedIn",
     "tag": "NOUVEAU",
     "desc": "React / Supabase",
-    "link": "https://gabon-talent-js.github.io/gabon-talent-os/",
-    "updated": "2026-10-05T06:12:30.012404"
-  }
-];
-function renderJobs(list){
-  document.getElementById('jobs-list').innerHTML = list.map(j=>`
-    <div class="card" onclick="openJob(${j.id})" style="cursor:pointer">
-      <span style="font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;background:#dcfce7">${j.tag} • ${j.source}</span>
-      <h3 style="margin:8px 0 4px">${j.title}</h3>
-      <div style="font-size:13px;color:#64748b">📍 ${j.city} • 💰 ${j.salary} • 🏢 ${j.company}</div>
-    </div>
-  `).join('');
-}
-renderJobs(JOBS);
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gabon Talent OS - L'OS de l'Emploi</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gabon Talent OS - Top opportunités au Gabon</title>
 <style>
-:root{--dark:#0f172a;--green:#22c55e;--bg:#f8fafc}
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--dark)}
-header{background:var(--dark);color:white;padding:14px 20px;position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center}
-nav a{color:white;text-decoration:none;margin-left:12px;font-size:12px;font-weight:600;opacity:.7}nav a.active{opacity:1;border-bottom:2px solid var(--green)}
-.hero{background:linear-gradient(135deg,#0f172a,#1e293b);color:white;padding:40px 20px;text-align:center}
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 20px;border-radius:10px;font-weight:700;text-decoration:none;cursor:pointer;border:0}
-.btn-green{background:var(--green);color:white}.btn-dark{background:var(--dark);color:white}.btn-white{background:white;color:var(--dark);border:1px solid #e2e8f0}
-.container{max-width:900px;margin:0 auto;padding:16px}
-.card{background:white;border-radius:16px;padding:18px;border:1px solid #e2e8f0;margin-bottom:14px}
-.pack{border:2px solid #e2e8f0;border-radius:16px;padding:18px;text-align:center;cursor:pointer}
-.pack.best{border-color:var(--green);background:#f0fdf4}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
-.modal.active{display:flex}.modal-box{background:white;border-radius:20px;max-width:500px;width:100%;padding:24px;max-height:90vh;overflow-y:auto}
-input,textarea,select{width:100%;padding:12px;margin:6px 0;border:1px solid #e2e8f0;border-radius:10px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,Inter,Segoe UI,sans-serif}
+body{background:#f6f7f9;color:#0b1120}
+header{background:#0b0f1a;color:#fff;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:20}
+.logo{font-weight:800;letter-spacing:-0.5px;display:flex;align-items:center;gap:10px}
+.logo i{width:28px;height:28px;background:linear-gradient(135deg,#5eead4,#0e7490);display:inline-block;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+.btn{border-radius:10px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.btn-dark{background:#111827;color:#fff;border:1px solid #111827}
+.btn-teal{background:#5eead4;color:#0b1120}
+.hero{text-align:center;padding:54px 20px 22px}
+.hero h1{font-size:42px;line-height:1.05;letter-spacing:-1.2px;font-weight:800}
+.hero p{color:#475569;margin-top:12px;font-size:15px}
+.search{max-width:860px;margin:26px auto;background:#fff;border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,.08);display:flex;align-items:center;padding:8px;gap:8px;border:1px solid #e5e7eb}
+.search input{flex:1;border:0;outline:0;padding:14px 14px;font-size:15px}
+.search .sep{width:1px;height:28px;background:#e5e7eb}
+.search button{background:#0f766e;color:#fff;border:0;border-radius:12px;padding:13px 22px;font-weight:700;cursor:pointer}
+.filters{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0}
+.chip{background:#fff;border:1px solid #e5e7eb;border-radius:999px;padding:8px 14px;font-size:13px}
+.grid{max-width:1220px;margin:0 auto;padding:18px 18px 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.card{background:#fff;border:1px solid #eef2f7;border-radius:18px;padding:18px;box-shadow:0 8px 20px rgba(0,0,0,.05);transition:.2s;cursor:pointer}
+.card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.1)}
+.top{display:flex;justify-content:space-between;align-items:start}
+.logoCo{width:48px;height:48px;border-radius:12px;background:#f1f5f9;display:grid;place-items:center;font-weight:800}
+.badge{font-size:11px;padding:5px 9px;border-radius:999px;font-weight:600}
+.b-new{background:#d1fae5;color:#065f46}.b-feat{background:#e0e7ff;color:#3730a3}.b-urg{background:#ffedd5;color:#9a3412}
+.title{font-weight:750;margin-top:14px;font-size:18px;letter-spacing:-.3px}
+.tags{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.tag{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid #e5e7eb;background:#f8fafc}
+.loc{font-size:13px;color:#475569;margin-top:12px}
+.pay{font-size:14px;font-weight:600;margin-top:10px;border-top:1px solid #eef2f7;padding-top:10px}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:13px;color:#64748b}
+.apply{background:#f1f5f9;border-radius:10px;padding:7px 12px;font-weight:600;color:#0f172a;text-decoration:none}
 </style>
 </head>
 <body>
-<header>
-<b>🇬🇦 Gabon Talent <span style="color:#22c55e">OS</span></b>
-<nav>
-<a href="#" onclick="showTab('offres')" id="nav-offres" class="active">Offres</a>
-<a href="#" onclick="showTab('candidat')" id="nav-candidat">Candidat</a>
-<a href="#" onclick="showTab('entreprise')" id="nav-entreprise">Entreprise</a>
-</nav>
-</header>
-
-<div id="tab-offres">
-<div class="hero">
-<h1>Toutes les offres du Gabon.<br><span style="color:#22c55e">En un seul endroit.</span></h1>
-<p style="opacity:.7;margin-top:10px;font-size:14px">Scanné auto depuis Facebook, LinkedIn, sites d'emploi • MAJ 07:00</p>
+<header><div class="logo"><i></i> Gabon Talent OS</div><div style="display:flex;gap:10px"><a href="candidat.html" class="btn" style="background:#1f2937;color:#fff">Sign in</a><a href="recruteur.html" class="btn btn-teal">Post a Job +</a></div></header>
+<div class="hero"><h1>Discover top opportunities<br>across Gabon</h1><p>Build your future — vetted roles, local impact, global standards. <b id="count">8 open roles</b> • Verified employers • MAJ 07:00</p>
+<div class="search"><input id="q" placeholder="Search jobs, skills, or companies"><div class="sep"></div><input id="loc" value="Libreville, Gabon" style="max-width:200px"><button onclick="doSearch()">Search jobs</button></div>
+<div class="filters"><span class="chip">Popular filters:</span><span class="chip">🌐 Remote</span><span class="chip">💼 Full-time</span><span class="chip">💻 Engineering</span><span class="chip">📈 Finance</span></div>
 </div>
-<div class="container" id="jobs-list"></div>
-</div>
-
-<div id="tab-candidat" style="display:none">
-<div class="container">
-<h2>Espace Candidat</h2>
-
-<div id="paywall-cv" class="card" style="border:2px dashed #22c55e">
-<h3>🔒 Générateur CV Pro - Débloque après paiement</h3>
-<p style="font-size:13px;color:#64748b;margin:8px 0">Tu as payé sur Chariow? Clique sur "J'ai payé" ou refais un paiement, le CV se débloque auto.</p>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-<div class="pack" onclick="pay('CV_1000')"><b>CV Pro</b><br><span style="font-size:22px;font-weight:800">1000</span> FCFA</div>
-<div class="pack best" onclick="pay('CV_PACK_2000')"><b>CV + Lien Direct</b><br><span style="font-size:22px;font-weight:800">2000</span> FCFA</div>
-</div>
-<button class="btn btn-white" style="width:100%;margin-top:10px" onclick="forceUnlock()">✅ J'ai déjà payé - Débloquer</button>
-</div>
-
-<div id="cv-generator-section" style="display:none">
-<div class="card" style="background:#f0fdf4;border-color:#22c55e">
-<h3>✅ Paiement confirmé - Générateur Débloqué</h3>
-<p style="font-size:12px">Produit: <span id="paid-product-label">CV_1000</span></p>
-<input id="cv-nom" placeholder="Nom complet">
-<input id="cv-tel" placeholder="WhatsApp ex: 074...">
-<input id="cv-metier" placeholder="Métier visé ex: Comptable">
-<textarea id="cv-exp" rows="4" placeholder="Expériences : Poste - Entreprise - Années"></textarea>
-<button class="btn btn-green" style="width:100%" onclick="generateCV()">Générer mon CV PDF</button>
-<div id="cv-output" style="margin-top:16px"></div>
-</div>
-</div>
-
-<div class="card" style="margin-top:20px">
-<!DOCTYPE html>
-<html lang="fr"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Gabon Talent OS - Emploi au Gabon</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<style>body{font-family:Inter,sans-serif}</style>
-</head>
-<body class="bg-[#f8fafc] text-[#0f172a]">
-<header class="h-20 bg-white border-b sticky top-0 z-50"><div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
-<div class="font-bold text-xl">Gabon Talent OS</div>
-<nav class="hidden md:flex gap-8 text-sm font-medium"><a href="#">Offres</a><a href="candidat.html">Candidats</a><a href="recruteur.html">Entreprises</a></nav>
-<a href="candidat.html" class="bg-[#0f172a] text-white px-5 py-2.5 rounded text-sm">Publier / Postuler</a>
-</div></header>
-<section class="bg-[#f8fafc] py-20"><div class="max-w-7xl mx-auto px-6 text-center">
-<h1 class="text-4xl md:text-5xl font-bold leading-tight">L'ensemble des opportunités<br>d'emploi au Gabon, centralisées.</h1>
-<div class="mt-8 max-w-2xl mx-auto flex bg-white rounded-lg border p-2 h-14">
-<input id="search" placeholder="Métier, compétence, entreprise..." class="flex-1 outline-none px-4">
-<button onclick="filterJobs()" class="bg-[#0f172a] text-white px-6 rounded">Rechercher</button>
-</div></div></section>
-<main class="max-w-7xl mx-auto px-6 pb-20"><div id="jobs" class="grid md:grid-cols-3 gap-6"></div></main>
-<section class="bg-white py-12 border-y"><div class="max-w-7xl mx-auto px-6">
-<p class="text-xs uppercase tracking-widest text-gray-500 mb-6">Partenaires institutionnels</p>
-<div class="flex flex-wrap gap-8 grayscale opacity-60 text-sm font-semibold">
-<span>SOBRAGA</span><span>PNPE</span><span>OCT</span><span>Ministère Fonction Publique</span><span>Solsern Afrique</span><span>Mbegha Technologie</span><span>ChatGPT</span><span>Claude AI</span>
-</div></div></section>
-<footer class="bg-[#0f172a] text-white py-12"><div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-8 text-sm">
-<div><b>Gabon Talent OS</b><p class="mt-2 opacity-60">Tel: +241 74 99 57 45</p></div>
-<div><b>Offres</b><p class="opacity-60 mt-2">CDI CDD Stage</p></div>
-<div><b>Contact</b><p class="opacity-60 mt-2">wa.me/24174995745</p></div>
-<div><b>© 2026</b></div>
-</div></footer>
+<div id="jobs" class="grid"></div>
 <script>
-let allJobs=[];
-async function load(){try{const r=await fetch('./data/jobs.json?v='+Date.now());allJobs=await r.json();render(allJobs)}catch(e){document.getElementById('jobs').innerHTML='Chargement... verifiez data/jobs.json'}}
-function render(jobs){document.getElementById('jobs').innerHTML=jobs.map(j=>`
-<a href="offre.html?id=${j.id}" class="bg-white rounded-xl border p-5 hover:shadow-lg transition block">
-<div class="flex justify-between mb-3"><span class="text-[11px] uppercase tracking-widest bg-[#f8fafc] border px-2 py-1 rounded">${j.category}</span><span class="text-xs border px-2 py-1 rounded">${j.type}</span></div>
-<h3 class="font-semibold text-[16px] leading-tight">${j.title}</h3>
-<p class="text-sm text-gray-500 mt-1">${j.company} • ${j.location}</p>
-<p class="text-sm text-gray-600 mt-3 line-clamp-2">${j.description.slice(0,120)}...</p>
-<div class="flex justify-between mt-4 pt-4 border-t text-xs text-gray-500"><span>${j.date}</span><span>Voir le détail →</span></div>
-</a>`).join('')}
-function filterJobs(){const q=document.getElementById('search').value.toLowerCase();render(allJobs.filter(j=>j.title.toLowerCase().includes(q)||j.company.toLowerCase().includes(q)))}
+let all=[];
+async function load(){const r=await fetch('./data/jobs.json?v='+Date.now());const d=await r.json();all=d.map((j,i)=>({...j,salary:j.salary||`${(2+i*0.5).toFixed(1)} — ${(3.5+i*0.5).toFixed(1)}M XAF / yr`,badge:j.badge||['New','Featured','Urgent'][i%3]}));document.getElementById('count').innerText=all.length+' open roles';render(all)}
+function render(list){document.getElementById('jobs').innerHTML=list.map(j=>`
+<a href="offre.html?id=${j.id}" style="text-decoration:none;color:inherit"><div class="card">
+<div class="top"><div style="display:flex;gap:12px;align-items:center"><div class="logoCo">${j.company.slice(0,2).toUpperCase()}</div><div><div style="font-weight:700">${j.company}</div><div style="font-size:12px;color:#64748b">${j.category}</div></div></div><span class="badge ${j.badge==='New'?'b-new':j.badge==='Featured'?'b-feat':'b-urg'}">${j.badge}</span></div>
+<div class="title">${j.title}</div>
+<div class="tags"><span class="tag">${j.category}</span><span class="tag">${j.type}</span></div>
+<div class="loc">📍 ${j.location} • ${j.type}</div>
+<div class="pay">💵 ${j.salary}</div>
+<div class="foot"><span>Posted ${j.date}</span><span class="apply">Apply →</span></div>
+</div></a>`).join('')}
+function doSearch(){const q=document.getElementById('q').value.toLowerCase();render(all.filter(j=>j.title.toLowerCase().includes(q)||j.company.toLowerCase().includes(q)))}
 load();
 </script>
 </body></html>
