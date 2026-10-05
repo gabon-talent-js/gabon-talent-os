@@ -1,23 +1,27 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>Gabon Talent OS - Tout-en-un PRO</title>
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>Gabon Talent OS</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
 body{background:#f6f7f9;overflow-x:hidden}
-header{background:#0b0f1a;color:#fff;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:50}
-.logo{font-weight:900;letter-spacing:-.5px}
-nav{display:flex;gap:6px}
-.navbtn{padding:7px 10px;border-radius:9px;font-size:11px;font-weight:700;border:0;cursor:pointer;background:#1f2937;color:#fff}
+header{background:#0b0f1a;color:#fff;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:sticky;top:0;z-index:100}
+.logo{font-weight:900;font-size:16px;letter-spacing:-.5px}
+nav{display:flex;gap:5px}
+.navbtn{padding:7px 10px;border-radius:9px;font-size:10.5px;font-weight:700;border:0;cursor:pointer;background:#1f2937;color:#fff}
 .navbtn.active{background:#5eead4;color:#0b0f1a}
-.ad{max-width:1200px;margin:12px auto;background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;border-radius:14px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
-.ad2{background:linear-gradient(135deg,#1e293b,#334155)}
-.hscroll{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:10px}
+
+/* BANDE QUI DEFILE SEULE */
+.ad-wrap{max-width:1200px;margin:12px auto;overflow:hidden;border-radius:14px;position:relative;height:52px}
+.ad-track{position:absolute;white-space:nowrap;display:flex;align-items:center;height:100%;animation:scroll 22s linear infinite}
+@keyframes scroll{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+.ad{ background:linear-gradient(135deg,#0f766e,#14b8a6); }
+.ad2{ background:linear-gradient(135deg,#1e293b,#334155); }
+.stats{max-width:1200px;margin:14px auto;padding:0 14px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stat{background:#fff;border:1px solid #eef2f7;border-radius:14px;padding:12px;text-align:center}
+.stat b{font-size:20px;font-weight:900;color:#0f766e;display:block}
+.hscroll{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px}
 .hscroll::-webkit-scrollbar{display:none}
 .sec{max-width:1200px;margin:14px auto;padding-left:14px}
-.sec h2{font-size:15px;font-weight:800;margin-bottom:8px}
 .card{scroll-snap-align:start;min-width:260px;max-width:260px;background:#fff;border:1px solid #eef2f7;border-radius:16px;padding:12px;flex-shrink:0;cursor:pointer}
-.logoC{width:36px;height:36px;border-radius:8px;background:#f1f5f9;display:grid;place-items:center;font-weight:800;font-size:11px}
-.badge{font-size:10px;padding:3px 7px;border-radius:99px;font-weight:700}.n{background:#dcfce7;color:#166534}.f{background:#dbeafe;color:#1e40af}.u{background:#ffedd5;color:#9a3412}
-.t{font-weight:800;margin-top:8px;font-size:13px}.tag{font-size:10px;border:1px solid #e5e7eb;background:#f8fafc;padding:3px 7px;border-radius:99px;margin-top:6px;display:inline-block}
-.grid{max-width:1200px;margin:10px auto;padding:0 14px 20px;display:grid;grid-template-columns:1fr;gap:10px}
+.grid{max-width:1200px;margin:10px auto;padding:0 14px;display:grid;grid-template-columns:1fr;gap:10px}
 @media(min-width:700px){.grid{grid-template-columns:repeat(2,1fr)}}
 .vcard{background:#fff;border:1px solid #eef2f7;border-radius:14px;padding:12px;cursor:pointer}
 .page{display:none;max-width:900px;margin:0 auto;padding:14px}.page.active{display:block}
@@ -25,45 +29,93 @@ nav{display:flex;gap:6px}
 input,textarea,select{width:100%;padding:11px;border:1px solid #e5e7eb;border-radius:10px;margin-top:7px;font-size:13px}
 label{font-size:11px;font-weight:700;margin-top:10px;display:block}
 .btn-apply{background:#0f766e;color:#fff;padding:13px;border-radius:12px;border:0;width:100%;font-weight:800;margin-top:14px;cursor:pointer}
+.testi{min-width:280px;background:#fff;border:1px solid #eef2f7;border-radius:14px;padding:14px;flex-shrink:0}
 </style></head><body>
-<header><div class="logo">🇬🇦 Gabon Talent OS</div>
+<header><div class="logo">Gabon Talent OS</div>
 <nav>
 <button class="navbtn active" onclick="showPage('offres')">Offres</button>
 <button class="navbtn" onclick="showPage('candidat')">Candidat</button>
 <button class="navbtn" onclick="showPage('recruteur')">Recruteur</button>
-<button class="navbtn" onclick="showPage('admin')">Admin</button>
+<button class="navbtn" onclick="showPage('adminLogin')">Admin</button>
 </nav></header>
+
+<!-- PAGE OFFRES -->
 <div id="page-offres" class="page active">
-<div style="text-align:center;padding:22px 14px 6px"><h1 style="font-size:26px;font-weight:900;line-height:1.1">Toutes les offres du Gabon.<br><span style="color:#0f766e">En un seul endroit.</span></h1><p style="font-size:11px;color:#64748b;margin-top:6px">Scroll ↓ vertical + Swipe → horizontal</p>
-<div style="max-width:700px;margin:12px auto;background:#fff;border:1px solid #e5e7eb;border-radius:14px;display:flex;padding:4px"><input id="q" placeholder="Rechercher poste..." oninput="filter()" style="flex:1;border:0;outline:0;padding:10px"><button style="background:#0f766e;color:#fff;border:0;border-radius:10px;padding:8px 14px">🔍</button></div></div>
-<div class="ad"><div><span style="font-size:10px;background:rgba(255,255,255,.2);padding:2px 6px;border-radius:99px">PUB Sponsor</span><br><b style="font-size:13px">Boostez votre CV - Airtel Business</b></div><a href="https://wa.me/24174995745" style="background:#fff;color:#000;padding:7px 10px;border-radius:8px;text-decoration:none;font-weight:800;font-size:11px">Voir</a></div>
-<div class="sec"><h2>🔥 À la une - Swipe →</h2><div id="hs1" class="hscroll"></div></div>
-<div class="ad ad2"><div><span style="font-size:10px;background:rgba(255,255,255,.2);padding:2px 6px;border-radius:99px">PUB Formation</span><br><b style="font-size:13px">Devenez Dev en 3 mois - CCTI</b></div><a href="mailto:gabontalent9provinces@gmail.com" style="background:#5eead4;color:#000;padding:7px 10px;border-radius:8px;text-decoration:none;font-weight:800;font-size:11px">S'inscrire</a></div>
-<div class="sec"><h2>⚡ Urgent - Swipe →</h2><div id="hs2" class="hscroll"></div></div>
-<div class="sec"><h2>📋 Toutes - Scroll ↓ <span id="count" style="font-size:11px;color:#64748b"></span></h2><div id="grid" class="grid"></div></div>
-<div class="ad"><div><b style="font-size:13px">Publiez vos offres +5000 candidats</b><br><span style="font-size:10px">PUB Recruteurs</span></div><button class="navbtn" style="background:#fff;color:#000" onclick="showPage('recruteur')">Publier</button></div>
+<div style="text-align:center;padding:22px 14px 6px"><h1 style="font-size:26px;font-weight:900">Toutes les offres du Gabon.<br><span style="color:#0f766e">En un seul endroit.</span></h1><p style="font-size:11px;color:#64748b">Scroll ↓ vertical + Swipe → horizontal</p>
+<div style="max-width:700px;margin:12px auto;background:#fff;border-radius:14px;display:flex;padding:4px;border:1px solid #e5e7eb"><input id="q" placeholder="Rechercher poste..." oninput="filter()" style="flex:1;border:0;outline:0;padding:10px"><button style="background:#0f766e;color:#fff;border:0;border-radius:10px;padding:8px 14px">🔍</button></div></div>
+
+<!-- STATS ANIMÉES -->
+<div class="stats">
+<div class="stat"><b id="s1">0</b><span style="font-size:10px;color:#64748b">Offres actives</span></div>
+<div class="stat"><b id="s2">0</b><span style="font-size:10px;color:#64748b">Candidats inscrits</span></div>
+<div class="stat"><b id="s3">0</b><span style="font-size:10px;color:#64748b">Recruteurs</span></div>
+<div class="stat"><b id="s4">0</b><span style="font-size:10px;color:#64748b">Provinces couvertes</span></div>
 </div>
+
+<!-- BANDE 1 QUI DEFILE SEULE -->
+<div class="ad-wrap ad"><div class="ad-track"><span style="margin-right:40px;font-weight:800;font-size:13px">🔥 Boostez votre CV - GT Business • CV Pro + Lettre + LinkedIn • 5000 FCFA seulement • +241 74995745 •</span><button onclick="showPage('boost')" style="background:#fff;color:#000;padding:6px 12px;border-radius:8px;border:0;font-weight:800;font-size:11px;cursor:pointer;margin-right:40px">Voir →</button><span style="margin-right:40px;font-weight:800">Boostez votre CV - GT Business • Réponse en 24h •</span></div></div>
+
+<div class="sec"><h2>🔥 À la une - Swipe →</h2><div id="hs1" class="hscroll"></div></div>
+
+<!-- BANDE 2 QUI DEFILE SEULE -->
+<div class="ad-wrap ad2"><div class="ad-track" style="animation-duration:28s"><span style="margin-right:40px;font-weight:800;font-size:13px">💻 Devenez Dev en 3 mois - CCTI Gabon • Formation certifiante • Inscriptions ouvertes •</span><button onclick="showPage('inscriptionDev')" style="background:#5eead4;color:#000;padding:6px 12px;border-radius:8px;border:0;font-weight:800;font-size:11px;cursor:pointer;margin-right:40px">S'inscrire →</button><span style="margin-right:40px">Devenez Dev en 3 mois - CCTI • 15 places / cohorte •</span></div></div>
+
+<div class="sec"><h2>⚡ Urgent - Swipe →</h2><div id="hs2" class="hscroll"></div></div>
+
+<!-- TEMOIGNAGES -->
+<div class="sec"><h2>💬 Témoignages clients</h2><div class="hscroll" id="testi"></div></div>
+
+<div class="sec"><h2>📋 Toutes les offres <span id="count" style="font-size:11px;color:#64748b"></span></h2><div id="grid" class="grid"></div></div>
+
+<!-- POLITIQUE -->
+<div class="sec"><h2>🔒 Politique de confidentialité</h2><div class="box" style="font-size:11px;color:#475569;line-height:1.7">Gabon Talent OS ne vend aucune donnée. Nous collectons uniquement nom, téléphone WhatsApp, email et CV pour mise en relation. Stockage local + email sécurisé. Suppression sur demande : <b>gabontalent9provinces@gmail.com</b> / WhatsApp <b>+241 74995745</b>. Hébergement GitHub Pages. En postant, vous acceptez d'être contacté par les recruteurs vérifiés.</div></div>
+</div>
+
+<!-- PAGE BOOST TON CV -->
+<div id="page-boost" class="page"><button class="navbtn" onclick="showPage('offres')">← Retour</button>
+<div class="box" style="margin-top:12px"><h2 style="font-weight:900">Boost ton CV - GT Business</h2><p style="font-size:11px;color:#64748b">Service premium - 5000 FCFA - Livraison 24h</p>
+<label>Nom complet *</label><input id="b_nom" placeholder="Ex: Jean Mba">
+<label>WhatsApp *</label><input id="b_tel" value="+241 ">
+<label>Email *</label><input id="b_email" placeholder="gabontalent9provinces@gmail.com">
+<label>Poste visé *</label><input id="b_poste" placeholder="Ex: Comptable Senior">
+<label>Télécharger votre CV (PDF, DOC)</label><input type="file" id="b_cv" accept=".pdf,.doc,.docx">
+<label>Objectif / Message</label><textarea id="b_msg" placeholder="Je veux booster mon CV pour..."></textarea>
+<button class="btn-apply" onclick="saveBoost()">Payer & Envoyer → WhatsApp</button>
+<p style="font-size:10px;text-align:center;margin-top:8px;color:#64748b">Après envoi, vous serez redirigé vers WhatsApp +241 74995745</p></div></div>
+
+<!-- PAGE INSCRIPTION DEV - MODELE QUE J'AI CRÉÉ POUR TOI -->
+<div id="page-inscriptionDev" class="page"><button class="navbtn" onclick="showPage('offres')">← Retour</button>
+<div class="box" style="margin-top:12px"><h2 style="font-weight:900">Devenez Dev en 3 mois - CCTI</h2><p style="font-size:11px;color:#64748b">Inscription officielle • Cohorte Janvier 2026 • Libreville</p>
+<div style="background:#f0fdfa;border:1px dashed #14b8a6;border-radius:12px;padding:10px;margin-top:10px;font-size:11px"><b>✅ Programme:</b> HTML/CSS, JavaScript, React, GitHub, Déploiement. Certificat CCTI + projet réel.</div>
+<label>Nom complet *</label><input id="d_nom">
+<label>WhatsApp *</label><input id="d_tel" value="+241 ">
+<label>Email</label><input id="d_email">
+<label>Ville *</label><select id="d_ville"><option>Libreville</option><option>Port-Gentil</option><option>Franceville</option><option>Owendo</option><option>Autre</option></select>
+<label>Niveau *</label><select id="d_niv"><option>Débutant total</option><option>Intermédiaire</option><option>Avancé</option></select>
+<label>Pourquoi cette formation ? *</label><textarea id="d_motif"></textarea>
+<button class="btn-apply" style="background:#0b0f1a" onclick="saveDev()">S'inscrire - Envoyer ma candidature →</button>
+</div></div>
+
+<!-- PAGE OFFRE DETAIL -->
 <div id="page-offre" class="page"><button class="navbtn" onclick="showPage('offres')">← Retour offres</button><div id="offreDetail" style="margin-top:12px"></div></div>
-<div id="page-candidat" class="page"><h2 style="font-weight:900">Espace Candidat</h2>
-<div class="hscroll" style="margin:12px 0"><div style="min-width:180px;background:#fff;padding:10px;border-radius:12px;border:1px solid #eef2f7;flex-shrink:0"><b style="font-size:11px">💡 CV 1 page</b></div><div style="min-width:180px;background:#fff;padding:10px;border-radius:12px;border:1px solid #eef2f7;flex-shrink:0"><b style="font-size:11px">💡 Lettre courte</b></div><div style="min-width:180px;background:#fff;padding:10px;border-radius:12px;border:1px solid #eef2f7;flex-shrink:0"><b style="font-size:11px">📱 WhatsApp</b></div></div>
-<div class="box"><label>Poste visé</label><input id="posteC"><label>Nom complet</label><input><label>Tél WhatsApp</label><input value="+241 74995745"><label>Email</label><input placeholder="gabontalent9provinces@gmail.com"><label>CV</label><textarea></textarea><button class="btn-apply" onclick="alert('Envoyé à gabontalent9provinces@gmail.com')">Envoyer candidature →</button></div></div>
-<div id="page-recruteur" class="page"><h2 style="font-weight:900">Espace Recruteur</h2>
-<div class="hscroll" style="margin:12px 0"><div style="min-width:150px;background:#fff;padding:10px;border-radius:12px;flex-shrink:0"><b>5000+</b><p style="font-size:10px">Candidats</p></div><div style="min-width:150px;background:#fff;padding:10px;border-radius:12px;flex-shrink:0"><b>⚡ 2 min</b><p style="font-size:10px">Publication</p></div></div>
-<div class="box"><label>Entreprise</label><input><label>Poste</label><input><label>Ville</label><select><option>Libreville</option><option>Port-Gentil</option><option>Franceville</option></select><label>Salaire</label><input placeholder="3.5 — 5.2M XAF"><label>Description</label><textarea></textarea><button class="btn-apply" style="background:#0b0f1a" onclick="alert('Offre envoyée!')">Publier offre →</button></div></div>
-<div id="page-admin" class="page"><h2 style="font-weight:900">Admin Dashboard</h2><p style="font-size:11px;color:#64748b">Tél +241 74995745 • gabontalent9provinces@gmail.com</p><div id="adminList" style="margin-top:10px"></div></div>
-<footer style="background:#0b0f1a;color:#94a3b8;padding:26px 14px;margin-top:20px;text-align:center;font-size:12px;line-height:1.8">
-Tél : +241 74995745<br>
-E-mail: gabontalent9provinces@gmail.com<br>
-Site web : gabon-talent-js.github.io/gabon-talent-os/<br>
-<span style="color:#5eead4">© 2026 Gabon Talent OS - V4.3 Tout-en-un PRO</span>
-</footer>
+
+<!-- CANDIDAT / RECRUTEUR SIMPLE -->
+<div id="page-candidat" class="page"><h2 style="font-weight:900">Espace Candidat</h2><div class="box" style="margin-top:10px"><label>Nom</label><input><label>Tel</label><input value="+241 74995745"><label>Email</label><input placeholder="gabontalent9provinces@gmail.com"><button class="btn-apply" onclick="alert('Envoyé à gabontalent9provinces@gmail.com')">Envoyer</button></div></div>
+<div id="page-recruteur" class="page"><h2 style="font-weight:900">Espace Recruteur</h2><div class="box" style="margin-top:10px"><label>Entreprise</label><input><label>Poste</label><input><button class="btn-apply" style="background:#0b0f1a" onclick="alert('Offre envoyée!')">Publier</button></div></div>
+
+<!-- ADMIN LOGIN + DATABASE -->
+<div id="page-adminLogin" class="page"><div class="box"><h2 style="font-weight:900">Admin - Connexion</h2><p style="font-size:11px;color:#64748b">Accès sécurisé</p><label>Identifiant</label><input id="adminUser" placeholder="admin"><label>Mot de passe</label><input id="adminPass" type="password" placeholder="••••••"><button class="btn-apply" style="background:#0b0f1a" onclick="loginAdmin()">Se connecter →</button><p style="font-size:10px;color:#94a3b8;margin-top:8px">Démo: admin / gabon2026</p></div></div>
+<div id="page-admin" class="page"><div style="display:flex;justify-content:space-between"><h2 style="font-weight:900">Base de données</h2><button class="navbtn" onclick="showPage('adminLogin')">Déconnexion</button></div>
+<div class="hscroll" style="margin:12px 0"><button class="navbtn active" id="tab1" onclick="showTab('cands')">GT Business</button><button class="navbtn" id="tab2" onclick="showTab('devs')">Dev CCTI</button><button class="navbtn" id="tab3" onclick="showTab('recs')">Recruteurs</button></div>
+<div id="adminCands"></div><div id="adminDevs" style="display:none"></div><div id="adminRecs" style="display:none"></div>
+</div>
+
+<footer style="background:#0b0f1a;color:#94a3b8;padding:26px 14px;margin-top:20px;text-align:center;font-size:12px;line-height:1.8">Tél : +241 74995745<br>E-mail: gabontalent9provinces@gmail.com<br>Site web : gabon-talent-js.github.io/gabon-talent-os/<br><span style="color:#5eead4">© 2026 Gabon Talent OS</span></footer>
+
 <script>
-const JOBS=[{id:"1",title:"Comptable Senior - Sobraga",company:"Sobraga",loc:"Libreville",type:"CDI",cat:"Finance",badge:"New",pay:"3.5 — 5.2M XAF"},{id:"2",title:"Développeur Web Fullstack",company:"Mbighe Tech",loc:"Libreville",type:"CDI",cat:"Tech",badge:"Featured",pay:"2.8 — 4.5M XAF"},{id:"3",title:"Chargé RH - PNPE",company:"PNPE",loc:"Port-Gentil",type:"CDD",cat:"RH",badge:"Urgent",pay:"2.0 — 3.0M XAF"},{id:"4",title:"Commercial Terrain",company:"Solsem",loc:"Franceville",type:"CDI",cat:"Commercial",badge:"New",pay:"1.5 — 2.8M XAF"},{id:"5",title:"Stagiaire Marketing Digital",company:"CCTI",loc:"Libreville",type:"Stage",cat:"Marketing",badge:"Featured",pay:"500k — 800k XAF"},{id:"6",title:"Technicien Maintenance",company:"Sobraga",loc:"Owendo",type:"CDI",cat:"Technique",badge:"Urgent",pay:"1.8 — 2.5M XAF"},{id:"7",title:"Assistante de Direction",company:"Ministère FP",loc:"Libreville",type:"CDD",cat:"Administratif",badge:"New",pay:"2.2 — 3.1M XAF"},{id:"8",title:"Agent Call Center",company:"Airtel Gabon",loc:"Libreville",type:"CDI",cat:"Service Client",badge:"Featured",pay:"1.2 — 1.8M XAF"}];
-function showPage(name){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));if(name==='offres'){document.getElementById('page-offres').classList.add('active');document.querySelectorAll('.navbtn')[0].classList.add('active')}else if(name==='offre'){document.getElementById('page-offre').classList.add('active')}else{document.getElementById('page-'+name).classList.add('active');const map={candidat:1,recruteur:2,admin:3};document.querySelectorAll('.navbtn')[map[name]].classList.add('active')}window.scrollTo(0,0)}
-const card=j=>`<div class="card" onclick="openOffre('${j.id}')"><div style="display:flex;justify-content:space-between"><div style="display:flex;gap:8px;align-items:center"><div class="logoC">${j.company.slice(0,2).toUpperCase()}</div><div><b style="font-size:11px">${j.company}</b><div style="font-size:9px;color:#64748b">${j.cat}</div></div></div><span class="badge ${j.badge=='New'?'n':j.badge=='Featured'?'f':'u'}">${j.badge}</span></div><div class="t">${j.title}</div><div><span class="tag">${j.cat}</span><span class="tag">${j.type}</span></div><div style="font-size:10px;color:#64748b;margin-top:6px">📍 ${j.loc}</div><div style="font-size:10px;font-weight:700">💵 ${j.pay}</div></div>`;
+const JOBS=[{id:"1",title:"Comptable Senior - Sobraga",company:"Sobraga",loc:"Libreville",type:"CDI",pay:"3.5 — 5.2M XAF"},{id:"2",title:"Développeur Web Fullstack",company:"Mbighe Tech",loc:"Libreville",type:"CDI",pay:"2.8 — 4.5M XAF"},{id:"3",title:"Chargé RH - PNPE",company:"PNPE",loc:"Port-Gentil",type:"CDD",pay:"2.0 — 3.0M XAF"},{id:"4",title:"Commercial Terrain",company:"Solsem",loc:"Franceville",type:"CDI",pay:"1.5 — 2.8M XAF"}];
+const TESTIS=[{n:"Annie L.",t:"J'ai trouvé un CDI en 2 semaines!",r:"Comptable - Sobraga"},{n:"Moussa K.",t:"GT Business a boosté mon CV en 24h, super pro.",r:"Dev Fullstack"},{n:"Sarah M. RH",t:"30 CV qualifiés en 3 jours via la plateforme.",r:"PNPE Port-Gentil"}];
+function showPage(name){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');window.scrollTo(0,0)}
+const card=j=>`<div class="card" onclick="openOffre('${j.id}')"><b style="font-size:11px">${j.company}</b><div style="font-weight:800;margin-top:4px;font-size:12px">${j.title}</div><div style="font-size:10px;color:#64748b">📍 ${j.loc} • 💵 ${j.pay}</div></div>`;
 const vcard=j=>`<div class="vcard" onclick="openOffre('${j.id}')"><b style="font-size:13px">${j.title}</b><div style="font-size:11px;color:#64748b">📍 ${j.loc} • ${j.company} • ${j.pay}</div></div>`;
-function render(list){document.getElementById('hs1').innerHTML=list.slice(0,5).map(card).join('');document.getElementById('hs2').innerHTML=list.filter(j=>j.badge!=='Featured').map(card).join('');document.getElementById('grid').innerHTML=list.map(vcard).join('');document.getElementById('count').innerText=list.length+' offres';document.getElementById('adminList').innerHTML=list.map(j=>`<div class="box" style="margin-top:8px"><b>${j.title}</b> - ${j.company} - ${j.pay}</div>`).join('')}
-function filter(){let q=document.getElementById('q').value.toLowerCase();render(JOBS.filter(j=>j.title.toLowerCase().includes(q)))}
-function openOffre(id){let j=JOBS.find(x=>x.id===id);document.getElementById('offreDetail').innerHTML=`<div class="box"><h1 style="font-size:18px;font-weight:900">${j.title}</h1><div style="font-size:11px;color:#64748b;margin-top:6px">📍 ${j.loc} • 🏢 ${j.company} • 💼 ${j.type} • 💵 ${j.pay}</div><p style="font-size:13px;margin-top:12px;line-height:1.6">Opportunité vérifiée chez ${j.company} à ${j.loc}. Contrat ${j.type} en ${j.cat}. Salaire ${j.pay}.</p><button class="btn-apply" onclick="document.getElementById('posteC').value='${j.title}';showPage('candidat')">Postuler →</button><div style="text-align:center;margin-top:10px"><a href="https://wa.me/24174995745?text=Je postule à ${j.title}" style="color:#0f766e;font-weight:700;font-size:12px;text-decoration:none">📱 WhatsApp +241 74995745</a></div></div>`;showPage('offre')}
-render(JOBS);
-</script></body></html>
+function render(list){document.getElementById('hs1').innerHTML=list.map(card).join('');document.getElementById('hs2').innerHTML=list.slice().reverse().map(card).join('');document.getElementById('grid').innerHTML=list.map(vcard).join('');document.getElementBy
