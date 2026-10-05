@@ -160,110 +160,50 @@ input,textarea,select{width:100%;padding:12px;margin:6px 0;border:1px solid #e2e
 </div>
 
 <div class="card" style="margin-top:20px">
-<h3>📥 Déposer votre CV (Gratuit) - Base recruteurs</h3>
-<p style="font-size:13px;color:#64748b">Les entreprises gabonaises consultent cette base tous les jours</p>
-<form id="cv-depot-form" style="margin-top:10px">
-<input type="text" id="depot-nom" placeholder="Nom complet" required>
-<input type="tel" id="depot-tel" placeholder="WhatsApp 074..." required>
-<input type="text" id="depot-metier" placeholder="Métier (ex: Comptable, Dev)" required>
-<input type="file" id="depot-file" accept=".pdf,.docx" required>
-<button type="submit" class="btn btn-dark" style="width:100%;margin-top:8px">Déposer mon CV gratuitement</button>
-</form>
-<div id="depot-msg" style="margin-top:10px;font-weight:700"></div>
-</div>
-
-</div>
-</div>
-
-<div id="tab-entreprise" style="display:none"><div class="container"><h2>Espace Entreprise</h2><div class="card"><h3>Publier une offre - 2500 FCFA</h3><button class="btn btn-green" style="width:100%;margin-top:10px" onclick="pay('ENTREPRISE_2500')">Payer 2500 FCFA & Publier</button></div></div></div>
-
-<div id="modal" class="modal" onclick="if(event.target==this)closeModal()"><div class="modal-box" id="modal-content"></div></div>
-
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gabon Talent OS - Emploi au Gabon</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>body{font-family:Inter,sans-serif}</style>
+</head>
+<body class="bg-[#f8fafc] text-[#0f172a]">
+<header class="h-20 bg-white border-b sticky top-0 z-50"><div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+<div class="font-bold text-xl">Gabon Talent OS</div>
+<nav class="hidden md:flex gap-8 text-sm font-medium"><a href="#">Offres</a><a href="candidat.html">Candidats</a><a href="recruteur.html">Entreprises</a></nav>
+<a href="candidat.html" class="bg-[#0f172a] text-white px-5 py-2.5 rounded text-sm">Publier / Postuler</a>
+</div></header>
+<section class="bg-[#f8fafc] py-20"><div class="max-w-7xl mx-auto px-6 text-center">
+<h1 class="text-4xl md:text-5xl font-bold leading-tight">L'ensemble des opportunités<br>d'emploi au Gabon, centralisées.</h1>
+<div class="mt-8 max-w-2xl mx-auto flex bg-white rounded-lg border p-2 h-14">
+<input id="search" placeholder="Métier, compétence, entreprise..." class="flex-1 outline-none px-4">
+<button onclick="filterJobs()" class="bg-[#0f172a] text-white px-6 rounded">Rechercher</button>
+</div></div></section>
+<main class="max-w-7xl mx-auto px-6 pb-20"><div id="jobs" class="grid md:grid-cols-3 gap-6"></div></main>
+<section class="bg-white py-12 border-y"><div class="max-w-7xl mx-auto px-6">
+<p class="text-xs uppercase tracking-widest text-gray-500 mb-6">Partenaires institutionnels</p>
+<div class="flex flex-wrap gap-8 grayscale opacity-60 text-sm font-semibold">
+<span>SOBRAGA</span><span>PNPE</span><span>OCT</span><span>Ministère Fonction Publique</span><span>Solsern Afrique</span><span>Mbegha Technologie</span><span>ChatGPT</span><span>Claude AI</span>
+</div></div></section>
+<footer class="bg-[#0f172a] text-white py-12"><div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-8 text-sm">
+<div><b>Gabon Talent OS</b><p class="mt-2 opacity-60">Tel: +241 74 99 57 45</p></div>
+<div><b>Offres</b><p class="opacity-60 mt-2">CDI CDD Stage</p></div>
+<div><b>Contact</b><p class="opacity-60 mt-2">wa.me/24174995745</p></div>
+<div><b>© 2026</b></div>
+</div></footer>
 <script>
-const PAYMENT_LINKS = {
-  CV_1000: "https://wgswpgri.mychariow.com/prd_1avtsfwc/checkout",
-  CV_PACK_2000: "https://wgswpgri.mychariow.com/prd_i0t95cv0/checkout",
-  AUTO_APPLY_5000: "https://wgswpgri.mychariow.com/prd_voveq098/checkout",
-  ENTREPRISE_2500: "https://wgswpgri.mychariow.com/prd_d40es2g3/checkout"
-};
-
-function pay(type){
-  localStorage.setItem('gt_pending_product', type);
-  window.open(PAYMENT_LINKS[type], '_blank');
-}
-
-function checkPaymentSuccess(){
-  const params = new URLSearchParams(window.location.search);
-  const isSuccess = params.get('payment')==='success' || params.get('status')==='paid' || localStorage.getItem('gt_paid')==='true';
-  if(params.get('payment')==='success'){
-    localStorage.setItem('gt_paid','true');
-    localStorage.setItem('gt_product', params.get('product')|| localStorage.getItem('gt_pending_product') || 'CV_1000');
-    window.history.replaceState({}, document.title, "/gabon-talent-os/");
-  }
-  if(isSuccess){ unlockCV(); }
-}
-function unlockCV(){
-  document.getElementById('paywall-cv').style.display='none';
-  document.getElementById('cv-generator-section').style.display='block';
-  document.getElementById('paid-product-label').innerText = localStorage.getItem('gt_product') || 'CV_1000';
-  showTab('candidat');
-}
-function forceUnlock(){
-  if(confirm("Confirme que tu as payé sur Chariow?")){
-    localStorage.setItem('gt_paid','true');
-    localStorage.setItem('gt_product', localStorage.getItem('gt_pending_product')||'CV_1000');
-    unlockCV();
-  }
-}
-window.addEventListener('load', checkPaymentSuccess);
-
-function generateCV(){
-  const nom=document.getElementById('cv-nom').value, tel=document.getElementById('cv-tel').value, metier=document.getElementById('cv-metier').value, exp=document.getElementById('cv-exp').value;
-  if(!nom||!tel){alert('Remplis nom et tel');return}
-  document.getElementById('cv-output').innerHTML = `
-    <div style="border:1px solid #000;padding:20px;background:white">
-    <h2>${nom}</h2><p>${metier} | ${tel}</p><hr style="margin:10px 0">
-    <h4>Expériences</h4><p style="white-space:pre-wrap">${exp}</p>
-    <p style="margin-top:20px;font-size:11px;color:#666">CV généré par Gabon Talent OS - ${new Date().toLocaleDateString()}</p>
-    </div>
-    <button class="btn btn-dark" style="width:100%;margin-top:10px" onclick="window.print()">📄 Télécharger / Imprimer PDF</button>
-  `;
-}
-
-// DEPOT CV
-document.getElementById('cv-depot-form').addEventListener('submit', function(e){
-  e.preventDefault();
-  const nom=document.getElementById('depot-nom').value;
-  document.getElementById('depot-msg').innerHTML = "✅ Merci "+nom+"! CV reçu. Recruteurs notifiés.";
-  // TODO: brancher Google Sheet / n8n / Telegram ici
-  this.reset();
-});
-
-const JOBS = [
-  {
-    "id": 1,
-    "title": "Développeur Full-Stack JS",
-    "company": "Gabon Talent JS",
-    "city": "Libreville",
-    "salary": "800k - 1.2M",
-    "source": "LinkedIn",
-    "tag": "NOUVEAU",
-    "desc": "React / Supabase",
-    "link": "https://gabon-talent-js.github.io/gabon-talent-os/",
-    "updated": "2026-10-05T06:12:30.012404"
-  }
-];
-function renderJobs(list){
-  document.getElementById('jobs-list').innerHTML = list.map(j=>`
-    <div class="card" onclick="openJob(${j.id})" style="cursor:pointer">
-      <span style="font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;background:#dcfce7">${j.tag} • ${j.source}</span>
-      <h3 style="margin:8px 0 4px">${j.title}</h3>
-      <div style="font-size:13px;color:#64748b">📍 ${j.city} • 💰 ${j.salary} • 🏢 ${j.company}</div>
-    </div>
-  `).join('');
-}
-renderJobs(JOBS);
-function openJob(id){
-  const j = JOBS.find(x=>x.id==id);
-  document.getElementById('modal-content').innerHTML = `
-    <h2>${j.title
+let allJobs=[];
+async function load(){try{const r=await fetch('./data/jobs.json?v='+Date.now());allJobs=await r.json();render(allJobs)}catch(e){document.getElementById('jobs').innerHTML='Chargement... verifiez data/jobs.json'}}
+function render(jobs){document.getElementById('jobs').innerHTML=jobs.map(j=>`
+<a href="offre.html?id=${j.id}" class="bg-white rounded-xl border p-5 hover:shadow-lg transition block">
+<div class="flex justify-between mb-3"><span class="text-[11px] uppercase tracking-widest bg-[#f8fafc] border px-2 py-1 rounded">${j.category}</span><span class="text-xs border px-2 py-1 rounded">${j.type}</span></div>
+<h3 class="font-semibold text-[16px] leading-tight">${j.title}</h3>
+<p class="text-sm text-gray-500 mt-1">${j.company} • ${j.location}</p>
+<p class="text-sm text-gray-600 mt-3 line-clamp-2">${j.description.slice(0,120)}...</p>
+<div class="flex justify-between mt-4 pt-4 border-t text-xs text-gray-500"><span>${j.date}</span><span>Voir le détail →</span></div>
+</a>`).join('')}
+function filterJobs(){const q=document.getElementById('search').value.toLowerCase();render(allJobs.filter(j=>j.title.toLowerCase().includes(q)||j.company.toLowerCase().includes(q)))}
+load();
+</script>
+</body></html>
