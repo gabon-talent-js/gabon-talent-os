@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin - Gabon Talent OS</title>
+<style>
+:root{--bg:#0f2415;--gold:#ffcc00;--card:#ffffff;--muted:#6b7280;--line:#e5e7eb;--red:#dc2626;--green:#16a34a}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:#f6f7f4;color:#111827}
+.header{background:var(--bg);color:white;padding:16px 20px;position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center}
+.header h1{margin:0;font-size:18px}.badge{background:var(--gold);color:var(--bg);padding:4px 10px;border-radius:999px;font-weight:900;font-size:12px}
+.wrap{max-width:1150px;margin:0 auto;padding:18px;display:grid;gap:18px}
+.grid{display:grid;gap:18px;grid-template-columns:1.2fr.8fr}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.box{background:white;border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 24px rgba(0,0,0,.06);overflow:hidden}
+.box h2{margin:0;padding:14px 16px;border-bottom:1px solid var(--line);font-size:15px;background:#fafaf7;display:flex;justify-content:space-between;align-items:center}
+.box.content{padding:16px}
+label{font-size:12px;font-weight:700;color:#374151;display:block;margin:10px 0 6px;text-transform:uppercase;letter-spacing:.4px}
+input,select,textarea{width:100%;padding:12px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;outline:none;background:white}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,204,0,.25)}
+textarea{min-height:120px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:600px){.row,.row3{grid-template-columns:1fr}}
+.btn{border:0;border-radius:10px;padding:12px 16px;font-weight:800;cursor:pointer;font-size:14px}
+.btn-primary{background:var(--bg);color:var(--gold);border:2px solid var(--bg)}.btn-gold{background:var(--gold);color:var(--bg)}.btn-ghost{background:white;border:1px solid var(--line)}
+.btn-danger{background:var(--red);color:white}.btn-sm{padding:8px 10px;font-size:12px;border-radius:8px}
+.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.kpi div{background:#f9faf6;border:1px dashed var(--line);border-radius:12px;padding:12px;text-align:center}
+.kpi b{font-size:22px;display:block}.kpi span{font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:700;letter-spacing:.5px}
+table{width:100%;border-collapse:collapse} th{text-align:left;font-size:11px;text-transform:uppercase;color:var(--muted);padding:10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid #f3f4f6;font-size:13px;vertical-align:top}
+.pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid var(--line)}
+.pill.active{background:#dcfce7;color:#166534;border-color:#bbf7d0}.pill.inactive{background:#fee2e2;color:#991b1b}
+#login{position:fixed;inset:0;background:rgba(15,36,21,.92);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+.login-card{background:white;border-radius:18px;max-width:380px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.hint{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.4}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>Admin Gabon Talent OS</h1>
+<div style="display:flex;gap:10px;align-items:center"><span class="badge" id="countBadge">0 OFFRES</span><button class="btn btn-ghost btn-sm" onclick="location.href='./'">Voir site</button></div>
+</div>
+<div id="login">
+<div class="login-card">
+<h2 style="margin:0 0 6px">Acces Admin</h2>
+<p class="hint">Mot de passe par defaut : <b>gabon2026</b> (change ligne ADMIN_PWD)</p>
+<label>Mot de passe</label>
+<input id="pwd" type="password" placeholder="••••••••" style="margin-top:6px">
+<button class="btn btn-primary" style="width:100%;margin-top:14px" onclick="doLogin()">Entrer</button>
+<p id="loginErr" style="color:var(--red);font-size:12px;display:none;margin-top:10px">Mot de passe incorrect</p>
+</div>
+</div>
+<div class="wrap">
+<div class="kpi">
+<div><b id="kpiTotal">0</b><span>Total offres</span></div>
+<div><b id="kpiActive">0</b><span>Actives</span></div>
+<div><b id="kpiToday">0</b><span>Aujourd'hui</span></div>
+</div>
+<div class="grid">
+<div class="box">
+<h2>Ajouter / Modifier <span id="editMode" style="display:none;background:var(--gold);padding:3px 8px;border-radius:999px;font-size:10px">EDITION</span></h2>
+<div class="content">
+<form id="formOffer" onsubmit="return false">
+<input type="hidden" id="docId">
+<label>Titre du poste *</label>
+<input id="title" placeholder="Ex: Comptable Senior H/F - CDI" required>
+<div class="row">
+<div><label>Entreprise *</label><input id="company" placeholder="Ex: TotalEnergies Gabon" required></div>
+<div><label>Secteur</label><select id="sector"><option>Petrole & Gaz</option><option>Banque / Finance</option><option>BTP / Construction</option><option>Commerce / Vente</option><option>Informatique / IT</option><option>Education</option><option>Sante</option><option>Transport / Logistique</option><option>Administration Publique</option><option>Telecom</option><option>Autre</option></select></div>
+</div>
+<div class="row3">
+<div><label>Province *</label><select id="province"><option>Estuaire</option><option>Haut-Ogooue</option><option>Moyen-Ogooue</option><option>Ngounie</option><option>Nyanga</option><option>Ogooue-Ivindo</option><option>Ogooue-Lolo</option><option>Ogooue-Maritime</option><option>Woleu-Ntem</option></select></div>
+<div><label>Ville *</label><input id="city" placeholder="Libreville" required value="Libreville"></div>
+<div><label>Type contrat *</label><select id="type"><option>CDI</option><option>CDD</option><option>Stage</option><option>Freelance</option><option>Alternance</option><option>Interim</option></select></div>
+</div>
+<div class="row">
+<div><label>Niveau d'experience</label><select id="exp"><option>Debutant (0-2 ans)</option><option>Intermediaire (2-5 ans)</option><option>Senior (5+ ans)</option><option>Tous niveaux</option></select></div>
+<div><label>Date limite</label><input id="deadline" type="date"></div>
+</div>
+<label>Description complete *</label>
+<textarea id="description" placeholder="Missions, profil, avantages..." required></textarea>
+<div class="row">
+<div><label>Email / Lien candidature</label><input id="applyLink" placeholder="rh@entreprise.ga ou https://..."></div>
+<div><label>Salaire (optionnel)</label><input id="salary" placeholder="Ex: 800 000 - 1 200 000 FCFA"></div>
+</div>
+<div class="row" style="margin-top:12px">
+<div style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="active" checked style="width:18px;height:18px"><label style="margin:0">Active (visible)</label></div>
+<div style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="featured" style="width:18px;height:18px"><label style="margin:0">Mise en avant</label></div>
+</div>
+<div style="display:flex;gap:10px;margin-top:16px">
+<button class="btn btn-gold" style="flex:1" onclick="saveOffer()">Publier l'offre</button>
+<button class="btn btn-ghost" onclick="resetForm()">Annuler</button>
+</div>
+<p class="hint">Meme base que le futur robot. Compatible auto-recherche.</p>
+</form>
+</div>
+</div>
+<div class="box">
+<h2>Gestion <span style="font-weight:400;font-size:12px;color:var(--muted)" id="filterInfo"></span></h2>
+<div class="content">
+<div class="row" style="margin-bottom:12px">
+<input id="search" placeholder="Rechercher titre, entreprise, ville..." oninput="renderTable()">
+<select id="filterProv" onchange="renderTable()"><option value="">Toutes provinces</option><option>Estuaire</option><option>Haut-Ogooue</option><option>Moyen-Ogooue</option><option>Ngounie</option><option>Nyanga</option><option>Ogooue-Ivindo</option><option>Ogooue-Lolo</option><option>Ogooue-Maritime</option><option>Woleu-Ntem</option></select>
+</div>
+<div style="overflow:auto;max-height:720px">
+<table>
+<thead><tr><th>Titre / Entreprise</th><th>Lieu</th><th>Statut</th><th>Actions</th></tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+<button class="btn btn-ghost btn-sm" onclick="exportJSON()">Export JSON</button>
+<button class="btn btn-ghost btn-sm" onclick="document.getElementById('importFile').click()">Import JSON</button>
+<input type="file" id="importFile" hidden accept=".json" onchange="importJSON(event)">
+<button class="btn btn-danger btn-sm" onclick="deleteAll()" style="margin-left:auto">Tout supprimer</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// ===== REMPLACE ICI PAR TA CONFIG DE index.html =====
+const firebaseConfig = {
+  apiKey: "AIzaSyA-REMPLACE-MOI",
+  authDomain: "gabon-talent-os.firebaseapp.com",
+  projectId: "gabon-talent-os",
+  storageBucket: "gabon-talent-os.appspot.com",
+  messagingSenderId: "000000000",
+  appId: "1:000000:web:xxxx"
+};
+let app, db;
+try{ app = initializeApp(firebaseConfig); db = getFirestore(app);}catch(e){ console.warn(e); }
+const ADMIN_PWD = "gabon2026";
+window.doLogin = ()=>{ const v=document.getElementById('pwd').value; if(v===ADMIN_PWD){ document.getElementById('login').style.display='none'; localStorage.setItem('gt_admin','1'); init(); } else{ document.getElementById('loginErr').style.display='block'; } };
+if(localStorage.getItem('gt_admin')==='1'){ document.getElementById('login').style.display='none'; }
+let OFFERS=[];
+function init(){
+ if(!db){ alert("Configure Firebase ligne 85"); return; }
+ const q = query(collection(db,"offers"), orderBy("createdAt","desc"));
+ onSnapshot(q, snap=>{ OFFERS = snap.docs.map(d=>({id:d.id,...d.data()})); updateKpi(); renderTable(); });
+}
+function updateKpi(){
+ document.getElementById('kpiTotal').textContent = OFFERS.length;
+ document.getElementById('kpiActive').textContent = OFFERS.filter(o=>o.active!==false).length;
+ document.getElementById('kpiToday').textContent = OFFERS.filter(o=>{ if(!o.createdAt) return false; const d = o.createdAt.toDate? o.createdAt.toDate() : new Date(o.createdAt); const today = new Date(); return d.toDateString()===today.toDateString(); }).length;
+ document.getElementById('countBadge').textContent = OFFERS.length+" OFFRES";
+ document.getElementById('filterInfo').textContent = OFFERS.length+" au total";
+}
+window.renderTable = ()=>{
+ const s = document.getElementById('search').value.toLowerCase();
+ const prov = document.getElementById('filterProv').value;
+ const tbody = document.getElementById('tbody');
+ let list = OFFERS.filter(o=>{ const matchSearch =!s || (o.title+o.company+o.city).toLowerCase().includes(s); const matchProv =!prov || o.province===prov; return matchSearch && matchProv; });
+ tbody.innerHTML = list.map(o=>`
+ <tr>
+ <td><b>${esc(o.title)}</b><br><span style="color:#6b7280">${esc(o.company)} • ${esc(o.sector||'')}</span><br><small>${o.featured? '⭐ A la une • ':''}${o.type||''} • ${o.exp||''}</small></td>
+ <td>${esc(o.city)}<br><small>${esc(o.province||'')}</small></td>
+ <td><span class="pill ${o.active!==false?'active':'inactive'}">${o.active!==false?'ACTIVE':'INACTIVE'}</span><br><small>${o.createdAt?.toDate? o.createdAt.toDate().toLocaleDateString() : ''}</small></td>
+ <td>
+ <button class="btn btn-ghost btn-sm" onclick="editOffer('${o.id}')">✏️</button>
+ <button class="btn btn-ghost btn-sm" onclick="toggleActive('${o.id}', ${o.active!==false})">${o.active!==false?'⏸️':'▶️'}</button>
+ <button class="btn btn-danger btn-sm" onclick="delOffer('${o.id}')">🗑️</button>
+ </td>
+ </tr>`).join('') || `<tr><td colspan=4 style="text-align:center;color:#6b7280;padding:30px">Aucune offre. Ajoute ta premiere a gauche.</td></tr>`;
+};
+function esc(t){ return (t||'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+window.saveOffer = async ()=>{
+ if(!db) return alert("Configure Firebase");
+ const data = {
+   title: document.getElementById('title').value.trim(),
+   company: document.getElementById('company').value.trim(),
+   sector: document.getElementById('sector').value,
+   province: document.getElementById('province').value,
+   city: document.getElementById('city').value.trim(),
+   type: document.getElementById('type').value,
+   exp: document.getElementById('exp').value,
+   deadline: document.getElementById('deadline').value,
+   description: document.getElementById('description').value.trim(),
+   applyLink: document.getElementById('applyLink').value.trim(),
+   salary: document.getElementById('salary').value.trim(),
+   active: document.getElementById('active').checked,
+   featured: document.getElementById('featured').checked,
+   createdAt: serverTimestamp(),
+   source: "admin-manual"
+ };
+ if(!data.title ||!data.company ||!data.city ||!data.description) return alert("Remplis les champs *");
+ const id = document.getElementById('docId').value;
+ try{
+   if(id){ await updateDoc(doc(db,"offers",id), {...data, createdAt: undefined}); alert("Offre modifiée"); }
+   else{ await addDoc(collection(db,"offers"), data); alert("Offre publiée!"); }
+   resetForm();
+ }catch(e){ alert("Erreur: "+e.message); }
+};
+window.editOffer = (id)=>{
+ const o = OFFERS.find(x=>x.id===id); if(!o) return;
+ document.getElementById('docId').value=o.id;
+ document.getElementById('title').value=o.title||''; document.getElementById('company').value=o.company||'';
+ document.getElementById('sector').value=o.sector||'Autre'; document.getElementById('province').value=o.province||'Estuaire';
+ document.getElementById('city').value=o.city||''; document.getElementById('type').value=o.type||'CDI';
+ document.getElementById('exp').value=o.exp||'Tous niveaux'; document.getElementById('deadline').value=o.deadline||'';
+ document.getElementById('description').value=o.description||''; document.getElementById('applyLink').value=o.applyLink||'';
+ document.getElementById('salary').value=o.salary||''; document.getElementById('active').checked=o.active!==false;
+ document.getElementById('featured').checked=!!o.featured;
+ document.getElementById('editMode').style.display='inline-block';
+ window.scrollTo({top:0,behavior:'smooth'});
+};
+window.resetForm = ()=>{ document.getElementById('formOffer').reset(); document.getElementById('docId').value=''; document.getElementById('active').checked=true; document.getElementById('city').value='Libreville'; document.getElementById('editMode').style.display='none'; };
+window.delOffer = async (id)=>{ if(!confirm("Supprimer?")) return; await deleteDoc(doc(db,"offers",id)); };
+window.toggleActive = async (id,cur)=>{ await updateDoc(doc(db,"offers",id), {active:!cur}); };
+window.deleteAll = async ()=>{ if(!confirm("SUPPRIMER TOUTES?")) return; if(prompt("Tape SUPPRIMER")!=="SUPPRIMER") return; for(const o of OFFERS){ await deleteDoc(doc(db,"offers",o.id)); } };
+window.exportJSON = ()=>{ const blob=new Blob([JSON.stringify(OFFERS,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='gabon-talent-offers.json'; a.click(); };
+window.importJSON = async (e)=>{
+ const file=e.target.files[0]; if(!file) return; const text=await file.text(); try{ const arr=JSON.parse(text); for(const o of arr){ const {id,createdAt,...rest}=o; await addDoc(collection(db,"offers"), {...rest, createdAt: serverTimestamp(), source:"import"}); } alert("Importé "+arr.length+" offres"); }catch(err){ alert("JSON invalide: "+err.message); }
+};
+if(localStorage.getItem('gt_admin')==='1'){ init(); }
+</script>
+</body>
+</html>
