@@ -124,14 +124,7 @@ td{padding:10px;border-bottom:1px solid #f3f4f6;font-size:13px;vertical-align:to
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 // ===== REMPLACE ICI PAR TA CONFIG DE index.html =====
-const firebaseConfig = {
-  apiKey: "AIzaSyA-REMPLACE-MOI",
-  authDomain: "gabon-talent-os.firebaseapp.com",
-  projectId: "gabon-talent-os",
-  storageBucket: "gabon-talent-os.appspot.com",
-  messagingSenderId: "000000000",
-  appId: "1:000000:web:xxxx"
-};
+const firebaseConfig = {apiKey:"AIzaSyATIRQPYhVPFpId1v13zk4axeJA_IQ70",authDomain:"gabon-talent-os.firebaseapp.com",projectId:"gabon-talent-os",storageBucket:"gabon-talent-os.firebasestorage.app",messagingSenderId:"66563433244",appId:"1:66563433244:web:1c6e82435544d7a839ee59",measurementId:"G-7FVW7XZMC"},
 let app, db;
 try{ app = initializeApp(firebaseConfig); db = getFirestore(app);}catch(e){ console.warn(e); }
 const ADMIN_PWD = "gabon2026";
