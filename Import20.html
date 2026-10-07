@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Import 20 offres</title>
+<style>
+body{font-family:Arial;background:#0f2415;color:#fff;padding:20px;text-align:center}
+.box{background:#fff;color:#111;border-radius:16px;padding:20px;max-width:500px;margin:20px auto}
+button{background:#ffcc00;border:0;padding:14px 20px;border-radius:12px;font-weight:900;width:100%;font-size:16px}
+.log{text-align:left;background:#f3f4f6;padding:10px;border-radius:8px;font-size:12px;max-height:300px;overflow:auto;margin-top:10px}
+</style>
+</head>
+<body>
+<h2>Import 20 offres Gabon</h2>
+<div class="box">
+<p>Firebase: gabon-talent-os</p>
+<button id="btn" onclick="doImport()">IMPORTER LES 20 OFFRES</button>
+<div id="status" style="margin-top:10px;font-weight:bold"></div>
+<div id="log" class="log"></div>
+<button onclick="location.href='./admin.html'" style="margin-top:10px;background:#e5e7eb">Voir Admin</button>
+</div>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,collection,addDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig={
+apiKey:"AIzaSyATIRQPYhVPFpId1v13zk4axeJA_IQ70",
+authDomain:"gabon-talent-os.firebaseapp.com",
+projectId:"gabon-talent-os",
+storageBucket:"gabon-talent-os.firebasestorage.app",
+messagingSenderId:"66563433244",
+appId:"1:66563433244:web:1c6e82435544d7a839ee59"
+};
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+const OFFERS=[
+{t:"Comptable Senior H/F - CDI",c:"BGFI Bank",s:"Banque / Finance",p:"Estuaire",v:"Libreville",y:"CDI",d:"BGFI Bank recrute Comptable Senior. Clotures, reporting IFRS. BAC+4, 5 ans.",l:"recrutement@bgfibank.ga",sal:"1 200 000 - 1 800 000 FCFA",f:1},
+{t:"Commercial Terrain B2B",c:"TotalEnergies Marketing Gabon",s:"Petrole & Gaz",p:"Estuaire",v:"Libreville",y:"CDI",d:"Developpement portefeuille B2B, prospection stations. Permis B.",l:"https://totalenergies.ga",sal:"800 000 + commissions",f:0},
+{t:"Developpeur Fullstack React/Node",c:"E-Doley Finance",s:"Informatique / IT",p:"Estuaire",v:"Libreville",y:"CDI",d:"Stack React, Node, Firebase. Maintenance Gabon Talent OS. GitHub requis.",l:"jobs@edoley.com",sal:"900 000 - 1 300 000",f:1},
+{t:"Chef de Chantier BTP",c:"Colas Gabon",s:"BTP / Construction",p:"Estuaire",v:"Owendo",y:"CDI",d:"Supervision chantiers route, management 20 personnes, HSE. Ingenieur 5 ans.",l:"",sal:"",f:0},
+{t:"Infirmier Diplome d'Etat",c:"CHU Libreville",s:"Sante",p:"Estuaire",v:"Libreville",y:"CDI",d:"Soins generaux, urgences, travail nuit. Diplome d'Etat.",l:"",sal:"",f:0},
+{t:"Professeur Mathematiques",c:"Lycee Leon Mba",s:"Education",p:"Estuaire",v:"Libreville",y:"CDD",d:"Cours secondaire, preparation BAC. Licence Maths.",l:"",sal:"",f:0},
+{t:"Chauffeur Poids Lourd CE",c:"SDV Logistique",s:"Transport / Logistique",p:"Ogoue-Maritime",v:"Port-Gentil",y:"CDI",d:"Transport materiel petrolier POG-LBV. Permis CE + ADR.",l:"",sal:"",f:0},
+{t:"Community Manager - Stage",c:"Airtel Gabon",s:"Telecom",p:"Estuaire",v:"Libreville",y:"Stage",d:"Gestion reseaux sociaux, creation contenus. Stage 6 mois.",l:"",sal:"",f:1},
+{t:"Assistante Direction Bilingue",c:"Perenco Gabon",s:"Petrole & Gaz",p:"Ogoue-Maritime",v:"Port-Gentil",y:"CDI",d:"Bilingue Anglais/Francais, agenda DG. BAC+3.",l:"",sal:"",f:0},
+{t:"Technicien Fibre Optique FTTH",c:"Moov Africa Gabon Telecom",s:"Telecom",p:"Estuaire",v:"Libreville",y:"CDI",d:"Installation fibre, depannage, OTDR.",l:"",sal:"",f:0},
+{t:"Vendeuse Boutique",c:"Librairie de l'Estuaire",s:"Commerce / Vente",p:"Estuaire",v:"Libreville",y:"CDI",d:"Accueil client, encaissement.",l:"",sal:"",f:0},
+{t:"Magasinier",c:"Ceca Gadis",s:"Commerce / Vente",p:"Estuaire",v:"Libreville",y:"CDI",d:"Reception marchandises, gestion stock.",l:"",sal:"",f:0},
+{t:"Auditeur Interne Senior",c:"BICIG",s:"Banque / Finance",p:"Estuaire",v:"Libreville",y:"CDI",d:"Audit agences, controle interne. BAC+5, 4 ans.",l:"",sal:"1 000 000 - 1 500 000",f:0},
+{t:"Electricien Industriel",c:"Gabon Power",s:"BTP / Construction",p:"Haut-Ogooue",v:"Franceville",y:"CDI",d:"Maintenance electrique centrale, HT/BT.",l:"",sal:"",f:0},
+{t:"Agent Accueil 5 etoiles",c:"Radisson Blu",s:"Commerce / Vente",p:"Estuaire",v:"Libreville",y:"CDI",d:"Accueil VIP, check-in/out, anglais.",l:"",sal:"",f:0},
+{t:"Secretaire Comptable",c:"SOGARA",s:"Petrole & Gaz",p:"Ogoue-Maritime",v:"Port-Gentil",y:"CDI",d:"Saisie factures, rapprochement bancaire.",l:"",sal:"",f:0},
+{t:"Charge RH - Paie",c:"COMILOG",s:"BTP / Construction",p:"Haut-Ogooue",v:"Moanda",y:"CDI",d:"Gestion paie 300 employes, SAGE.",l:"",sal:"",f:0},
+{t:"Caissiere Supermarche",c:"Mbolo",s:"Commerce / Vente",p:"Estuaire",v:"Libreville",y:"CDI",d:"Encaissement, fidelisation client.",l:"",sal:"",f:0},
+{t:"Mecanicien Automobile",c:"Toyota Gabon",s:"Transport / Logistique",p:"Estuaire",v:"Libreville",y:"CDI",d:"Entretien vehicules, diagnostic.",l:"",sal:"",f:0},
+{t:"Juriste Droit des Affaires",c:"Cabinet Bongo & Associes",s:"Autre",p:"Estuaire",v:"Libreville",y:"CDI",d:"Redaction contrats, conseil petrolieres. Master 2 Droit.",l:"",sal:"1 100 000",f:1}
+];
+window.doImport=async()=>{
+const btn=document.getElementById('btn');
+const st=document.getElementById('status');
+const log=document.getElementById('log');
+btn.disabled=true;btn.textContent="Import en cours...";
+let ok=0;
+for(const o of OFFERS){
+try{
+await addDoc(collection(db,"offers"),{
+title:o.t,company:o.c,sector:o.s,province:o.p,city:o.v,type:o.y,
+description:o.d,applyLink:o.l||"",salary:o.sal||"",
+active:true,featured:!!o.f,createdAt:serverTimestamp(),source:"auto-import-20"
+});
+ok++;st.textContent=ok+"/20 importees";
+log.innerHTML+="✅ "+o.t+"<br>";
+}catch(e){log.innerHTML+="❌ "+o.t+" : "+e.message+"<br>";}
+}
+st.textContent="TERMINE ! "+ok+"/20 offres importees";
+btn.textContent="C'est fait ! Va voir Admin";
+};
+</script>
+</body></html>
