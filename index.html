@@ -644,7 +644,8 @@ const DB={
       return [...store.get("jobs_published",[]),...base];
     }
     const {collection,getDocs,query,where,limit}=fb.fs;
-    const s=await getDocs(query(collection(fb.db,"jobs"),where("status","==","published"),limit(100)));
+    const s=await getDocs(query(collection(fb.db,"offers"),where("active","==",true),limit(100)));
+
     return s.docs.map(fromDoc);
   },
   async submit(type,p){
