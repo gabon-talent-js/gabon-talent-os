@@ -664,7 +664,7 @@ const DB={
     await fb.fs.deleteDoc(fb.fs.doc(fb.db,COL[type],id));
   },
   async publishOffer(r){
-    const job={title:r.poste,company:r.company,loc:(r.ville||"").split(" – ")[0],type:r.type,cat:r.categorie,badge:"New",pay:r.pay||"",desc:r.description||""};
+    const job={title:r.poste||r.title||"",company:r.company||"",loc:(r.ville||r.loc||"").split(" – ")[0],type:r.type||"CDI",cat:r.categorie||r.cat||"Autre",badge:"New",pay:r.pay||"",desc:r.description||r.desc||""};
     if(!FB){
       const l=store.get("recs",[]),o=l.find(x=>x.id===r.id);if(o)o.published=true;store.set("recs",l);
       const j=store.get("jobs_published",[]);j.unshift({...job,id:"u"+r.id,posted:new Date().toISOString()});store.set("jobs_published",j);return;
