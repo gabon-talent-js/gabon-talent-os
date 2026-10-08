@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Console admin · Gabon Talent OS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root{--ink:#0f2a1d;--green:#0b7a4b;--sun:#f2b705;--paper:#f6f7f4}
+  body{background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+  .btn{border-radius:.6rem;padding:.45rem .9rem;font-weight:600;font-size:.85rem;transition:opacity .15s}
+  .btn:hover{opacity:.85}.btn:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--sun);outline-offset:2px}
+  .btn-main{background:var(--green);color:#fff}.btn-dark{background:var(--ink);color:#fff}
+  .btn-red{background:#fee2e2;color:#b91c1c}.btn-sun{background:var(--sun);color:var(--ink)}
+  .field{border:1px solid #d5dbd3;border-radius:.6rem;padding:.45rem .7rem;width:100%;background:#fff}
+  .card{background:#fff;border:1px solid #e1e6df;border-radius:.9rem;padding:1rem}
+  .tab[aria-selected=true]{background:var(--ink);color:#fff}
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- CONNEXION -->
+<section id="login" class="hidden max-w-sm mx-auto mt-24 card p-8">
+  <h1 class="text-xl font-extrabold">Accès réservé</h1>
+  <p class="text-sm text-slate-500 mt-1">Connecte-toi avec ton compte administrateur.</p>
+  <input id="email" type="email" autocomplete="username" placeholder="Email" class="field mt-5">
+  <input id="pass" type="password" autocomplete="current-password" placeholder="Mot de passe" class="field mt-2">
+  <p id="loginErr" class="text-sm text-red-600 mt-2 hidden"></p>
+  <button id="loginBtn" class="btn btn-dark w-full mt-4">Se connecter</button>
+</section>
+
+<!-- PANEL -->
+<main id="panel" class="hidden max-w-6xl mx-auto">
+  <header class="flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-extrabold">Console admin · Gabon Talent OS</h1>
+      <p id="who" class="text-sm text-slate-500"></p>
+    </div>
+    <button id="logoutBtn" class="btn btn-red">Se déconnecter</button>
+  </header>
+
+  <div id="stats" class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6"></div>
+
+  <nav class="flex gap-2 mt-8 overflow-x-auto" role="tablist">
+    <button class="tab btn bg-white border" role="tab" data-tab="packs" aria-selected="true">Packs</button>
+    <button class="tab btn bg-white border" role="tab" data-tab="offres" aria-selected="false">Offres</button>
+    <button class="tab btn bg-white border" role="tab" data-tab="site" aria-selected="false">Site</button>
+  </nav>
+
+  <!-- PACKS -->
+  <section id="tab-packs" class="mt-5">
+    <div class="card mb-4">
+      <h2 class="font-bold">Créer un pack</h2>
+      <div class="flex flex-wrap gap-2 mt-2">
+        <input id="newPackId" class="field max-w-[200px]" placeholder="identifiant (ex: pro)">
+        <button id="addPackBtn" class="btn btn-main">Créer le pack</button>
+      </div>
+    </div>
+    <div id="packs" class="grid md:grid-cols-3 gap-4"></div>
+  </section>
+
+  <!-- OFFRES -->
+  <section id="tab-offres" class="mt-5 hidden">
+    <div class="flex flex-wrap gap-2 mb-3">
+      <input id="search" class="field max-w-xs" placeholder="Rechercher une offre…">
+      <select id="filterStatus" class="field max-w-[180px]">
+        <option value="">Tous les statuts</option>
+        <option value="active">Active</option>
+        <option value="en_attente">En attente</option>
+        <option value="clos">Clôturée</option>
+      </select>
+    </div>
+    <div id="offres" class="grid gap-2"></div>
+  </section>
+
+  <!-- SITE -->
+  <section id="tab-site" class="mt-5 hidden">
+    <div class="card grid gap-3 max-w-2xl">
+      <h2 class="font-bold">Textes du site (collection config_site, document « main »)</h2>
+      <label class="text-sm">Titre principal<input id="s_heroTitre" class="field mt-1"></label>
+      <label class="text-sm">Sous-titre<textarea id="s_heroSousTitre" class="field mt-1 h-20"></textarea></label>
+      <label class="text-sm">WhatsApp de contact<input id="s_whatsapp" class="field mt-1" placeholder="+241…"></label>
+      <label class="text-sm">Bandeau d'annonce (laisser vide pour masquer)<input id="s_banniere" class="field mt-1"></label>
+      <div><button id="saveSiteBtn" class="btn btn-main">Enregistrer le site</button></div>
+    </div>
+    <p class="text-sm mt-4">
+      <a class="underline text-green-800" href="index.html" target="_blank" rel="noopener">Voir index.html</a> ·
+      <a class="underline text-green-800" href="tarifs.html" target="_blank" rel="noopener">Voir tarifs.html</a>
+    </p>
+  </section>
+</main>
+
+<div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-sm px-4 py-2 rounded-full hidden z-50"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, getDocs, collection, deleteDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// ⚠️ Colle ici la config de ta console Firebase (Paramètres du projet > Tes applications).
+// Cette clé est publique par conception : la vraie protection = règles Firestore (voir guide).
+const firebaseConfig = {
+  apiKey: "TON_API_KEY",
+  authDomain: "gabon-talent-os.firebaseapp.com",
+  projectId: "gabon-talent-os"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const show = (el, on) => el.classList.toggle("hidden", !on);
+let offres = [];
+
+function toast(msg){
+  const t = $("toast"); t.textContent = msg; show(t, true);
+  clearTimeout(toast.t); toast.t = setTimeout(() => show(t, false), 2800);
+}
+async function safe(fn){
+  try { return await fn(); }
+  catch(e){ console.error(e); toast(e.code === "permission-denied" ? "Accès refusé par Firestore" : "Erreur : " + (e.message || e)); }
+}
+
+/* ---------- AUTH ---------- */
+// L'admin est reconnu par son UID présent dans la collection "admins" (créée à la main dans la console).
+async function isAdmin(user){
+  if(!user) return false;
+  try { return (await getDoc(doc(db, "admins", user.uid))).exists(); } catch { return false; }
+}
+onAuthStateChanged(auth, async (user) => {
+  if(await isAdmin(user)){
+    show($("login"), false); show($("panel"), true);
+    $("who").textContent = "Connecté : " + user.email;
+    loadAll();
+  } else {
+    if(user) await signOut(auth);
+    show($("panel"), false); show($("login"), true);
+  }
+});
+$("loginBtn").onclick = async () => {
+  const err = $("loginErr"); show(err, false);
+  try { await signInWithEmailAndPassword(auth, $("email").value.trim(), $("pass").value); }
+  catch { err.textContent = "Email ou mot de passe incorrect."; show(err, true); }
+};
+$("pass").addEventListener("keydown", e => { if(e.key === "Enter") $("loginBtn").click(); });
+$("logoutBtn").onclick = () => signOut(auth);
+
+/* ---------- ONGLETS ---------- */
+document.querySelectorAll(".tab").forEach(b => b.onclick = () => {
+  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x === b));
+  ["packs","offres","site"].forEach(n => show($("tab-" + n), n === b.dataset.tab));
+});
+
+/* ---------- CHARGEMENT ---------- */
+async function loadAll(){ await Promise.all([loadPacks(), loadOffres(), loadSite()]); }
+
+function renderStats(packsCount){
+  const by = (s) => offres.filter(o => o.status === s).length;
+  const items = [
+    ["Offres", offres.length], ["Actives", by("active")],
+    ["En TOP", offres.filter(o => o.isTop).length], ["Packs", packsCount]
+  ];
+  $("stats").innerHTML = items.map(([l, v]) =>
+    `<div class="card"><div class="text-3xl font-extrabold">${v}</div><div class="text-sm text-slate-500">${l}</div></div>`).join("");
+}
+
+/* ---------- PACKS ---------- */
+async function loadPacks(){
+  await safe(async () => {
+    const snap = await getDocs(collection(db, "config_packs"));
+    $("packs").innerHTML = snap.docs.map(d => {
+      const p = d.data(), id = esc(d.id);
+      return `<div class="card" data-pack="${id}">
+        <input data-f="nom" value="${esc(p.nom)}" class="field font-bold" aria-label="Nom du pack">
+        <div class="flex items-center gap-2 mt-2 text-sm">
+          <input data-f="prix" type="number" min="0" value="${esc(p.prix ?? 0)}" class="field w-28"> FCFA
+          <input data-f="maxOffres" type="number" min="0" value="${esc(p.maxOffres ?? 0)}" class="field w-20"> offres
+        </div>
+        <textarea data-f="features" class="field mt-2 h-24 text-xs" placeholder="Une fonctionnalité par ligne">${esc((p.features || []).join("\n"))}</textarea>
+        <div class="flex gap-2 mt-3">
+          <button class="btn btn-main" data-act="savePack">Enregistrer</button>
+          <button class="btn btn-red" data-act="delPack">Supprimer</button>
+        </div>
+        <p class="text-[11px] text-slate-400 mt-2">ID : ${id}</p>
+      </div>`;
+    }).join("") || `<p class="text-sm text-slate-500">Aucun pack. Crée le premier ci-dessus.</p>`;
+    renderStats(snap.size);
+  });
+}
+$("packs").addEventListener("click", (e) => {
+  const act = e.target.dataset.act; if(!act) return;
+  const card = e.target.closest("[data-pack]"), id = card.dataset.pack;
+  const v = (f) => card.querySelector(`[data-f=${f}]`).value;
+  if(act === "savePack") safe(async () => {
+    await setDoc(doc(db, "config_packs", id), {
+      nom: v("nom").trim(), prix: Math.max(0, Number(v("prix")) || 0),
+      maxOffres: Math.max(0, Number(v("maxOffres")) || 0),
+      features: v("features").split("\n").map(s => s.trim()).filter(Boolean),
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+    toast("Pack « " + id + " » enregistré");
+  });
+  if(act === "delPack" && confirm("Supprimer le pack « " + id + " » ?")) safe(async () => {
+    await deleteDoc(doc(db, "config_packs", id)); toast("Pack supprimé"); loadPacks();
+  });
+});
+$("addPackBtn").onclick = () => {
+  const id = $("newPackId").value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "");
+  if(!id) return toast("Identifiant invalide (lettres, chiffres, - et _)");
+  safe(async () => {
+    const ref = doc(db, "config_packs", id);
+    if((await getDoc(ref)).exists()) return toast("Ce pack existe déjà");
+    await setDoc(ref, { nom: id, prix: 0, maxOffres: 1, features: [], createdAt: serverTimestamp() });
+    $("newPackId").value = ""; toast("Pack créé"); loadPacks();
+  });
+};
+
+/* ---------- OFFRES ---------- */
+async function loadOffres(){
+  await safe(async () => {
+    const snap = await getDocs(collection(db, "offres"));
+    offres = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderOffres();
+    const n = document.querySelectorAll("[data-pack]").length;
+    renderStats(n);
+  });
+}
+function renderOffres(){
+  const q = $("search").value.toLowerCase(), st = $("filterStatus").value;
+  const list = offres.filter(o => (!st || o.status === st) && (!q || String(o.titre || "").toLowerCase().includes(q)));
+  $("offres").innerHTML = list.map(o => `
+    <div class="card flex flex-wrap items-center justify-between gap-2" data-offre="${esc(o.id)}">
+      <div class="min-w-0">
+        <div class="font-semibold truncate">${o.isTop ? "★ " : ""}${esc(o.titre || "(sans titre)")}</div>
+        <div class="text-xs text-slate-500">${esc(o.entreprise || "")}</div>
+      </div>
+      <div class="flex items-center gap-2">
+        <select data-act="status" class="field !w-auto text-sm" aria-label="Statut">
+          ${[["active","Active"],["en_attente","En attente"],["clos","Clôturée"]].map(([v, l]) =>
+            `<option value="${v}" ${o.status === v ? "selected" : ""}>${l}</option>`).join("")}
+        </select>
+        <button class="btn btn-sun" data-act="top">${o.isTop ? "Retirer TOP" : "Mettre en TOP"}</button>
+        <button class="btn btn-red" data-act="del">Supprimer</button>
+      </div>
+    </div>`).join("") || `<p class="text-sm text-slate-500">Aucune offre ne correspond.</p>`;
+}
+$("search").oninput = renderOffres; $("filterStatus").onchange = renderOffres;
+$("offres").addEventListener("click", (e) => {
+  const act = e.target.dataset.act; if(!act || act === "status") return;
+  const id = e.target.closest("[data-offre]").dataset.offre, o = offres.find(x => x.id === id);
+  if(act === "top") safe(async () => {
+    await updateDoc(doc(db, "offres", id), { isTop: !o.isTop }); o.isTop = !o.isTop; renderOffres(); renderStats(document.querySelectorAll("[data-pack]").length);
+    toast(o.isTop ? "Offre mise en TOP" : "TOP retiré");
+  });
+  if(act === "del" && confirm("Supprimer définitivement « " + (o.titre || id) + " » ?")) safe(async () => {
+    await deleteDoc(doc(db, "offres", id)); offres = offres.filter(x => x.id !== id); renderOffres(); toast("Offre supprimée");
+  });
+});
+$("offres").addEventListener("change", (e) => {
+  if(e.target.dataset.act !== "status") return;
+  const id = e.target.closest("[data-offre]").dataset.offre, o = offres.find(x => x.id === id);
+  safe(async () => { await updateDoc(doc(db, "offres", id), { status: e.target.value }); o.status = e.target.value; toast("Statut mis à jour"); });
+});
+
+/* ---------- SITE ---------- */
+const SITE_FIELDS = ["heroTitre", "heroSousTitre", "whatsapp", "banniere"];
+async function loadSite(){
+  await safe(async () => {
+    const s = await getDoc(doc(db, "config_site", "main"));
+    const d = s.exists() ? s.data() : {};
+    SITE_FIELDS.forEach(f => $("s_" + f).value = d[f] || "");
+  });
+}
+$("saveSiteBtn").onclick = () => safe(async () => {
+  const data = { updatedAt: serverTimestamp() };
+  SITE_FIELDS.forEach(f => data[f] = $("s_" + f).value.trim());
+  await setDoc(doc(db, "config_site", "main"), data, { merge: true });
+  toast("Site mis à jour");
+});
+</script>
+</body>
+</html>
