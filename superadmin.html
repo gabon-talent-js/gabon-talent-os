@@ -125,13 +125,11 @@ async function safe(fn){
 }
 
 /* ---------- AUTH ---------- */
-// L'admin est reconnu par son UID présent dans la collection "admins" (créée à la main dans la console).
-async function isAdmin(user){
-  if(!user) return false;
-  try { return (await getDoc(doc(db, "admins", user.uid))).exists(); } catch { return false; }
-}
+// Seul cet email est admin. La vraie protection est dans les règles Firestore (même email).
+const ADMIN_EMAIL = "gabontalent9provinces@gmail.com";
 onAuthStateChanged(auth, async (user) => {
-  if(await isAdmin(user)){
+  if(user && user.email && user.email.toLowerCase() === ADMIN_EMAIL){
+    show($("loginErr"), false);
     show($("login"), false); show($("panel"), true);
     $("who").textContent = "Connecté : " + user.email;
     loadAll();
@@ -143,7 +141,12 @@ onAuthStateChanged(auth, async (user) => {
 $("loginBtn").onclick = async () => {
   const err = $("loginErr"); show(err, false);
   try { await signInWithEmailAndPassword(auth, $("email").value.trim(), $("pass").value); }
-  catch { err.textContent = "Email ou mot de passe incorrect."; show(err, true); }
+  catch(e){
+    err.textContent = e.code === "auth/operation-not-allowed" ? "Email/Mot de passe non activé dans Firebase."
+      : e.code === "auth/too-many-requests" ? "Trop d'essais, réessaie dans quelques minutes."
+      : "Email ou mot de passe incorrect.";
+    show(err, true);
+  }
 };
 $("pass").addEventListener("keydown", e => { if(e.key === "Enter") $("loginBtn").click(); });
 $("logoutBtn").onclick = () => signOut(auth);
