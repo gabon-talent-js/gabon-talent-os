@@ -173,6 +173,12 @@ ul.list{padding-left:20px;font-size:14px;margin-top:8px}
 .flow span.on{border-color:var(--green);color:var(--ink);font-weight:700}
 .app{margin-bottom:10px;padding:14px}
 .app .note{margin-top:8px}
+.packs{display:grid;gap:12px;margin-top:14px}
+@media(min-width:800px){.packs{grid-template-columns:repeat(3,1fr)}}
+.pack{display:flex;flex-direction:column}
+.pack.pop{border:2px solid var(--green)}
+.pack ul.list{flex:1;margin-bottom:6px}
+.pack .btn{margin-top:10px}
 /* Toast */
 #toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,40px);background:#12201a;color:#fff;padding:11px 18px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:400;max-width:90vw;text-align:center}
 #toast.show{opacity:1;transform:translate(-50%,0)}
@@ -194,6 +200,7 @@ footer .fl{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bo
       <a href="#/" data-nav="home">Offres</a>
       <a href="#/candidat" data-nav="candidat">Candidat</a>
       <a href="#/recruteur" data-nav="recruteur">Recruteur</a>
+      <a href="#/tarifs" data-nav="tarifs">Tarifs</a>
       <a href="#/boost" data-nav="boost">Mon CV</a>
       <a href="#/formation" data-nav="formation">Formation</a>
       <a href="#/compte" data-nav="compte" id="navAcc">Connexion</a>
@@ -248,7 +255,7 @@ footer .fl{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bo
       <div id="grid" class="grid" aria-live="polite"></div>
     </div>
 
-    <a class="ad a3" href="#/recruteur" aria-label="Publiez vos offres">
+    <a class="ad a3" href="#/tarifs" aria-label="Packs recruteurs">
       <div class="track" aria-hidden="true"></div>
     </a>
 
@@ -311,7 +318,7 @@ footer .fl{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bo
 <section id="page-recruteur" class="page"><div class="narrow">
   <a class="back" href="#/">← Retour aux offres</a>
   <h1 style="font-family:var(--fh);font-size:26px">Espace recruteur</h1>
-  <p class="note" style="margin-top:4px">Publiez une offre en 2 minutes. Elle est vérifiée avant d'être mise en ligne.</p>
+  <p class="note" style="margin-top:4px">Publiez une offre en 2 minutes. Elle est vérifiée avant d'être mise en ligne. <a href="#/tarifs">Voir les packs</a></p>
   <form class="box" id="formRec" data-type="recs" novalidate style="margin-top:12px">
     <label for="r_co">Entreprise *</label><input id="r_co" name="company" required placeholder="Ex : Sobraga">
     <label for="r_sec">Secteur d'activité *</label>
@@ -389,12 +396,22 @@ footer .fl{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bo
     <div class="err" role="alert" data-err></div>
   </form>
   <div id="doneDevs"></div>
+</div></section>
 
-<!-- PAIEMENT PUBLICATION ENTREPRISE - 4 liens Chariow -->
-<div style="margin-top:12px;padding:14px;background:#f0f7ff;border:2px solid #0052a3;border-radius:12px;text-align:center">
-  <p style="margin:0 0 8px;font-weight:800;color:#0052a3">🏢 Pour publier en priorité 9 provinces :</p>
-  <a href="https://wgswpgri.mychariow.com/prd_d40es2g3/checkout" target="_blank" style="display:block;background:#0052a3;color:white;padding:12px;border-radius:10px;text-decoration:none;font-weight:800">Payer & Publier - Publication Entreprise</a>
-</div>
+<!-- TARIFS -->
+<section id="page-tarifs" class="page"><div class="narrow" style="max-width:1000px">
+  <a class="back" href="#/">← Retour aux offres</a>
+  <h1 style="font-family:var(--fh);font-size:28px;line-height:1.15">Recrutez au Gabon avec Gabon Talent OS</h1>
+  <p class="note" style="margin-top:6px;font-size:14px">Publiez vos offres auprès de candidats de toutes les provinces. Choisissez le pack adapté à votre rythme de recrutement.</p>
+  <div class="packs" id="packs"></div>
+  <p class="note" id="packNote"></p>
+  <div class="sec"><h2>Comment ça marche</h2>
+    <div class="steps">
+      <div class="step"><b>1. Choisissez un pack</b>Le pack Découverte est gratuit et sans engagement.</div>
+      <div class="step"><b>2. Payez avec votre e-mail pro</b>Utilisez la même adresse que pour publier vos offres : c'est elle qui active votre pack.</div>
+      <div class="step"><b>3. Publiez</b>Envoyez vos offres depuis l'<a href="#/recruteur">espace recruteur</a>. Notre équipe les valide, puis elles passent en ligne.</div>
+    </div>
+  </div>
 </div></section>
 
 <!-- COMPTE CANDIDAT -->
@@ -410,20 +427,6 @@ footer .fl{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bo
     <div class="box">
       <h1 style="font-size:24px">Mon compte candidat</h1>
       <p class="note" style="margin-top:4px">Postulez en un clic et suivez l'avancement de vos candidatures.</p>
-<!-- PACKS PAYANTS CANDIDAT -->
-<div style="display:grid;gap:10px;margin:14px 0">
-  <a href="https://wgswpgri.mychariow.com/prd_1avtsfwc/checkout" target="_blank" style="background:#0f2415;color:#ffcc00;padding:14px;border-radius:12px;text-decoration:none;font-weight:900;border:2px solid #ffcc00;text-align:center">
-     CV Express 10 Min - E-mail + WhatsApp (PDF+Word)
-  </a>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-    <a href="https://wgswpgri.mychariow.com/prd_voveq098/checkout" target="_blank" style="background:#ff8c00;color:white;padding:12px;border-radius:10px;text-decoration:none;font-weight:800;text-align:center">
-       Pack Auto<br><small>10 entreprises</small>
-    </a>
-    <a href="https://wgswpgri.mychariow.com/prd_i0t95cv0/checkout" target="_blank" style="background:white;color:#0f2415;padding:12px;border-radius:10px;text-decoration:none;font-weight:800;text-align:center;border:2px solid #0f2415">
-      📄 Pack CV Pro<br><small>+5 emails RH</small>
-    </a>
-  </div>
-</div>
       <div class="tabs" role="group" aria-label="Connexion ou inscription">
         <button type="button" class="chip" data-auth="login" aria-pressed="true">Connexion</button>
         <button type="button" class="chip" data-auth="signup" aria-pressed="false">Créer un compte</button>
@@ -534,7 +537,7 @@ footer .fl{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bo
 </main>
 
 <footer>
-  <div class="fl"><a href="#/">Offres</a><a href="#/candidat">Candidats</a><a href="#/compte">Mon compte</a><a href="#/recruteur">Recruteurs</a><a href="#/confidentialite">Confidentialité</a><a href="#/admin">Admin</a></div>
+  <div class="fl"><a href="#/">Offres</a><a href="#/candidat">Candidats</a><a href="#/compte">Mon compte</a><a href="#/recruteur">Recruteurs</a><a href="#/tarifs">Tarifs</a><a href="#/confidentialite">Confidentialité</a><a href="#/admin">Admin</a></div>
   Tél : <a id="fTel" href="#"></a> · E-mail : <a id="fMail" href="#"></a><br>
   <a id="fSite" href="#"></a><br>
   <span style="color:#5eead4">© 2026 Gabon Talent OS</span>
@@ -550,10 +553,15 @@ const CONFIG={
   PHONE:"24174995745", PHONE_DISPLAY:"+241 74995745",
   EMAIL:"gabontalent9provinces@gmail.com",
   SITE:"https://gabon-talent-js.github.io/gabon-talent-os/",
- FIREBASE:{apiKey:"AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70",authDomain:"gabon-talent-os.firebaseapp.com",projectId:"gabon-talent-os",storageBucket:"gabon-talent-os.firebasestorage.app",messagingSenderId:"665653433244",appId:"1:665653433244:web:1c6e02435544d74839ee59"}, 
+  // Firebase : collez ici la config de votre application web
   // (Console Firebase > Paramètres du projet > Vos applications > Configuration SDK).
   // Ces valeurs sont publiques par conception : la sécurité vient des règles Firestore (firestore.rules).
   // Laissez apiKey vide pour tester en mode démo (données stockées sur l'appareil).
+  // Liens de paiement Chariow (page du produit). Laissez vide tant qu'ils ne sont pas créés : le bouton ouvrira WhatsApp.
+  CHARIOW:{pro:"",entreprise:""},
+  // Mettre true UNIQUEMENT une fois la fonction Cloud (functions/index.js) déployée et testée.
+  AUTO_ACTIVATION:false,
+  FIREBASE:{apiKey:"AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70",authDomain:"gabon-talent-os.firebaseapp.com",projectId:"gabon-talent-os",storageBucket:"gabon-talent-os.firebasestorage.app",messagingSenderId:"665653433244",appId:"1:665653433244:web:1c6e02435544d74839ee59"},
   // Optionnel : clé reCAPTCHA v3 pour Firebase App Check (anti-spam renforcé)
   RECAPTCHA_SITE_KEY:""
 };
@@ -624,11 +632,11 @@ async function initFirebase(){
   fb={db:fs.getFirestore(a),auth:au.getAuth(a),fs,au};
 }
 const tsISO=t=>t&&t.toDate?t.toDate().toISOString():(t||null);
-const fromDoc=d=>{const x=d.data();return {...x,id:d.id,posted:tsISO(x.posted),createdAt:tsISO(x.createdAt),updatedAt:tsISO(x.updatedAt),statusAt:tsISO(x.statusAt)}};
+const fromDoc=d=>{const x=d.data();return {...x,id:d.id,posted:tsISO(x.posted),createdAt:tsISO(x.createdAt),updatedAt:tsISO(x.updatedAt),statusAt:tsISO(x.statusAt),expiresAt:tsISO(x.expiresAt),boostUntil:tsISO(x.boostUntil),publishedAt:tsISO(x.publishedAt)}};
 
-const COL={cands:"candidates",recs:"offers",boosts:"boosts",devs:"devs",jobs:"jobs",apps:"applications",profiles:"profiles"};
-const ORDER={jobs:"posted",profiles:"updatedAt"};
-const LKEY={cands:"cands",recs:"recs",boosts:"boosts",devs:"devs",jobs:"jobs_published",apps:"apps_local",profiles:"profiles_local"};
+const COL={cands:"candidates",recs:"offers",boosts:"boosts",devs:"devs",jobs:"jobs",apps:"applications",profiles:"profiles",subs:"subscriptions"};
+const ORDER={jobs:"posted",profiles:"updatedAt",subs:"updatedAt"};
+const LKEY={cands:"cands",recs:"recs",boosts:"boosts",devs:"devs",jobs:"jobs_published",apps:"apps_local",profiles:"profiles_local",subs:"subs_local"};
 const FIELDS={
   cands:["nom","prenom","tel","email","ville","niveau","experience","categorie","poste","cv","message","offre"],
   recs:["company","secteur","contact","tel","email","poste","type","ville","categorie","pay","description"],
@@ -637,6 +645,28 @@ const FIELDS={
 };
 const MAXL={email:150,cv:300,message:800,motivation:800,description:2000,offre:200,pay:100,nom:100,prenom:100,company:150,contact:100,poste:150,tel:30};
 
+/* ---------- Packs recruteurs ---------- */
+const PLANS={
+  decouverte:{label:"Découverte",max:1,days:7,boostH:0},
+  pro:{label:"Pro",max:5,days:30,boostH:72},
+  entreprise:{label:"Entreprise",max:1000,days:30,boostH:72}
+};
+const PACK_INFO={
+  decouverte:{name:"Découverte",tag:"Pour tester la plateforme",price:"0",per:"7 jours",
+    items:["1 offre active","Visible 7 jours","Validation par notre équipe","Candidatures transmises par e-mail"]},
+  pro:{name:"Pro",tag:"Pour les PME qui recrutent",price:"25 000",per:"30 jours",
+    items:["5 offres actives en même temps","Visibles pendant la durée du pack","Remontée en tête de liste pendant 72 h","Badge « Recruteur PRO »","Candidatures transmises par WhatsApp et e-mail"]},
+  entreprise:{name:"Entreprise",tag:"Pour les grands recruteurs",price:"75 000",per:"30 jours",
+    items:["Offres illimitées","Visibles pendant la durée du pack","Remontée en tête de liste pendant 72 h","Badge « Recruteur vérifié »","Support prioritaire sur WhatsApp"]}
+};
+/* Pack effectif d'un abonnement : actif ET non expiré, sinon Découverte. */
+function planOf(sub){
+  const ok=sub&&sub.active&&sub.expiresAt&&new Date(sub.expiresAt)>new Date()&&PLANS[sub.pack];
+  return ok?{key:sub.pack,...PLANS[sub.pack],exp:new Date(sub.expiresAt)}:{key:"decouverte",...PLANS.decouverte,exp:null};
+}
+const boosted=j=>j.boostUntil&&new Date(j.boostUntil)>new Date()?1:0;
+const planTag=j=>j.plan==="entreprise"?'<span class="tag" style="border-color:var(--sun)">✔ Recruteur vérifié</span>':j.plan==="pro"?'<span class="tag">Recruteur PRO</span>':"";
+
 const DB={
   async publicJobs(){
     if(!FB){
@@ -644,8 +674,7 @@ const DB={
       return [...store.get("jobs_published",[]),...base];
     }
     const {collection,getDocs,query,where,limit}=fb.fs;
-    const s=await getDocs(query(collection(fb.db,"offers"),where("active","==",true),limit(100)));
-
+    const s=await getDocs(query(collection(fb.db,"jobs"),where("status","==","published"),limit(100)));
     return s.docs.map(fromDoc);
   },
   async submit(type,p){
@@ -663,15 +692,19 @@ const DB={
     if(!FB){store.set(LKEY[type],store.get(LKEY[type],[]).filter(x=>x.id!==id));return}
     await fb.fs.deleteDoc(fb.fs.doc(fb.db,COL[type],id));
   },
-  async publishOffer(r){
-    const job={title:r.poste||r.title||"",company:r.company||"",loc:(r.ville||r.loc||"").split(" – ")[0],type:r.type||"CDI",cat:r.categorie||r.cat||"Autre",badge:"New",pay:r.pay||"",desc:r.description||r.desc||""};
+  async publishOffer(r,plan){
+    plan=plan||{key:"decouverte",...PLANS.decouverte,exp:null};
+    const now=new Date();
+    const expires=plan.key==="decouverte"?new Date(now.getTime()+PLANS.decouverte.days*864e5):plan.exp;
+    const boost=plan.boostH?new Date(now.getTime()+plan.boostH*36e5):null;
+    const job={title:r.poste||r.title||"",company:r.company||"",loc:(r.ville||r.loc||"").split(" – ")[0],type:r.type||"CDI",cat:r.categorie||r.cat||"Autre",badge:"New",pay:r.pay||"",desc:r.description||r.desc||"",plan:plan.key};
     if(!FB){
-      const l=store.get("recs",[]),o=l.find(x=>x.id===r.id);if(o)o.published=true;store.set("recs",l);
-      const j=store.get("jobs_published",[]);j.unshift({...job,id:"u"+r.id,posted:new Date().toISOString()});store.set("jobs_published",j);return;
+      const l=store.get("recs",[]),o=l.find(x=>x.id===r.id);if(o){o.published=true;o.expiresAt=expires.toISOString()}store.set("recs",l);
+      const j=store.get("jobs_published",[]);j.unshift({...job,id:"u"+r.id,posted:now.toISOString(),expiresAt:expires.toISOString(),boostUntil:boost?boost.toISOString():null});store.set("jobs_published",j);return;
     }
-    const {collection,addDoc,updateDoc,doc,serverTimestamp}=fb.fs;
-    await addDoc(collection(fb.db,"jobs"),{...job,status:"published",posted:serverTimestamp()});
-    await updateDoc(doc(fb.db,"offers",r.id),{published:true});
+    const {collection,addDoc,updateDoc,doc,serverTimestamp,Timestamp}=fb.fs;
+    const ref=await addDoc(collection(fb.db,"jobs"),{...job,status:"published",posted:serverTimestamp(),expiresAt:Timestamp.fromDate(expires),boostUntil:boost?Timestamp.fromDate(boost):null});
+    await updateDoc(doc(fb.db,"offers",r.id),{published:true,publishedAt:serverTimestamp(),expiresAt:Timestamp.fromDate(expires),jobId:ref.id});
   },
   async count(type){
     if(!FB)return store.get(LKEY[type],[]).length;
@@ -696,6 +729,24 @@ const DB={
     const u=fb.auth.currentUser,{doc,setDoc,serverTimestamp}=fb.fs;
     await setDoc(doc(fb.db,"profiles",u.uid),{...p,email:u.email,consent:true,updatedAt:serverTimestamp()});
   },
+  async setSub(email,pack,days,source){
+    const p=PLANS[pack];if(!p)throw new Error("pack inconnu");
+    const cur=(adminData.subs||[]).find(x=>x.id===email);
+    const base=cur&&cur.pack===pack&&cur.active&&cur.expiresAt&&new Date(cur.expiresAt)>new Date()?new Date(cur.expiresAt):new Date();
+    const exp=new Date(base.getTime()+days*864e5);
+    if(!FB){
+      const l=store.get("subs_local",[]).filter(x=>x.id!==email);
+      l.unshift({id:email,email,pack,active:true,maxOffers:p.max,expiresAt:exp.toISOString(),updatedAt:new Date().toISOString(),source});
+      store.set("subs_local",l);return;
+    }
+    const {doc,setDoc,serverTimestamp,Timestamp}=fb.fs;
+    await setDoc(doc(fb.db,"subscriptions",email),{email,pack,active:true,maxOffers:p.max,expiresAt:Timestamp.fromDate(exp),updatedAt:serverTimestamp(),source});
+  },
+  async clearSub(email){
+    if(!FB){store.set("subs_local",store.get("subs_local",[]).filter(x=>x.id!==email));return}
+    const {doc,setDoc,serverTimestamp}=fb.fs;
+    await setDoc(doc(fb.db,"subscriptions",email),{active:false,updatedAt:serverTimestamp(),source:"admin"},{merge:true});
+  },
   async seed(){
     const {collection,addDoc,Timestamp}=fb.fs;
     for(const j of JOBS){
@@ -707,7 +758,7 @@ const DB={
 async function ensureJobs(force){
   if(!force&&jobsAt&&Date.now()-jobsAt<120000)return;
   try{
-    JOBS_CACHE=(await DB.publicJobs()).sort((a,b)=>new Date(b.posted)-new Date(a.posted));
+    JOBS_CACHE=(await DB.publicJobs()).filter(j=>!j.expiresAt||new Date(j.expiresAt)>new Date()).sort((a,b)=>boosted(b)-boosted(a)||new Date(b.posted)-new Date(a.posted));
     jobsErr=false;jobsAt=Date.now();
   }catch(e){console.error(e);jobsErr=true;JOBS_CACHE=[]}
 }
@@ -730,13 +781,13 @@ const badgeTxt=b=>b==="New"?"Nouveau":b==="Featured"?"À la une":"Urgent";
 const card=j=>`<a class="job card" href="#/offre/${esc(j.id)}">
  <div class="top"><div class="lg">${esc(j.company.slice(0,2).toUpperCase())}</div><div><div class="co">${esc(j.company)}</div><div class="ct">${esc(j.cat)}</div></div>${j.badge?`<span class="badge ${badgeCls(j.badge)}">${badgeTxt(j.badge)}</span>`:""}</div>
  <h3>${esc(j.title)}</h3>
- <div class="tags"><span class="tag">${esc(j.type)}</span><span class="tag">${esc(j.cat)}</span></div>
+ <div class="tags"><span class="tag">${esc(j.type)}</span><span class="tag">${esc(j.cat)}</span>${planTag(j)}</div>
  <div class="meta" style="margin-top:8px"><span>📍 ${esc(j.loc)}</span>${j.pay?`<span>💵 ${esc(j.pay)}</span>`:""}</div></a>`;
 
 const vcard=j=>{const f=favs().includes(j.id);return `<div style="position:relative"><a class="job" href="#/offre/${esc(j.id)}">
  <div class="top"><div class="lg">${esc(j.company.slice(0,2).toUpperCase())}</div><div><div class="co">${esc(j.company)}</div><div class="ct">${ago(j.posted)}</div></div>${j.badge?`<span class="badge ${badgeCls(j.badge)}">${badgeTxt(j.badge)}</span>`:""}</div>
  <h3>${esc(j.title)}</h3>
- <div class="meta"><span>📍 ${esc(j.loc)}</span><span>${esc(j.type)}</span>${j.pay?`<span>💵 ${esc(j.pay)}</span>`:""}</div></a>
+ <div class="meta"><span>📍 ${esc(j.loc)}</span><span>${esc(j.type)}</span>${planTag(j)}${j.pay?`<span>💵 ${esc(j.pay)}</span>`:""}</div></a>
  <button class="fav" data-fav="${esc(j.id)}" aria-pressed="${f}" aria-label="${f?"Retirer des favoris":"Ajouter aux favoris"}">${f?"♥":"♡"}</button></div>`};
 
 function filtered(){
@@ -798,7 +849,7 @@ function renderOffre(id){
   el.innerHTML=`<div class="box detail">
    <div class="top" style="display:flex;gap:10px;align-items:center"><div class="lg">${esc(j.company.slice(0,2).toUpperCase())}</div><div><b>${esc(j.company)}</b><div class="ct" style="font-size:12px;color:var(--mute)">${ago(j.posted)}</div></div>${j.badge?`<span class="badge ${badgeCls(j.badge)}">${badgeTxt(j.badge)}</span>`:""}</div>
    <h1>${esc(j.title)}</h1>
-   <div class="meta"><span>📍 ${esc(j.loc)}</span><span>📄 ${esc(j.type)}</span><span>🏷️ ${esc(j.cat)}</span>${j.pay?`<span>💵 ${esc(j.pay)}</span>`:""}</div>
+   <div class="meta"><span>📍 ${esc(j.loc)}</span><span>📄 ${esc(j.type)}</span><span>🏷️ ${esc(j.cat)}</span>${planTag(j)}${j.pay?`<span>💵 ${esc(j.pay)}</span>`:""}</div>
    <h3>Le poste</h3><p>${esc(j.desc||"")}</p>
    ${j.missions?`<h3>Missions</h3>${li(j.missions)}`:""}
    ${j.profil?`<h3>Profil recherché</h3>${li(j.profil)}`:""}
@@ -819,7 +870,7 @@ function renderOffre(id){
 /* =====================================================================
    ROUTEUR (hash) – le bouton retour du téléphone fonctionne
    ===================================================================== */
-const TITLES={home:"Gabon Talent OS – Offres d'emploi au Gabon, CV et formation",candidat:"Espace candidat – Gabon Talent OS",recruteur:"Espace recruteur – Gabon Talent OS",boost:"Boostez votre CV – Gabon Talent OS",formation:"Formation développeur – Gabon Talent OS",confidentialite:"Confidentialité – Gabon Talent OS",admin:"Administration – Gabon Talent OS",compte:"Mon compte – Gabon Talent OS"};
+const TITLES={home:"Gabon Talent OS – Offres d'emploi au Gabon, CV et formation",candidat:"Espace candidat – Gabon Talent OS",recruteur:"Espace recruteur – Gabon Talent OS",boost:"Boostez votre CV – Gabon Talent OS",formation:"Formation développeur – Gabon Talent OS",confidentialite:"Confidentialité – Gabon Talent OS",admin:"Administration – Gabon Talent OS",compte:"Mon compte – Gabon Talent OS",tarifs:"Packs recruteurs – Gabon Talent OS"};
 async function route(){
   const h=(location.hash||"#/").replace(/^#\/?/,"").split("/"), name=h[0]||"home";
   let page=name;
@@ -837,6 +888,7 @@ async function route(){
   if(page==="offre"){await ensureJobs();renderOffre(h[1])}
   if(page==="candidat"){await ensureJobs();prefillApply(h[1])}
   if(page==="compte")renderAccount();
+  if(page==="tarifs")renderTarifs();
   if(page==="admin")renderAdmin();
   if(name!=="home"||h[0]!=="")window.scrollTo(0,0);
 }
@@ -1077,6 +1129,26 @@ $("#delAccBtn").onclick=async()=>{
   }catch(ex){toast(authMsg(ex))}
 };
 
+/* Page Tarifs */
+function renderTarifs(){
+  const wa2=n=>wa(`Bonjour, je souhaite souscrire au Pack ${n} de Gabon Talent OS.`);
+  $("#packs").innerHTML=Object.entries(PACK_INFO).map(([k,p])=>{
+    const link=CONFIG.CHARIOW[k];
+    const cta=k==="decouverte"?`<a class="btn ghost" href="#/recruteur">Publier gratuitement</a>`
+      :link?`<a class="btn${k==="pro"?"":" dark"}" target="_blank" rel="noopener noreferrer" href="${esc(link)}">Payer via Chariow</a>`
+      :`<a class="btn${k==="pro"?"":" dark"}" target="_blank" rel="noopener noreferrer" href="${wa2(p.name)}">Souscrire sur WhatsApp</a>`;
+    const ask=k!=="decouverte"?`<a class="btn ghost" target="_blank" rel="noopener noreferrer" href="${wa2(p.name)}">Poser une question</a>`:"";
+    return `<div class="box pack${k==="pro"?" pop":""}">${k==="pro"?'<span class="badge b-feat" style="margin:0 0 8px;align-self:flex-start">Le plus choisi</span>':""}
+      <h2 style="font-size:20px">${esc(p.name)}</h2><p class="note" style="margin:2px 0 8px">${esc(p.tag)}</p>
+      <div class="price">${esc(p.price)} <span style="font-size:14px;color:var(--mute);font-family:var(--fb);font-weight:500">FCFA / ${esc(p.per)}</span></div>
+      <ul class="list">${p.items.map(i=>`<li>${esc(i)}</li>`).join("")}</ul>${cta}${ask}</div>`;
+  }).join("");
+  $("#packNote").textContent=(CONFIG.AUTO_ACTIVATION
+    ?"Votre pack s'active automatiquement après le paiement (quelques minutes). "
+    :"Votre pack est activé par notre équipe après confirmation du paiement, généralement en quelques heures en journée. ")
+    +"Paiement sécurisé via Chariow (Mobile Money ou carte, selon disponibilité). Utilisez la même adresse e-mail pour payer et pour publier.";
+}
+
 /* Postuler depuis la fiche d'une offre */
 function renderApplySlot(j){
   const el=$("#applySlot");if(!el)return;
@@ -1127,8 +1199,42 @@ $("#formLogin").addEventListener("submit",async e=>{
 $("#logoutBtn").onclick=async()=>{try{if(fb)await fb.au.signOut(fb.auth)}catch(_){}isAdmin=false;location.hash="#/"};
 
 let adminTab="apps",adminData={},adminCount={};
-const TABS={apps:"Candidatures",profiles:"Comptes",cands:"Sans compte",recs:"Offres reçues",jobs:"Offres en ligne",boosts:"GT Business",devs:"Formation"};
+const TABS={apps:"Candidatures",profiles:"Comptes",cands:"Sans compte",recs:"Offres reçues",jobs:"Offres en ligne",subs:"Abonnements",boosts:"GT Business",devs:"Formation"};
 async function loadTab(k){adminData[k]=await DB.list(k)}
+
+/* Pack d'un recruteur (lu dans les abonnements déjà chargés) */
+const normEmail=e=>String(e||"").trim().toLowerCase();
+const planFor=email=>planOf((adminData.subs||[]).find(x=>x.id===normEmail(email)));
+function offerQuota(r){
+  const email=normEmail(r.email),plan=planFor(email),now=new Date();
+  const used=(adminData.recs||[]).filter(o=>o.published&&normEmail(o.email)===email&&(!o.expiresAt||new Date(o.expiresAt)>now)).length;
+  if(used>=plan.max)return {ok:false,msg:`${email||"Ce recruteur"} : pack ${plan.label}, ${used}/${plan.max} offre(s) active(s). Publier quand même ?`};
+  return {ok:true};
+}
+function paintSubs(list){
+  const rows=list.map(x=>{
+    const p=planOf(x);
+    return `<div class="rec"><div><b>${esc(x.email||x.id)}</b> <span class="tag">${esc(p.label)}${p.exp?" · jusqu'au "+p.exp.toLocaleDateString("fr-FR"):""}</span>
+      ${x.source?`<br><span style="color:var(--mute);font-size:11px">Source : ${esc(x.source)}${x.lastSaleId?" · vente "+esc(x.lastSaleId):""}</span>`:""}</div>
+      <div class="acts"><button class="btn sm ghost" data-sub-off="${esc(x.id)}">Désactiver</button></div></div>`;
+  }).join("");
+  $("#adminList").innerHTML=`<h2 style="font-size:17px">Abonnements (${list.length})</h2>
+    <p class="note">Activez un pack à la main après un paiement, ou laissez la fonction Cloud le faire (voir le guide).</p>
+    <div class="row2"><div><label for="sub_email">E-mail du recruteur</label><input id="sub_email" type="email" placeholder="rh@entreprise.ga"></div>
+    <div><label for="sub_pack">Pack</label><select id="sub_pack"><option value="pro">Pro – 30 jours</option><option value="entreprise">Entreprise – 30 jours</option></select></div></div>
+    <button class="btn" id="subAdd" type="button">Activer ce pack</button>`+(list.length?rows:`<p class="note">Aucun abonnement.</p>`);
+}
+$("#adminList").addEventListener("click",async e=>{
+  try{
+    if(e.target.id==="subAdd"){
+      const em=normEmail($("#sub_email").value),pk=$("#sub_pack").value;
+      if(!emailOk(em)){toast("E-mail invalide");return}
+      await DB.setSub(em,pk,30,"admin");toast("Pack activé");await renderAdmin();return;
+    }
+    const off=e.target.closest("[data-sub-off]");
+    if(off&&confirm("Désactiver ce pack ?")){await DB.clearSub(off.dataset.subOff);toast("Pack désactivé");await renderAdmin()}
+  }catch(err){console.error(err);toast("Action refusée : "+(err.code||err.message))}
+});
 async function renderAdmin(){
   $("#adminNote").textContent=FB?"Connecté à Firebase : vous voyez les données de la base en ligne.":"Mode démo : Firebase n'est pas configuré, vous voyez uniquement les données de cet appareil.";
   $("#adminList").innerHTML='<p class="note">Chargement…</p>';
@@ -1136,7 +1242,7 @@ async function renderAdmin(){
   try{
     const ks=Object.keys(TABS),c=await Promise.all(ks.map(k=>DB.count(k)));
     adminCount=Object.fromEntries(ks.map((k,i)=>[k,c[i]]));
-    await Promise.all([loadTab(adminTab),adminTab==="recs"?Promise.resolve():loadTab("recs")]);
+    await Promise.all(["recs","subs",adminTab].filter((k,i,a)=>a.indexOf(k)===i).map(loadTab));
   }catch(e){$("#adminList").innerHTML=`<p class="note" style="color:var(--danger)">Lecture impossible (${esc(e.code||e.message)}). Vérifiez les règles Firestore et que votre compte figure dans la collection « admins ».</p>`;return}
   paintAdmin();
 }
@@ -1145,10 +1251,11 @@ function paintAdmin(){
   $("#kpis").innerHTML=Object.entries(TABS).map(([k,v])=>`<div class="stat"><b>${adminCount[k]??0}</b><span>${v}</span></div>`).join("")+`<div class="stat"><b>${pend}</b><span>Offres à valider</span></div>`;
   $("#adminTabs").innerHTML=Object.entries(TABS).map(([k,v])=>`<button class="chip" data-tab="${k}" aria-pressed="${k===adminTab}">${v}</button>`).join("");
   const list=adminData[adminTab]||[];
+  if(adminTab==="subs"){paintSubs(list);return}
   const statusSel=x=>`<select data-status="${esc(x.id)}" aria-label="Statut de la candidature" style="margin:0;width:auto;padding:6px">${Object.entries(STATUS).filter(([k])=>k!=="retiree"||x.status==="retiree").map(([k,v])=>`<option value="${k}"${x.status===k?" selected":""}>${v.l}</option>`).join("")}</select>`;
   const row=x=>{
     const when=x.createdAt||x.date||x.posted||x.updatedAt, body=x.message||x.description||x.motivation||x.desc||x.bio||"";
-    return `<div class="rec"><div><b>${esc(x.nom||x.title||x.company||"")}${x.prenom?" "+esc(x.prenom):""}</b>${x.published?" ✅":""}<br>
+    return `<div class="rec"><div><b>${esc(x.nom||x.title||x.company||"")}${x.prenom?" "+esc(x.prenom):""}</b>${x.published?" ✅":""}${adminTab==="recs"?` <span class="tag">${esc(planFor(x.email).label)}</span>`:""}<br>
       <span style="color:var(--mute)">${esc([x.tel,x.email,x.ville||x.loc,x.jobTitle,x.poste||x.company,x.offre,x.type].filter(Boolean).join(" · "))}</span>
       ${x.cv?`<br><a href="${esc(/^https?:\/\//i.test(x.cv)?x.cv:"#")}" target="_blank" rel="noopener noreferrer" style="font-size:12px">Voir le CV</a>`:""}
       ${body?`<br><span style="color:var(--mute)">${esc(body.slice(0,160))}${body.length>160?"…":""}</span>`:""}
@@ -1175,7 +1282,7 @@ $("#adminList").addEventListener("click",async e=>{
   const del=e.target.closest("[data-del]"),pub=e.target.closest("[data-pub]");
   try{
     if(del&&confirm("Supprimer cette entrée ?")){await DB.remove(adminTab,del.dataset.del);jobsAt=0;await renderAdmin()}
-    if(pub){const r=(adminData.recs||[]).find(x=>x.id===pub.dataset.pub);if(r){await DB.publishOffer(r);jobsAt=0;toast("Offre publiée");await renderAdmin()}}
+    if(pub){const r=(adminData.recs||[]).find(x=>x.id===pub.dataset.pub);if(r){const q=offerQuota(r);if(!q.ok&&!confirm(q.msg))return;await DB.publishOffer(r,planFor(r.email));jobsAt=0;toast("Offre publiée");await renderAdmin()}}
     if(e.target.id==="seedBtn"&&confirm("Importer les 4 offres d'exemple dans la base ?")){await DB.seed();jobsAt=0;toast("Exemples importés");await renderAdmin()}
   }catch(err){console.error(err);toast("Action refusée : "+(err.code||err.message))}
   if(e.target.id==="csvBtn"){
