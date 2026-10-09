@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tarifs · Gabon Talent OS</title>
+<meta name="description" content="Choisissez le pack Gabon Talent OS adapté à votre recrutement.">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root{--ink:#0f2a1d;--green:#0b7a4b;--sun:#f2b705;--paper:#f6f7f4}
+  body{background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+  .card{background:#fff;border:1px solid #e1e6df;border-radius:1.1rem;padding:1.5rem;display:flex;flex-direction:column}
+  .card.star{border:2px solid var(--green);box-shadow:0 10px 30px -12px rgba(11,122,75,.35)}
+  .cta{display:block;text-align:center;border-radius:.8rem;padding:.7rem 1rem;font-weight:700;background:var(--ink);color:#fff}
+  .star .cta{background:var(--green)}
+  .cta:hover{opacity:.88}.cta:focus-visible{outline:2px solid var(--sun);outline-offset:2px}
+  .skeleton{height:18rem;border-radius:1.1rem;background:#e8ece6;animation:p 1.2s ease-in-out infinite}
+  @keyframes p{50%{opacity:.5}}
+</style>
+</head>
+<body class="min-h-screen">
+
+<div id="banniere" class="hidden text-center text-sm font-semibold py-2 px-4" style="background:var(--sun)"></div>
+
+<main class="max-w-5xl mx-auto px-4 py-10">
+  <a href="index.html" class="text-sm underline text-green-800">← Retour à l'accueil</a>
+  <h1 class="text-3xl md:text-4xl font-extrabold mt-4">Nos tarifs</h1>
+  <p class="text-slate-600 mt-2">Choisissez le pack qui correspond à vos besoins de recrutement au Gabon.</p>
+
+  <div id="packs" class="grid md:grid-cols-3 gap-5 mt-8" aria-live="polite">
+    <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+  </div>
+
+  <p class="text-xs text-slate-500 mt-8">Prix en FCFA. Pour toute question, contactez-nous sur WhatsApp.</p>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, getDocs, getDoc, doc, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70",
+  authDomain: "gabon-talent-os.firebaseapp.com",
+  projectId: "gabon-talent-os"
+});
+const db = getFirestore(app);
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const fcfa = (n) => Number(n).toLocaleString("fr-FR");
+
+async function init(){
+  // Config du site (WhatsApp + bandeau) : facultatif
+  let wa = "";
+  try {
+    const s = await getDoc(doc(db, "config_site", "main"));
+    if(s.exists()){
+      const d = s.data();
+      wa = String(d.whatsapp || "").replace(/\D/g, "");
+      if(d.banniere){ $("banniere").textContent = d.banniere; $("banniere").classList.remove("hidden"); }
+    }
+  } catch(e){ console.warn("config_site indisponible", e); }
+
+  // Packs
+  try {
+    const snap = await getDocs(collection(db, "config_packs"));
+    const packs = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.prix || 0) - (b.prix || 0));
+    if(!packs.length){ $("packs").innerHTML = `<p class="text-slate-500 md:col-span-3">Les tarifs seront bientôt disponibles.</p>`; return; }
+    $("packs").innerHTML = packs.map(p => {
+      const star = p.id === "pro";
+      const prix = Number(p.prix) > 0 ? `${fcfa(p.prix)} <span class="text-base font-semibold">FCFA</span>` : "Gratuit";
+      const msg = encodeURIComponent("Bonjour, je souhaite souscrire au " + (p.nom || p.id) + " sur Gabon Talent OS.");
+      const href = wa ? `https://wa.me/${wa}?text=${msg}` : "index.html";
+      const feats = (Array.isArray(p.features) ? p.features : []).map(f =>
+        `<li class="flex gap-2"><span aria-hidden="true" style="color:var(--green)">✓</span><span>${esc(f)}</span></li>`).join("");
+      return `<article class="card ${star ? "star" : ""}">
+        ${star ? `<span class="self-start text-xs font-bold rounded-full px-3 py-1 mb-3" style="background:var(--sun)">Le plus choisi</span>` : ""}
+        <h2 class="font-extrabold text-lg">${esc(p.nom || p.id)}</h2>
+        <div class="text-4xl font-extrabold mt-3">${prix}</div>
+        <ul class="mt-5 space-y-2 text-sm flex-1">${feats}</ul>
+        <a class="cta mt-6" href="${esc(href)}" ${wa ? 'target="_blank" rel="noopener"' : ""}>Choisir ce pack</a>
+      </article>`;
+    }).join("");
+  } catch(e){
+    console.error(e);
+    $("packs").innerHTML = `<p class="text-red-600 md:col-span-3">Impossible de charger les tarifs. Réessayez dans un instant.</p>`;
+  }
+}
+init();
+</script>
+</body>
+</html>
