@@ -1153,9 +1153,34 @@ $("#delAccBtn").onclick=async()=>{
 };
 
 /* Page Tarifs */
-function renderTarifs(){
+async function renderTarifs(){
   const wa2=n=>wa(`Bonjour, je souhaite souscrire au Pack ${n} de Gabon Talent OS.`);
-  $("#packs").innerHTML=Object.entries(PACK_INFO).map(([k,p])=>{
+  const cont=$("#packs");
+  try{
+    if(fb){
+      const snap = await fb.fs.getDocs(fb.fs.collection(fb.db,"config_packs"));
+      let packs = snap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.actif!==false).sort((a,b)=>(a.ordre??99)-(b.ordre??99));
+      if(packs.length){
+        cont.innerHTML=packs.map(p=>{
+          const k=p.id;
+          const isFree=Number(p.prix)==0;
+          const link=p.lienPaiement && /^https:\/\//i.test(p.lienPaiement)? p.lienPaiement : CONFIG.CHARIOW[k] || "";
+          const cta=isFree?`<a class="btn ghost" href="#/recruteur">Publier gratuitement</a>`
+            :link?`<a class="btn${p.populaire?"":" dark"}" target="_blank" rel="noopener noreferrer" href="${esc(link)}">Payer via Chariow</a>`
+            :`<a class="btn${p.populaire?"":" dark"}" href="pack.html?id=${esc(k)}">Voir le détail</a>`;
+          const ask=k!=="decouverte"?`<a class="btn ghost" target="_blank" rel="noopener noreferrer" href="${wa2(p.nom)}">Poser une question</a>`:"";
+          return `<div class="box pack${p.populaire?" pop":""}">${p.populaire?'<span class="badge b-feat" style="margin:0 0 8px;align-self:flex-start">Le plus choisi</span>':""}
+            <h2 style="font-size:20px">${esc(p.nom)}</h2><p class="note" style="margin:2px 0 8px">${esc(p.description||"")}</p>
+            <div class="price">${isFree?'Gratuit':Number(p.prix).toLocaleString("fr-FR")} <span style="font-size:14px;color:var(--mute);font-family:var(--fb);font-weight:500">FCFA / ${esc(String(p.duree||30))}j</span></div>
+            <ul class="list">${(p.features||[]).map(i=>`<li>${esc(i)}</li>`).join("")}</ul>${cta}${ask}</div>`;
+        }).join("");
+        $("#packNote").textContent="Prix en FCFA. Modifiable depuis superadmin.html > PACKS. Paiement sécurisé via Chariow.";
+        return;
+      }
+    }
+  }catch(e){ console.warn("tarifs superadmin fallback",e); }
+  // Fallback ancien code si Firestore vide
+  cont.innerHTML=Object.entries(PACK_INFO).map(([k,p])=>{
     const link=CONFIG.CHARIOW[k];
     const cta=k==="decouverte"?`<a class="btn ghost" href="#/recruteur">Publier gratuitement</a>`
       :link?`<a class="btn${k==="pro"?"":" dark"}" target="_blank" rel="noopener noreferrer" href="${esc(link)}">Payer via Chariow</a>`
@@ -1166,10 +1191,6 @@ function renderTarifs(){
       <div class="price">${esc(p.price)} <span style="font-size:14px;color:var(--mute);font-family:var(--fb);font-weight:500">FCFA / ${esc(p.per)}</span></div>
       <ul class="list">${p.items.map(i=>`<li>${esc(i)}</li>`).join("")}</ul>${cta}${ask}</div>`;
   }).join("");
-  $("#packNote").textContent=(CONFIG.AUTO_ACTIVATION
-    ?"Votre pack s'active automatiquement après le paiement (quelques minutes). "
-    :"Votre pack est activé par notre équipe après confirmation du paiement, généralement en quelques heures en journée. ")
-    +"Paiement sécurisé via Chariow (Mobile Money ou carte, selon disponibilité). Utilisez la même adresse e-mail pour payer et pour publier.";
 }
 
 /* Postuler depuis la fiche d'une offre */
