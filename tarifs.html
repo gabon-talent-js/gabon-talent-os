@@ -64,21 +64,23 @@ async function init(){
   // Packs
   try {
     const snap = await getDocs(collection(db, "config_packs"));
-    const packs = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.prix || 0) - (b.prix || 0));
+    const packs = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(p => p.actif !== false)
+      .sort((a, b) => (a.ordre ?? 99) - (b.ordre ?? 99) || (a.prix || 0) - (b.prix || 0));
     if(!packs.length){ $("packs").innerHTML = `<p class="text-slate-500 md:col-span-3">Les tarifs seront bientôt disponibles.</p>`; return; }
     $("packs").innerHTML = packs.map(p => {
-      const star = p.id === "pro";
+      const star = !!p.populaire;
       const prix = Number(p.prix) > 0 ? `${fcfa(p.prix)} <span class="text-base font-semibold">FCFA</span>` : "Gratuit";
-      const msg = encodeURIComponent("Bonjour, je souhaite souscrire au " + (p.nom || p.id) + " sur Gabon Talent OS.");
-      const href = wa ? `https://wa.me/${wa}?text=${msg}` : "index.html";
+      const href = "pack.html?id=" + encodeURIComponent(p.id);
+      const cibles = { recruteur: "Recruteurs", candidat: "Candidats" };
       const feats = (Array.isArray(p.features) ? p.features : []).map(f =>
         `<li class="flex gap-2"><span aria-hidden="true" style="color:var(--green)">✓</span><span>${esc(f)}</span></li>`).join("");
       return `<article class="card ${star ? "star" : ""}">
         ${star ? `<span class="self-start text-xs font-bold rounded-full px-3 py-1 mb-3" style="background:var(--sun)">Le plus choisi</span>` : ""}
+        ${cibles[p.cible] ? `<span class="text-xs text-slate-500 mb-1">${cibles[p.cible]}</span>` : ""}
         <h2 class="font-extrabold text-lg">${esc(p.nom || p.id)}</h2>
         <div class="text-4xl font-extrabold mt-3">${prix}</div>
         <ul class="mt-5 space-y-2 text-sm flex-1">${feats}</ul>
-        <a class="cta mt-6" href="${esc(href)}" ${wa ? 'target="_blank" rel="noopener"' : ""}>Choisir ce pack</a>
+        <a class="cta mt-6" href="${esc(href)}">Voir le détail</a>
       </article>`;
     }).join("");
   } catch(e){
