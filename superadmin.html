@@ -26,7 +26,7 @@
   <p class="text-sm text-slate-500 mt-1">Connecte-toi avec ton compte administrateur.</p>
   <input id="email" type="email" autocomplete="username" placeholder="Email" class="field mt-5">
   <input id="pass" type="password" autocomplete="current-password" placeholder="Mot de passe" class="field mt-2">
-  <p id="loginErr" class="text-sm text-red-600 mt-2 hidden"></p>
+  <p id="loginErr" class="text-sm text-red-600 mt-3 hidden break-words"></p>
   <button id="loginBtn" class="btn btn-dark w-full mt-4">Se connecter</button>
 </section>
 
@@ -55,6 +55,7 @@
       <div class="flex flex-wrap gap-2 mt-2">
         <input id="newPackId" class="field max-w-[200px]" placeholder="identifiant (ex: pro)">
         <button id="addPackBtn" class="btn btn-main">Créer le pack</button>
+        <button id="seedBtn" class="btn btn-sun">Initialiser les 3 packs</button>
       </div>
     </div>
     <div id="packs" class="grid md:grid-cols-3 gap-4"></div>
@@ -183,6 +184,17 @@ async function loadPacks(){
           <input data-f="maxOffres" type="number" min="0" value="${esc(p.maxOffres ?? 0)}" class="field w-20"> offres
         </div>
         <textarea data-f="features" class="field mt-2 h-24 text-xs" placeholder="Une fonctionnalité par ligne">${esc((p.features || []).join("\n"))}</textarea>
+        <textarea data-f="description" class="field mt-2 h-20 text-xs" placeholder="Description détaillée (page du pack)">${esc(p.description || "")}</textarea>
+        <div class="grid grid-cols-2 gap-2 mt-2 text-xs">
+          <select data-f="cible" class="field">
+            ${[["tous","Tous"],["recruteur","Recruteurs"],["candidat","Candidats"]].map(([v, l]) => `<option value="${v}" ${(p.cible || "tous") === v ? "selected" : ""}>${l}</option>`).join("")}
+          </select>
+          <input data-f="duree" type="number" min="0" value="${esc(p.duree ?? 30)}" class="field" placeholder="Durée (jours)" title="Durée en jours">
+          <input data-f="ordre" type="number" value="${esc(p.ordre ?? 0)}" class="field" placeholder="Ordre" title="Ordre d'affichage">
+          <label class="flex items-center gap-1"><input data-f="populaire" type="checkbox" ${p.populaire ? "checked" : ""}> Populaire</label>
+          <label class="flex items-center gap-1 col-span-2"><input data-f="actif" type="checkbox" ${p.actif !== false ? "checked" : ""}> Visible sur le site</label>
+        </div>
+        <input data-f="lienPaiement" type="url" value="${esc(p.lienPaiement || "")}" class="field mt-2 text-xs" placeholder="Lien de paiement Chariow (https://…)">
         <div class="flex gap-2 mt-3">
           <button class="btn btn-main" data-act="savePack">Enregistrer</button>
           <button class="btn btn-red" data-act="delPack">Supprimer</button>
@@ -198,10 +210,16 @@ $("packs").addEventListener("click", (e) => {
   const card = e.target.closest("[data-pack]"), id = card.dataset.pack;
   const v = (f) => card.querySelector(`[data-f=${f}]`).value;
   if(act === "savePack") safe(async () => {
+    const lien = v("lienPaiement").trim();
+    if(lien && !/^https:\/\//i.test(lien)) return toast("Le lien de paiement doit commencer par https://");
+    const chk = (f) => card.querySelector(`[data-f=${f}]`).checked;
     await setDoc(doc(db, "config_packs", id), {
       nom: v("nom").trim(), prix: Math.max(0, Number(v("prix")) || 0),
       maxOffres: Math.max(0, Number(v("maxOffres")) || 0),
       features: v("features").split("\n").map(s => s.trim()).filter(Boolean),
+      description: v("description").trim(), cible: v("cible"),
+      duree: Math.max(0, Number(v("duree")) || 0), ordre: Number(v("ordre")) || 0,
+      populaire: chk("populaire"), actif: chk("actif"), lienPaiement: lien,
       updatedAt: serverTimestamp()
     }, { merge: true });
     toast("Pack « " + id + " » enregistré");
@@ -220,6 +238,24 @@ $("addPackBtn").onclick = () => {
     $("newPackId").value = ""; toast("Pack créé"); loadPacks();
   });
 };
+
+/* ---------- INITIALISATION DES PACKS ---------- */
+const PACKS_PAR_DEFAUT = {
+  decouverte: { nom: "PACK DÉCOUVERTE", prix: 0, maxOffres: 1, features: ["1 offre", "7 jours"], cible: "tous", duree: 7, ordre: 1, populaire: false, actif: true, lienPaiement: "", description: "Testez la plateforme gratuitement avec 1 offre pendant 7 jours." },
+  pro: { nom: "PACK PRO", prix: 25000, maxOffres: 5, features: ["5 offres", "Boost TOP 3j", "CV par WhatsApp"], cible: "recruteur", duree: 30, ordre: 2, populaire: true, actif: true, lienPaiement: "", description: "Publiez jusqu'à 5 offres, boostez-les en TOP pendant 3 jours et recevez les CV directement sur WhatsApp." },
+  entreprise: { nom: "PACK ENTREPRISE", prix: 75000, maxOffres: 1000, features: ["Illimité", "Logo + Badge OR"], cible: "recruteur", duree: 30, ordre: 3, populaire: false, actif: true, lienPaiement: "", description: "Offres illimitées, votre logo et un badge OR pour renforcer votre image employeur." }
+};
+$("seedBtn").onclick = () => safe(async () => {
+  let crees = 0;
+  for (const [id, pack] of Object.entries(PACKS_PAR_DEFAUT)) {
+    const ref = doc(db, "config_packs", id);
+    if ((await getDoc(ref)).exists()) continue;
+    await setDoc(ref, { ...pack, createdAt: serverTimestamp() });
+    crees++;
+  }
+  toast(crees ? crees + " pack(s) créé(s)" : "Les packs existent déjà");
+  loadPacks();
+});
 
 /* ---------- OFFRES ---------- */
 async function loadOffres(){
