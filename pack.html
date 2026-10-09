@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Détail du pack · Gabon Talent OS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root{--ink:#0f2a1d;--green:#0b7a4b;--sun:#f2b705;--paper:#f6f7f4}
+  body{background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+  .card{background:#fff;border:1px solid #e1e6df;border-radius:1.1rem;padding:1.5rem}
+  .cta{display:block;text-align:center;border-radius:.8rem;padding:.8rem 1rem;font-weight:700;background:var(--green);color:#fff}
+  .cta[aria-disabled=true]{background:#cbd5c9;pointer-events:none}
+  .cta:focus-visible{outline:2px solid var(--sun);outline-offset:2px}
+</style>
+</head>
+<body class="min-h-screen">
+<main class="max-w-xl mx-auto px-4 py-10">
+  <a href="tarifs.html" class="text-sm underline text-green-800">← Tous les tarifs</a>
+  <div id="pack" class="card mt-4"><p class="text-slate-500">Chargement…</p></div>
+</main>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const db = getFirestore(initializeApp({ apiKey: "AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70", authDomain: "gabon-talent-os.firebaseapp.com", projectId: "gabon-talent-os" }));
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const id = new URLSearchParams(location.search).get("id") || "";
+(async () => {
+  try {
+    const s = id ? await getDoc(doc(db, "config_packs", id)) : null;
+    if(!s || !s.exists() || s.data().actif === false){ $("pack").innerHTML = `<p>Ce pack n'existe pas ou n'est plus disponible.</p>`; return; }
+    const p = s.data(), gratuit = !(Number(p.prix) > 0);
+    const lien = /^https:\/\//i.test(p.lienPaiement || "") ? p.lienPaiement : "";
+    document.title = (p.nom || id) + " · Gabon Talent OS";
+    const feats = (p.features || []).map(f => `<li class="flex gap-2"><span style="color:var(--green)" aria-hidden="true">✓</span><span>${esc(f)}</span></li>`).join("");
+    const cta = gratuit ? `<a class="cta mt-6" href="index.html">Commencer gratuitement</a>`
+      : lien ? `<a class="cta mt-6" href="${esc(lien)}" rel="noopener">S'abonner · ${Number(p.prix).toLocaleString("fr-FR")} FCFA</a>`
+      : `<a class="cta mt-6" aria-disabled="true">Paiement bientôt disponible</a>`;
+    $("pack").innerHTML = `
+      <h1 class="text-2xl font-extrabold">${esc(p.nom || id)}</h1>
+      <div class="text-4xl font-extrabold mt-2">${gratuit ? "Gratuit" : Number(p.prix).toLocaleString("fr-FR") + ' <span class="text-base font-semibold">FCFA</span>'}</div>
+      <p class="text-sm text-slate-500 mt-1">${p.duree ? "Durée : " + esc(p.duree) + " jours" : ""}${p.maxOffres ? " · jusqu'à " + (p.maxOffres >= 1000 ? "offres illimitées" : esc(p.maxOffres) + " offre(s)") : ""}</p>
+      ${p.description ? `<p class="mt-4">${esc(p.description)}</p>` : ""}
+      <ul class="mt-4 space-y-2 text-sm">${feats}</ul>
+      ${cta}
+      <p class="text-xs text-slate-500 mt-3">${gratuit ? "" : "Paiement sécurisé sur Chariow. Après le paiement, vous serez ramené sur le site."}</p>`;
+  } catch(e){ console.error(e); $("pack").innerHTML = `<p class="text-red-600">Impossible de charger le pack.</p>`; }
+})();
+</script>
+</body>
+</html>
