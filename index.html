@@ -651,14 +651,37 @@ const PLANS={
   pro:{label:"Pro",max:5,days:30,boostH:72},
   entreprise:{label:"Entreprise",max:1000,days:30,boostH:72}
 };
-const PACK_INFO={
-  decouverte:{name:"Découverte",tag:"Pour tester la plateforme",price:"0",per:"7 jours",
-    items:["1 offre active","Visible 7 jours","Validation par notre équipe","Candidatures transmises par e-mail"]},
-  pro:{name:"Pro",tag:"Pour les PME qui recrutent",price:"25 000",per:"30 jours",
-    items:["5 offres actives en même temps","Visibles pendant la durée du pack","Remontée en tête de liste pendant 72 h","Badge « Recruteur PRO »","Candidatures transmises par WhatsApp et e-mail"]},
-  entreprise:{name:"Entreprise",tag:"Pour les grands recruteurs",price:"75 000",per:"30 jours",
-    items:["Offres illimitées","Visibles pendant la durée du pack","Remontée en tête de liste pendant 72 h","Badge « Recruteur vérifié »","Support prioritaire sur WhatsApp"]}
+let PACK_INFO = {
+  decouverte:{name:"Découverte",price:"0",tag:"Pour tester",per:"7j",items:["1 offre","Visible 7j"]},
+  pro:{name:"Pro",price:"25 000",tag:"Le plus choisi",per:"30j",items:["5 offres","Boost 72h"]},
+  entreprise:{name:"Entreprise",price:"75 000",tag:"Illimité",per:"30j",items:["Illimité","Support dédié"]}
 };
+// --- PATCH SUPERADMIN DYNAMIQUE ---
+(async()=>{
+  try{
+    if(!fb) return;
+    const s = await fb.fs.getDoc(fb.fs.doc(fb.db,"config_site","main"));
+    if(s.exists()){
+      const d=s.data();
+      if(d.whatsapp) CONFIG.PHONE = d.whatsapp.replace(/\D/g,"");
+      if(d.banniere){
+        const b=document.createElement("div");
+        b.textContent=d.banniere;
+        b.style="background:#f2b705;color:#111;text-align:center;padding:8px;font-weight:800;position:sticky;top:56px;z-index:999";
+        document.body.prepend(b);
+      }
+    }
+    const snap = await fb.fs.getDocs(fb.fs.collection(fb.db,"config_packs"));
+    snap.forEach(docSnap=>{
+      const p=docSnap.data();
+      if(p.actif!==false && PACK_INFO[docSnap.id]){
+        PACK_INFO[docSnap.id].price = p.prix==0?"0":Number(p.prix).toLocaleString("fr-FR");
+        PACK_INFO[docSnap.id].name = p.nom;
+        PACK_INFO[docSnap.id].items = p.features||PACK_INFO[docSnap.id].items;
+      }
+    });
+  }catch(e){ console.warn("superadmin",e); }
+})();
 /* Pack effectif d'un abonnement : actif ET non expiré, sinon Découverte. */
 function planOf(sub){
   const ok=sub&&sub.active&&sub.expiresAt&&new Date(sub.expiresAt)>new Date()&&PLANS[sub.pack];
