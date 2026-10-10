@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mon CV Pro · Gabon Talent OS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root{--ink:#0f2a1d;--green:#0b7a4b;--sun:#f2b705;--paper:#f6f7f4}
+  body{background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+  .card{background:#fff;border:1px solid #e1e6df;border-radius:1.1rem;padding:1.25rem}
+  .field{border:1px solid #d5dbd3;border-radius:.6rem;padding:.55rem .7rem;width:100%;background:#fff}
+  .field:focus-visible{outline:2px solid var(--sun);outline-offset:1px}
+  label{font-size:.85rem;font-weight:600;display:block}
+  .btn{border-radius:.7rem;padding:.7rem 1.1rem;font-weight:700}
+  .btn-main{background:var(--green);color:#fff}.btn-soft{background:#e8ece6}
+  .btn:disabled{opacity:.5}
+  .row{border:1px dashed #cfd6cd;border-radius:.8rem;padding:.8rem;margin-top:.6rem}
+</style>
+</head>
+<body class="min-h-screen">
+<main class="max-w-xl mx-auto px-4 py-8">
+  <a href="index.html" class="text-sm underline text-green-800">← Accueil</a>
+  <h1 class="text-2xl font-extrabold mt-3">Mon CV Pro</h1>
+  <p class="text-sm text-slate-600">Remplissez vos informations. Après paiement de <b>1 100 FCFA</b>, votre CV professionnel vous est envoyé par email et WhatsApp.</p>
+  <div class="h-2 bg-slate-200 rounded-full mt-4"><div id="bar" class="h-2 rounded-full" style="background:var(--green);width:20%"></div></div>
+  <p id="stepLabel" class="text-xs text-slate-500 mt-1"></p>
+
+  <form id="f" class="card mt-3" novalidate>
+    <!-- 1 -->
+    <section data-step="1" class="grid gap-3">
+      <h2 class="font-bold">Identité</h2>
+      <div><label>Nom *</label><input class="field" data-r name="nom" autocomplete="family-name"></div>
+      <div><label>Prénom(s) *</label><input class="field" data-r name="prenom" autocomplete="given-name"></div>
+      <div><label>Date de naissance *</label><input class="field" data-r type="date" name="naissance"></div>
+      <div><label>Lieu de naissance</label><input class="field" name="lieuNaissance"></div>
+      <div><label>Nationalité *</label><input class="field" data-r name="nationalite" value="Gabonaise"></div>
+      <div><label>Situation matrimoniale</label>
+        <select class="field" name="situation"><option value="">—</option><option>Célibataire</option><option>Marié(e)</option><option>Divorcé(e)</option><option>Veuf(ve)</option></select></div>
+      <div><label>Ville de résidence *</label><input class="field" data-r name="ville"></div>
+      <div><label>WhatsApp * (ex: +241 …)</label><input class="field" data-r type="tel" name="whatsapp" autocomplete="tel"></div>
+      <div><label>Email * (le même que sur Chariow)</label><input class="field" data-r type="email" name="email" autocomplete="email"></div>
+      <div><label>Permis de conduire</label><input class="field" name="permis" placeholder="ex: Permis B"></div>
+    </section>
+    <!-- 2 -->
+    <section data-step="2" class="grid gap-3 hidden">
+      <h2 class="font-bold">Photo et objectif</h2>
+      <div><label>Photo (demi-carte) *</label><input id="photo" class="field" type="file" accept="image/*"><img id="prev" class="hidden mt-2 w-28 rounded-lg" alt="Aperçu de la photo"></div>
+      <div><label>Poste visé *</label><input class="field" data-r name="poste" placeholder="ex: Comptable, Chauffeur, Développeur…"></div>
+      <div><label>Parlez de vous (facultatif)</label><textarea class="field h-24" name="profil" placeholder="Quelques lignes : votre parcours, vos qualités…"></textarea></div>
+    </section>
+    <!-- 3 -->
+    <section data-step="3" class="hidden">
+      <h2 class="font-bold">Formation</h2>
+      <div id="formations"></div>
+      <button type="button" id="addF" class="btn btn-soft mt-3 text-sm">+ Ajouter une formation</button>
+    </section>
+    <!-- 4 -->
+    <section data-step="4" class="hidden">
+      <h2 class="font-bold">Expérience professionnelle</h2>
+      <p class="text-xs text-slate-500">Débutant ? Vous pouvez continuer sans expérience (stages et bénévolat comptent).</p>
+      <div id="experiences"></div>
+      <button type="button" id="addE" class="btn btn-soft mt-3 text-sm">+ Ajouter une expérience</button>
+    </section>
+    <!-- 5 -->
+    <section data-step="5" class="grid gap-3 hidden">
+      <h2 class="font-bold">Compétences et finalisation</h2>
+      <div><label>Compétences * (séparées par des virgules)</label><textarea class="field h-20" data-r name="competences" placeholder="Word, Excel, gestion d'équipe, comptabilité…"></textarea></div>
+      <div><label>Langues</label><input class="field" name="langues" placeholder="Français (courant), Anglais (intermédiaire)"></div>
+      <div><label>Centres d'intérêt</label><input class="field" name="interets"></div>
+      <div><label>Ancien CV (facultatif, PDF ou Word, 600 Ko max)</label><input id="ancien" class="field" type="file" accept=".pdf,.doc,.docx"></div>
+      <label class="flex gap-2 font-normal text-sm"><input id="consent" type="checkbox" class="mt-1"> J'accepte que mes informations soient utilisées pour générer mon CV et me l'envoyer par email et WhatsApp.</label>
+    </section>
+
+    <p id="err" class="text-sm text-red-600 mt-3 hidden" role="alert"></p>
+    <div class="flex gap-2 mt-5">
+      <button type="button" id="prevBtn" class="btn btn-soft">Précédent</button>
+      <button type="button" id="nextBtn" class="btn btn-main flex-1">Suivant</button>
+    </div>
+  </form>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const db = getFirestore(initializeApp({ apiKey: "AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70", authDomain: "gabon-talent-os.firebaseapp.com", projectId: "gabon-talent-os" }));
+
+const $ = (id) => document.getElementById(id);
+const TOTAL = 5; let step = 1, photoData = "";
+const secs = [...document.querySelectorAll("[data-step]")];
+
+const rowF = () => `<div class="row grid gap-2">
+  <input class="field" data-k="diplome" placeholder="Diplôme / Formation *">
+  <input class="field" data-k="etablissement" placeholder="Établissement *">
+  <input class="field" data-k="annee" placeholder="Année ou période *">
+  <button type="button" class="text-xs text-red-600 text-left" data-del>Supprimer</button></div>`;
+const rowE = () => `<div class="row grid gap-2">
+  <input class="field" data-k="poste" placeholder="Poste occupé *">
+  <input class="field" data-k="entreprise" placeholder="Entreprise *">
+  <input class="field" data-k="periode" placeholder="Période (ex: 2021 - 2024) *">
+  <textarea class="field h-20" data-k="missions" placeholder="Missions principales"></textarea>
+  <button type="button" class="text-xs text-red-600 text-left" data-del>Supprimer</button></div>`;
+$("formations").insertAdjacentHTML("beforeend", rowF());
+$("addF").onclick = () => $("formations").insertAdjacentHTML("beforeend", rowF());
+$("addE").onclick = () => $("experiences").insertAdjacentHTML("beforeend", rowE());
+document.addEventListener("click", (e) => { if(e.target.dataset.del !== undefined) e.target.closest(".row").remove(); });
+
+const rows = (id, req) => [...$(id).querySelectorAll(".row")].map(r => {
+  const o = {}; r.querySelectorAll("[data-k]").forEach(i => o[i.dataset.k] = i.value.trim()); return o;
+}).filter(o => Object.values(o).some(Boolean));
+
+function err(m){ const e = $("err"); e.textContent = m || ""; e.classList.toggle("hidden", !m); }
+function render(){
+  secs.forEach(s => s.classList.toggle("hidden", +s.dataset.step !== step));
+  $("bar").style.width = (step / TOTAL * 100) + "%";
+  $("stepLabel").textContent = "Étape " + step + " sur " + TOTAL;
+  $("prevBtn").style.visibility = step === 1 ? "hidden" : "visible";
+  $("nextBtn").textContent = step === TOTAL ? "Obtenir mon CV · 1 100 FCFA" : "Suivant";
+  err(""); scrollTo({ top: 0, behavior: "smooth" });
+}
+function validate(){
+  const s = secs[step - 1];
+  for(const i of s.querySelectorAll("[data-r]")) if(!i.value.trim()){ i.focus(); return "Merci de remplir tous les champs marqués *."; }
+  if(step === 1){
+    if(!/^\S+@\S+\.\S+$/.test(document.querySelector("[name=email]").value.trim())) return "Email invalide.";
+    if(document.querySelector("[name=whatsapp]").value.replace(/\D/g, "").length < 8) return "Numéro WhatsApp invalide.";
+  }
+  if(step === 2 && !photoData) return "Ajoutez votre photo.";
+  if(step === 3){ const f = rows("formations"); if(!f.length || f.some(x => !x.diplome || !x.etablissement || !x.annee)) return "Renseignez au moins une formation complète."; }
+  if(step === 4 && rows("experiences").some(x => !x.poste || !x.entreprise || !x.periode)) return "Complétez ou supprimez les expériences incomplètes.";
+  if(step === 5 && !$("consent").checked) return "Veuillez accepter le consentement.";
+  return "";
+}
+
+$("photo").onchange = async (e) => {
+  const f = e.target.files[0]; if(!f) return;
+  try {
+    const bmp = await createImageBitmap(f), k = Math.min(1, 480 / Math.max(bmp.width, bmp.height));
+    const c = document.createElement("canvas"); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+    c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+    photoData = c.toDataURL("image/jpeg", .85);
+    $("prev").src = photoData; $("prev").classList.remove("hidden"); err("");
+  } catch { photoData = ""; err("Photo illisible, essayez une autre image."); }
+};
+
+$("prevBtn").onclick = () => { step--; render(); };
+$("nextBtn").onclick = async () => {
+  const m = validate(); if(m) return err(m);
+  if(step < TOTAL){ step++; return render(); }
+  await submit();
+};
+
+async function submit(){
+  const btn = $("nextBtn"); btn.disabled = true; btn.textContent = "Enregistrement…";
+  try {
+    const site = await getDoc(doc(db, "config_site", "main"));
+    const lien = site.exists() ? String(site.data().lienCv || "") : "";
+    if(!/^https:\/\//i.test(lien)){ err("Le paiement n'est pas encore disponible. Réessayez bientôt."); return; }
+    const v = (n) => document.querySelector(`[name=${n}]`).value.trim();
+    const id = crypto.randomUUID();
+    const anc = $("ancien").files[0];
+    if(anc && anc.size > 600 * 1024){ err("L'ancien CV dépasse 600 Ko."); return; }
+    await setDoc(doc(db, "commandes_cv", id), {
+      statut: "en_attente_paiement", createdAt: serverTimestamp(),
+      nom: v("nom"), prenom: v("prenom"), naissance: v("naissance"), lieuNaissance: v("lieuNaissance"),
+      nationalite: v("nationalite"), situation: v("situation"), ville: v("ville"),
+      whatsapp: v("whatsapp"), email: v("email").toLowerCase(), permis: v("permis"),
+      poste: v("poste"), profil: v("profil"), photo: photoData,
+      formations: rows("formations"), experiences: rows("experiences"),
+      competences: v("competences"), langues: v("langues"), interets: v("interets"),
+      ancienCv: !!anc, consent: true
+    });
+    if(anc){
+      const data = await new Promise((ok, ko) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = ko; r.readAsDataURL(anc); });
+      await setDoc(doc(db, "commandes_cv", id, "fichiers", "ancienCv"), { nom: anc.name, data, createdAt: serverTimestamp() });
+    }
+    try { localStorage.setItem("cvCommande", id); } catch {}
+    btn.textContent = "Redirection vers le paiement…";
+    location.href = lien;
+  } catch(e){
+    console.error(e); err("Enregistrement impossible. Vérifiez votre connexion et réessayez.");
+  } finally { if(!location.href.includes("chariow")) { btn.disabled = false; btn.textContent = "Obtenir mon CV · 1 100 FCFA"; } }
+}
+render();
+</script>
+</body>
+</html>
