@@ -13,7 +13,7 @@
   <div class="card text-center">
     <div class="text-5xl" aria-hidden="true">✅</div>
     <h1 class="text-2xl font-extrabold mt-3">Merci pour votre paiement !</h1>
-    <p class="mt-3 text-slate-600">Nous vérifions votre paiement. Votre pack sera activé dans quelques minutes et vous serez prévenu.</p>
+    <p id="msg" class="mt-3 text-slate-600">Nous vérifions votre paiement. Votre pack sera activé dans quelques minutes et vous serez prévenu.</p>
     <a id="wa" class="cta mt-6 hidden" target="_blank" rel="noopener">Nous écrire sur WhatsApp</a>
     <a class="cta mt-3" style="background:var(--ink)" href="index.html">Retour à l'accueil</a>
   </div>
@@ -22,6 +22,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const db = getFirestore(initializeApp({ apiKey: "AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70", authDomain: "gabon-talent-os.firebaseapp.com", projectId: "gabon-talent-os" }));
+if(new URLSearchParams(location.search).get("type") === "cv") document.getElementById("msg").textContent = "Merci ! Patientez quelques instants : votre CV est en cours de génération et vous sera envoyé par email et par WhatsApp.";
 try {
   const s = await getDoc(doc(db, "config_site", "main"));
   const n = String((s.exists() && s.data().whatsapp) || "").replace(/\D/g, "");
