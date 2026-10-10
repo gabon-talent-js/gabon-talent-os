@@ -83,6 +83,7 @@
       <label class="text-sm">Sous-titre<textarea id="s_heroSousTitre" class="field mt-1 h-20"></textarea></label>
       <label class="text-sm">WhatsApp de contact<input id="s_whatsapp" class="field mt-1" placeholder="+241…"></label>
       <label class="text-sm">Bandeau d'annonce (laisser vide pour masquer)<input id="s_banniere" class="field mt-1"></label>
+      <label class="text-sm">Lien de paiement Chariow · Mon CV (1 100 FCFA)<input id="s_lienCv" type="url" class="field mt-1" placeholder="https://…"></label>
       <div><button id="saveSiteBtn" class="btn btn-main">Enregistrer le site</button></div>
     </div>
     <p class="text-sm mt-4">
@@ -305,7 +306,7 @@ $("offres").addEventListener("change", (e) => {
 });
 
 /* ---------- SITE ---------- */
-const SITE_FIELDS = ["heroTitre", "heroSousTitre", "whatsapp", "banniere"];
+const SITE_FIELDS = ["heroTitre", "heroSousTitre", "whatsapp", "banniere", "lienCv"];
 async function loadSite(){
   await safe(async () => {
     const s = await getDoc(doc(db, "config_site", "main"));
