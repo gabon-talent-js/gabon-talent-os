@@ -22,7 +22,8 @@
 <main class="max-w-xl mx-auto px-4 py-8">
   <a href="index.html" class="text-sm underline text-green-800">← Accueil</a>
   <h1 class="text-2xl font-extrabold mt-3">Mon CV Pro</h1>
-  <p class="text-sm text-slate-600">Remplissez vos informations. Après paiement de <b>1 100 FCFA</b>, votre CV professionnel vous est envoyé par email et WhatsApp.</p>
+  <p id="intro" class="text-sm text-slate-600"></p>
+  <p class="text-xs mt-1"><a class="underline text-green-800" href="index.html#/boost">Changer d'offre</a></p>
   <div class="h-2 bg-slate-200 rounded-full mt-4"><div id="bar" class="h-2 rounded-full" style="background:var(--green);width:20%"></div></div>
   <p id="stepLabel" class="text-xs text-slate-500 mt-1"></p>
 
@@ -48,6 +49,10 @@
       <div><label>Photo (demi-carte) *</label><input id="photo" class="field" type="file" accept="image/*"><img id="prev" class="hidden mt-2 w-28 rounded-lg" alt="Aperçu de la photo"></div>
       <div><label>Poste visé *</label><input class="field" data-r name="poste" placeholder="ex: Comptable, Chauffeur, Développeur…"></div>
       <div><label>Parlez de vous (facultatif)</label><textarea class="field h-24" name="profil" placeholder="Quelques lignes : votre parcours, vos qualités…"></textarea></div>
+      <div id="premiumFields" class="grid gap-3 hidden">
+        <div><label>Offre d'emploi ou entreprise visée (pour votre lettre de motivation)</label><textarea class="field h-24" name="offreVisee" placeholder="Collez l'annonce ou indiquez l'entreprise et le poste"></textarea></div>
+        <div><label>Votre profil LinkedIn actuel (facultatif)</label><input class="field" type="url" name="linkedin" placeholder="https://www.linkedin.com/in/…"></div>
+      </div>
     </section>
     <!-- 3 -->
     <section data-step="3" class="hidden">
@@ -87,6 +92,12 @@ const db = getFirestore(initializeApp({ apiKey: "AIzaSyATIRQfPyhvPFp1dIvil3zk4ax
 
 const $ = (id) => document.getElementById(id);
 const TOTAL = 5; let step = 1, photoData = "";
+const OFFRE = new URLSearchParams(location.search).get("offre") === "premium" ? "premium" : "express";
+const PRIX = OFFRE === "premium" ? 5000 : 1100;
+const PRIX_TXT = PRIX.toLocaleString("fr-FR");
+const LABEL = "Obtenir mon CV · " + PRIX_TXT + " FCFA";
+$("intro").innerHTML = "Offre choisie : <b>CV " + (OFFRE === "premium" ? "Premium" : "Express") + "</b>" + (OFFRE === "premium" ? " (CV + lettre de motivation + LinkedIn)" : "") + ". Après paiement de <b>" + PRIX_TXT + " FCFA</b>, vos documents vous sont envoyés par email et WhatsApp.";
+if(OFFRE === "premium") $("premiumFields").classList.remove("hidden");
 const secs = [...document.querySelectorAll("[data-step]")];
 
 const rowF = () => `<div class="row grid gap-2">
@@ -115,7 +126,7 @@ function render(){
   $("bar").style.width = (step / TOTAL * 100) + "%";
   $("stepLabel").textContent = "Étape " + step + " sur " + TOTAL;
   $("prevBtn").style.visibility = step === 1 ? "hidden" : "visible";
-  $("nextBtn").textContent = step === TOTAL ? "Obtenir mon CV · 1 100 FCFA" : "Suivant";
+  $("nextBtn").textContent = step === TOTAL ? LABEL : "Suivant";
   err(""); scrollTo({ top: 0, behavior: "smooth" });
 }
 function validate(){
@@ -154,7 +165,7 @@ async function submit(){
   const btn = $("nextBtn"); btn.disabled = true; btn.textContent = "Enregistrement…";
   try {
     const site = await getDoc(doc(db, "config_site", "main"));
-    const lien = site.exists() ? String(site.data().lienCv || "") : "";
+    const lien = site.exists() ? String((OFFRE === "premium" ? site.data().lienCvPremium : site.data().lienCv) || "") : "";
     if(!/^https:\/\//i.test(lien)){ err("Le paiement n'est pas encore disponible. Réessayez bientôt."); return; }
     const v = (n) => document.querySelector(`[name=${n}]`).value.trim();
     const id = crypto.randomUUID();
@@ -168,7 +179,8 @@ async function submit(){
       poste: v("poste"), profil: v("profil"), photo: photoData,
       formations: rows("formations"), experiences: rows("experiences"),
       competences: v("competences"), langues: v("langues"), interets: v("interets"),
-      ancienCv: !!anc, consent: true
+      ancienCv: !!anc, consent: true, offre: OFFRE, montant: PRIX,
+      offreVisee: OFFRE === "premium" ? v("offreVisee") : "", linkedin: OFFRE === "premium" ? v("linkedin") : ""
     });
     if(anc){
       const data = await new Promise((ok, ko) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = ko; r.readAsDataURL(anc); });
@@ -179,7 +191,7 @@ async function submit(){
     location.href = lien;
   } catch(e){
     console.error(e); err("Enregistrement impossible. Vérifiez votre connexion et réessayez.");
-  } finally { if(!location.href.includes("chariow")) { btn.disabled = false; btn.textContent = "Obtenir mon CV · 1 100 FCFA"; } }
+  } finally { if(!location.href.includes("chariow")) { btn.disabled = false; btn.textContent = LABEL; } }
 }
 render();
 </script>
