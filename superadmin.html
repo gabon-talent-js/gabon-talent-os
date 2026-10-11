@@ -46,6 +46,7 @@
     <button class="tab btn bg-white border" role="tab" data-tab="packs" aria-selected="true">Packs</button>
     <button class="tab btn bg-white border" role="tab" data-tab="offres" aria-selected="false">Offres</button>
     <button class="tab btn bg-white border" role="tab" data-tab="site" aria-selected="false">Site</button>
+    <button class="tab btn bg-white border" role="tab" data-tab="paiements" aria-selected="false">Paiements</button>
   </nav>
 
   <!-- PACKS -->
@@ -83,14 +84,24 @@
       <label class="text-sm">Sous-titre<textarea id="s_heroSousTitre" class="field mt-1 h-20"></textarea></label>
       <label class="text-sm">WhatsApp de contact<input id="s_whatsapp" class="field mt-1" placeholder="+241…"></label>
       <label class="text-sm">Bandeau d'annonce (laisser vide pour masquer)<input id="s_banniere" class="field mt-1"></label>
-      <label class="text-sm">Lien Chariow · CV Express (1 100 FCFA)<input id="s_lienCv" type="url" class="field mt-1" placeholder="https://…"></label>
-      <label class="text-sm">Lien Chariow · CV Premium (5 000 FCFA)<input id="s_lienCvPremium" type="url" class="field mt-1" placeholder="https://…"></label>
       <div><button id="saveSiteBtn" class="btn btn-main">Enregistrer le site</button></div>
     </div>
     <p class="text-sm mt-4">
       <a class="underline text-green-800" href="index.html" target="_blank" rel="noopener">Voir index.html</a> ·
       <a class="underline text-green-800" href="tarifs.html" target="_blank" rel="noopener">Voir tarifs.html</a>
     </p>
+  </section>
+  <!-- PAIEMENTS -->
+  <section id="tab-paiements" class="mt-5 hidden">
+    <div class="card max-w-2xl grid gap-3">
+      <h2 class="font-bold">Connexion Chariow</h2>
+      <label class="text-sm">URL de la fonction de paiement (creerPaiement)<input id="s_urlPaiement" type="url" class="field mt-1" placeholder="https://…"></label>
+      <p class="text-xs text-slate-500">À remplir après le déploiement du serveur. Tant qu'elle est vide, le site utilise les liens de secours ci-dessous.</p>
+      <div><button id="savePayUrl" class="btn btn-main">Enregistrer</button></div>
+    </div>
+    <h2 class="font-bold mt-6">Produits à paiement (CV, formation)</h2>
+    <p class="text-xs text-slate-500">Les packs PRO / ENTREPRISE se règlent dans l'onglet Packs.</p>
+    <div id="produits" class="grid md:grid-cols-3 gap-4 mt-3"></div>
   </section>
 </main>
 
@@ -157,11 +168,11 @@ $("logoutBtn").onclick = () => signOut(auth);
 /* ---------- ONGLETS ---------- */
 document.querySelectorAll(".tab").forEach(b => b.onclick = () => {
   document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x === b));
-  ["packs","offres","site"].forEach(n => show($("tab-" + n), n === b.dataset.tab));
+  ["packs","offres","site","paiements"].forEach(n => show($("tab-" + n), n === b.dataset.tab));
 });
 
 /* ---------- CHARGEMENT ---------- */
-async function loadAll(){ await Promise.all([loadPacks(), loadOffres(), loadSite()]); }
+async function loadAll(){ await Promise.all([loadPacks(), loadOffres(), loadSite(), loadProduits()]); }
 
 function renderStats(packsCount){
   const by = (s) => offres.filter(o => o.status === s).length;
@@ -197,6 +208,7 @@ async function loadPacks(){
           <label class="flex items-center gap-1 col-span-2"><input data-f="actif" type="checkbox" ${p.actif !== false ? "checked" : ""}> Visible sur le site</label>
         </div>
         <input data-f="lienPaiement" type="url" value="${esc(p.lienPaiement || "")}" class="field mt-2 text-xs" placeholder="Lien de paiement Chariow (https://…)">
+        <input data-f="chariowProductId" value="${esc(p.chariowProductId || "")}" class="field mt-2 text-xs" placeholder="ID produit Chariow (prd_…) · activation automatique">
         <div class="flex gap-2 mt-3">
           <button class="btn btn-main" data-act="savePack">Enregistrer</button>
           <button class="btn btn-red" data-act="delPack">Supprimer</button>
@@ -221,7 +233,7 @@ $("packs").addEventListener("click", (e) => {
       features: v("features").split("\n").map(s => s.trim()).filter(Boolean),
       description: v("description").trim(), cible: v("cible"),
       duree: Math.max(0, Number(v("duree")) || 0), ordre: Number(v("ordre")) || 0,
-      populaire: chk("populaire"), actif: chk("actif"), lienPaiement: lien,
+      populaire: chk("populaire"), actif: chk("actif"), lienPaiement: lien, chariowProductId: v("chariowProductId").trim(),
       updatedAt: serverTimestamp()
     }, { merge: true });
     toast("Pack « " + id + " » enregistré");
@@ -307,7 +319,7 @@ $("offres").addEventListener("change", (e) => {
 });
 
 /* ---------- SITE ---------- */
-const SITE_FIELDS = ["heroTitre", "heroSousTitre", "whatsapp", "banniere", "lienCv", "lienCvPremium"];
+const SITE_FIELDS = ["heroTitre", "heroSousTitre", "whatsapp", "banniere", "urlPaiement"];
 async function loadSite(){
   await safe(async () => {
     const s = await getDoc(doc(db, "config_site", "main"));
@@ -321,6 +333,46 @@ $("saveSiteBtn").onclick = () => safe(async () => {
   await setDoc(doc(db, "config_site", "main"), data, { merge: true });
   toast("Site mis à jour");
 });
+
+/* ---------- PAIEMENTS CHARIOW ---------- */
+const PRODUITS = [
+  ["cv_express", "CV Express", 1100, "CV professionnel rédigé par IA, reçu par e-mail et WhatsApp."],
+  ["cv_premium", "CV Premium", 5000, "CV + lettre de motivation + optimisation LinkedIn."],
+  ["formation", "Formation Développeur", 0, "Formation certifiante CCTI Gabon."]
+];
+async function loadProduits(){
+  await safe(async () => {
+    const docs = await Promise.all(PRODUITS.map(([id]) => getDoc(doc(db, "config_produits", id))));
+    $("produits").innerHTML = PRODUITS.map(([id, nom, prix, desc], i) => {
+      const p = docs[i].exists() ? docs[i].data() : {};
+      return `<div class="card" data-produit="${id}">
+        <input data-f="nom" value="${esc(p.nom ?? nom)}" class="field font-bold" aria-label="Nom">
+        <div class="flex items-center gap-2 mt-2 text-sm"><input data-f="prix" type="number" min="0" value="${esc(p.prix ?? prix)}" class="field w-28"> FCFA</div>
+        <textarea data-f="description" class="field mt-2 h-16 text-xs">${esc(p.description ?? desc)}</textarea>
+        <input data-f="chariowProductId" value="${esc(p.chariowProductId || "")}" class="field mt-2 text-xs" placeholder="ID produit Chariow (prd_…)">
+        <input data-f="lienPaiement" type="url" value="${esc(p.lienPaiement || "")}" class="field mt-2 text-xs" placeholder="Lien de paiement de secours (https://…)">
+        <label class="flex items-center gap-1 text-xs mt-2"><input data-f="actif" type="checkbox" ${p.actif ? "checked" : ""}> Actif (visible et payable)</label>
+        <button class="btn btn-main mt-3" data-act="saveProduit">Enregistrer</button>
+        <p class="text-[11px] text-slate-400 mt-2">ID : ${id}</p></div>`;
+    }).join("");
+  });
+}
+$("produits").addEventListener("click", (e) => {
+  if(e.target.dataset.act !== "saveProduit") return;
+  const card = e.target.closest("[data-produit]"), id = card.dataset.produit;
+  const v = (f) => card.querySelector(`[data-f=${f}]`).value.trim();
+  const lien = v("lienPaiement");
+  if(lien && !/^https:\/\//i.test(lien)) return toast("Le lien doit commencer par https://");
+  safe(async () => {
+    await setDoc(doc(db, "config_produits", id), {
+      nom: v("nom"), prix: Math.max(0, Number(v("prix")) || 0), description: v("description"),
+      chariowProductId: v("chariowProductId"), lienPaiement: lien,
+      actif: card.querySelector("[data-f=actif]").checked, updatedAt: serverTimestamp()
+    }, { merge: true });
+    toast("Produit enregistré");
+  });
+});
+$("savePayUrl").onclick = () => $("saveSiteBtn").click();
 </script>
 </body>
 </html>
