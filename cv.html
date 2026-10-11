@@ -164,9 +164,12 @@ $("nextBtn").onclick = async () => {
 async function submit(){
   const btn = $("nextBtn"); btn.disabled = true; btn.textContent = "Enregistrement…";
   try {
-    const site = await getDoc(doc(db, "config_site", "main"));
-    const lien = site.exists() ? String((OFFRE === "premium" ? site.data().lienCvPremium : site.data().lienCv) || "") : "";
-    if(!/^https:\/\//i.test(lien)){ err("Le paiement n'est pas encore disponible. Réessayez bientôt."); return; }
+    const [site, prodSnap] = await Promise.all([getDoc(doc(db, "config_site", "main")), getDoc(doc(db, "config_produits", OFFRE === "premium" ? "cv_premium" : "cv_express"))]);
+    const api = site.exists() ? String(site.data().urlPaiement || "") : "";
+    const pd = prodSnap.exists() ? prodSnap.data() : {};
+    const lien = String(pd.lienPaiement || (site.exists() ? (OFFRE === "premium" ? site.data().lienCvPremium : site.data().lienCv) : "") || "");
+    const lienOk = /^https:\/\//i.test(lien);
+    if(!api && !lienOk){ err("Le paiement n'est pas encore disponible. Réessayez bientôt."); return; }
     const v = (n) => document.querySelector(`[name=${n}]`).value.trim();
     const id = crypto.randomUUID();
     const anc = $("ancien").files[0];
@@ -188,7 +191,15 @@ async function submit(){
     }
     try { localStorage.setItem("cvCommande", id); } catch {}
     btn.textContent = "Redirection vers le paiement…";
-    location.href = lien;
+    if(api){
+      try {
+        const r = await fetch(api, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "cv", ref: id }) });
+        const j = await r.json().catch(() => ({}));
+        if(r.ok && /^https:\/\//i.test(j.checkout_url || "")){ location.href = j.checkout_url; return; }
+        if(!lienOk){ err(j.error || "Paiement indisponible. Réessayez."); return; }
+      } catch(_) { if(!lienOk){ err("Paiement indisponible. Réessayez."); return; } }
+    }
+    location.href = lien;   // mode de secours : lien direct Chariow
   } catch(e){
     console.error(e); err("Enregistrement impossible. Vérifiez votre connexion et réessayez.");
   } finally { if(!location.href.includes("chariow")) { btn.disabled = false; btn.textContent = LABEL; } }
