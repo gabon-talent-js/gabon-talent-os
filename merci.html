@@ -6,28 +6,61 @@
 <meta name="robots" content="noindex">
 <title>Merci · Gabon Talent OS</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<style>:root{--ink:#0f2a1d;--green:#0b7a4b;--paper:#f6f7f4}body{background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.card{background:#fff;border:1px solid #e1e6df;border-radius:1.1rem;padding:1.5rem}.cta{display:block;text-align:center;border-radius:.8rem;padding:.8rem 1rem;font-weight:700;background:var(--green);color:#fff}</style>
+<style>:root{--ink:#0f2a1d;--green:#0b7a4b;--paper:#f6f7f4}body{background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.card{background:#fff;border:1px solid #e1e6df;border-radius:1.1rem;padding:1.5rem}.cta{display:block;text-align:center;border-radius:.8rem;padding:.8rem 1rem;font-weight:700;background:var(--green);color:#fff;margin-top:.75rem}</style>
 </head>
 <body class="min-h-screen">
 <main class="max-w-xl mx-auto px-4 py-12">
-  <div class="card text-center">
-    <div class="text-5xl" aria-hidden="true">✅</div>
-    <h1 class="text-2xl font-extrabold mt-3">Merci pour votre paiement !</h1>
-    <p id="msg" class="mt-3 text-slate-600">Nous vérifions votre paiement. Votre pack sera activé dans quelques minutes et vous serez prévenu.</p>
-    <a id="wa" class="cta mt-6 hidden" target="_blank" rel="noopener">Nous écrire sur WhatsApp</a>
-    <a class="cta mt-3" style="background:var(--ink)" href="index.html">Retour à l'accueil</a>
+  <div class="card text-center" aria-live="polite">
+    <div id="icon" class="text-5xl" aria-hidden="true">⏳</div>
+    <h1 id="titre" class="text-2xl font-extrabold mt-3">Merci !</h1>
+    <p id="msg" class="mt-3 text-slate-600">Nous vérifions votre paiement…</p>
+    <div id="actions" class="mt-4"></div>
+    <a id="wa" class="cta hidden" style="background:#1fa855" target="_blank" rel="noopener">Nous écrire sur WhatsApp</a>
   </div>
 </main>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const db = getFirestore(initializeApp({ apiKey: "AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70", authDomain: "gabon-talent-os.firebaseapp.com", projectId: "gabon-talent-os" }));
-if(new URLSearchParams(location.search).get("type") === "cv") document.getElementById("msg").textContent = "Merci ! Patientez quelques instants : votre CV est en cours de génération et vous sera envoyé par email et par WhatsApp.";
+const $ = (id) => document.getElementById(id);
+const q = new URLSearchParams(location.search);
+const type = ["pack", "cv", "formation"].includes(q.get("type")) ? q.get("type") : "pack";
+const cmd = q.get("c") || "";
+const OK = {
+  pack: ["Pack activé !", "Merci ! Votre abonnement est actif. Vous pouvez publier vos offres dès maintenant.", [["Publier une offre", "index.html#/recruteur"], ["Voir les offres", "index.html#/"]]],
+  cv: ["Paiement reçu !", "Merci ! Patientez quelques instants : votre CV est en cours de génération et vous sera envoyé par e-mail et par WhatsApp.", [["Retour à l'accueil", "index.html"]]],
+  formation: ["Inscription confirmée !", "Merci ! L'équipe vous contacte sur WhatsApp pour la suite.", [["Retour à l'accueil", "index.html"]]]
+};
+function show(icon, titre, msg, actions) {
+  $("icon").textContent = icon; $("titre").textContent = titre; $("msg").textContent = msg;
+  $("actions").innerHTML = (actions || []).map(([t, h]) => `<a class="cta" href="${h}">${t}</a>`).join("");
+}
+let wa = "";
 try {
   const s = await getDoc(doc(db, "config_site", "main"));
   const n = String((s.exists() && s.data().whatsapp) || "").replace(/\D/g, "");
-  if(n){ const a = document.getElementById("wa"); a.href = "https://wa.me/" + n + "?text=" + encodeURIComponent("Bonjour, je viens de payer mon pack sur Gabon Talent OS."); a.classList.remove("hidden"); }
-} catch(e){ console.warn(e); }
+  if (n) { wa = "https://wa.me/" + n + "?text=" + encodeURIComponent("Bonjour, je viens de payer sur Gabon Talent OS (réf. " + (cmd || "—") + ")."); }
+} catch (_) {}
+const showWa = () => { if (wa) { $("wa").href = wa; $("wa").classList.remove("hidden"); } };
+
+if (!cmd) { show("✅", "Merci !", "Nous avons bien reçu votre demande. Si vous avez payé, elle sera traitée dans quelques instants.", OK[type][2]); showWa(); }
+else {
+  let essais = 0;
+  const check = async () => {
+    essais++;
+    try {
+      const s = await getDoc(doc(db, "suivi", cmd));
+      const st = s.exists() ? s.data().statut : "";
+      if (st === "payee") { show("✅", OK[type][0], OK[type][1], OK[type][2]); return; }
+      if (st === "a_verifier") { show("🔎", "Paiement reçu", "Votre paiement est en cours de vérification par notre équipe. Vous serez prévenu rapidement.", []); showWa(); return; }
+      if (st === "echec" || st === "abandonne") { show("⚠️", "Paiement non abouti", "Le paiement n'a pas été finalisé. Vous pouvez réessayer.", [["Retour aux tarifs", "index.html#/tarifs"]]); showWa(); return; }
+    } catch (_) {}
+    if (essais < 60) setTimeout(check, 4000);
+    else { show("⏳", "Confirmation en cours", "La confirmation prend plus de temps que prévu. Si vous avez payé, votre commande sera bien traitée. Contactez-nous en cas de doute.", [["Retour à l'accueil", "index.html"]]); showWa(); }
+  };
+  show("⏳", "Merci !", "Nous vérifions votre paiement. Cela prend quelques secondes…", []);
+  check();
+}
 </script>
 </body>
 </html>
