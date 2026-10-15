@@ -1,0 +1,52 @@
+name: Livraison automatique
+
+on:
+  workflow_dispatch:
+    inputs:
+      delivery_id:
+        description: "ID de livraison Chariow (laisser vide pour un test)"
+        required: false
+      payload:
+        description: "Pulse Chariow (JSON)"
+        required: false
+      mode:
+        description: "Écrire apercu pour un test complet SANS commande ni paiement"
+        required: false
+  schedule:
+    - cron: "*/20 * * * *"   # filet de sécurité : relance les commandes bloquées + nettoyage
+
+permissions:
+  contents: read
+
+concurrency:
+  group: livraison-${{ inputs.delivery_id || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  livrer:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Installer les dépendances
+        run: npm install --omit=dev --no-audit --no-fund
+        working-directory: automation
+      - name: Traiter la livraison
+        run: node run.js
+        working-directory: automation
+        env:
+          DELIVERY_ID: ${{ inputs.delivery_id }}
+          PULSE_PAYLOAD: ${{ inputs.payload }}
+          MODE: ${{ inputs.mode }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_MODEL: ${{ vars.GROQ_MODEL }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          ADMIN_EMAIL: ${{ vars.ADMIN_EMAIL }}
+          CHROME_PATH: /usr/bin/google-chrome
