@@ -23,25 +23,44 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getFirestore, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const db = getFirestore(initializeApp({ apiKey: "AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70", authDomain: "gabon-talent-os.firebaseapp.com", projectId: "gabon-talent-os" }));
 const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 const q = new URLSearchParams(location.search);
 const type = ["pack", "cv", "formation"].includes(q.get("type")) ? q.get("type") : "pack";
-const cmd = q.get("c") || "";
+const cmd = (q.get("c") || "").replace(/[^\w-]/g, "");
 const OK = {
   pack: ["Pack activé !", "Merci ! Votre abonnement est actif. Vous pouvez publier vos offres dès maintenant.", [["Publier une offre", "index.html#/recruteur"], ["Voir les offres", "index.html#/"]]],
-  cv: ["Paiement reçu !", "Merci ! Patientez quelques instants : votre CV est en cours de génération et vous sera envoyé par e-mail et par WhatsApp.", [["Retour à l'accueil", "index.html"]]],
+  cv: ["Paiement reçu !", "Merci ! Votre CV est en cours de préparation. Cela prend quelques minutes : gardez cette page ouverte, vous le recevrez aussi par e-mail.", []],
   formation: ["Inscription confirmée !", "Merci ! L'équipe vous contacte sur WhatsApp pour la suite.", [["Retour à l'accueil", "index.html"]]]
 };
 function show(icon, titre, msg, actions) {
   $("icon").textContent = icon; $("titre").textContent = titre; $("msg").textContent = msg;
-  $("actions").innerHTML = (actions || []).map(([t, h]) => `<a class="cta" href="${h}">${t}</a>`).join("");
+  $("actions").innerHTML = (actions || []).map(([t, h, extra]) => `<a class="cta" href="${esc(h)}" ${extra || ""}>${esc(t)}</a>`).join("");
 }
 let wa = "";
 try {
   const s = await getDoc(doc(db, "config_site", "main"));
   const n = String((s.exists() && s.data().whatsapp) || "").replace(/\D/g, "");
-  if (n) { wa = "https://wa.me/" + n + "?text=" + encodeURIComponent("Bonjour, je viens de payer sur Gabon Talent OS (réf. " + (cmd || "—") + ")."); }
+  if (n) wa = "https://wa.me/" + n + "?text=" + encodeURIComponent("Bonjour, je viens de payer sur Gabon Talent OS (réf. " + (cmd || "—") + ").");
 } catch (_) {}
 const showWa = () => { if (wa) { $("wa").href = wa; $("wa").classList.remove("hidden"); } };
+
+/* Livraison du CV : boutons de téléchargement + enregistrement sur son propre WhatsApp */
+async function afficherLivraison() {
+  try {
+    const l = await getDoc(doc(db, "livraisons", cmd));
+    if (l.exists()) {
+      const d = l.data(), actions = [];
+      for (const f of d.fichiers || []) {
+        const bytes = Uint8Array.from(atob(f.data), c => c.charCodeAt(0));
+        actions.push(["Télécharger " + f.nom, URL.createObjectURL(new Blob([bytes], { type: "application/pdf" })), `download="${esc(f.nom)}"`]);
+      }
+      if (d.whatsapp) actions.push(["Enregistrer le lien sur mon WhatsApp", "https://wa.me/" + d.whatsapp + "?text=" + encodeURIComponent("Mon CV Gabon Talent OS : " + location.href), 'target="_blank" rel="noopener"']);
+      show("🎉", "Votre CV est prêt !", "Téléchargez-le ci-dessous. Il vous a aussi été envoyé par e-mail (vérifiez vos courriers indésirables).", actions);
+      return;
+    }
+  } catch (_) {}
+  show("🎉", "Votre CV est prêt !", "Il vous a été envoyé par e-mail (vérifiez vos courriers indésirables).", [["Retour à l'accueil", "index.html"]]);
+}
 
 if (!cmd) { show("✅", "Merci !", "Nous avons bien reçu votre demande. Si vous avez payé, elle sera traitée dans quelques instants.", OK[type][2]); showWa(); }
 else {
@@ -51,12 +70,15 @@ else {
     try {
       const s = await getDoc(doc(db, "suivi", cmd));
       const st = s.exists() ? s.data().statut : "";
-      if (st === "payee") { show("✅", OK[type][0], OK[type][1], OK[type][2]); return; }
-      if (st === "a_verifier") { show("🔎", "Paiement reçu", "Votre paiement est en cours de vérification par notre équipe. Vous serez prévenu rapidement.", []); showWa(); return; }
-      if (st === "echec" || st === "abandonne") { show("⚠️", "Paiement non abouti", "Le paiement n'a pas été finalisé. Vous pouvez réessayer.", [["Retour aux tarifs", "index.html#/tarifs"]]); showWa(); return; }
+      if (st === "livre") { await afficherLivraison(); return; }
+      if (st === "payee") {
+        show("✅", OK[type][0], OK[type][1], OK[type][2]);
+        if (type !== "cv") return;            // pour un CV, on continue d'attendre la livraison
+      } else if (st === "a_verifier") { show("🔎", "Paiement reçu", "Votre paiement est en cours de vérification par notre équipe. Vous serez prévenu rapidement.", []); showWa(); return; }
+      else if (st === "echec" || st === "abandonne") { show("⚠️", "Paiement non abouti", "Le paiement n'a pas été finalisé. Vous pouvez réessayer.", [["Retour aux tarifs", "index.html#/tarifs"]]); showWa(); return; }
     } catch (_) {}
-    if (essais < 60) setTimeout(check, 4000);
-    else { show("⏳", "Confirmation en cours", "La confirmation prend plus de temps que prévu. Si vous avez payé, votre commande sera bien traitée. Contactez-nous en cas de doute.", [["Retour à l'accueil", "index.html"]]); showWa(); }
+    if (essais < 90) setTimeout(check, essais < 20 ? 4000 : 8000);
+    else { show("⏳", "Confirmation en cours", "Cela prend plus de temps que prévu. Si vous avez payé, votre commande sera bien traitée et vous recevrez un e-mail.", [["Retour à l'accueil", "index.html"]]); showWa(); }
   };
   show("⏳", "Merci !", "Nous vérifions votre paiement. Cela prend quelques secondes…", []);
   check();
