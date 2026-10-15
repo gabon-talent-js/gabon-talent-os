@@ -148,7 +148,24 @@
       }).catch(function () {});
   }
 
-  function start() { init(); patchPacks(); initFormation(); }
+  /* ---- Textes : FAQ et confidentialité alignées sur la nouvelle offre CV ---- */
+  function patchTextes() {
+    document.querySelectorAll("#page-home details").forEach(function (d) {
+      var sm = d.querySelector("summary"), p = d.querySelector("p");
+      if (sm && p && /gratuit pour les candidats/i.test(sm.textContent)) {
+        p.textContent = "Oui. Créer un profil et postuler est gratuit. Seuls les services « Mon CV » (CV Express et CV Premium) sont payants : vous remplissez un formulaire, vous payez, puis vous recevez vos documents par e-mail.";
+      }
+    });
+    var priv = document.querySelector("#page-confidentialite .box");
+    if (priv && !priv.dataset.ia) {
+      priv.dataset.ia = "1";
+      priv.insertAdjacentHTML("beforeend",
+        '<h3 style="margin-top:14px">Services « Mon CV » et intelligence artificielle</h3>' +
+        '<p style="font-size:14px">Pour rédiger votre CV, le contenu professionnel (formations, expériences, compétences) est traité par un service d\'intelligence artificielle. Vos nom, téléphone, e-mail, photo et date de naissance ne lui sont jamais transmis : ils sont ajoutés à votre document sur nos propres traitements. Vos documents restent téléchargeables 7 jours et vos informations de commande sont supprimées 30 jours après la livraison.</p>');
+    }
+  }
+
+  function start() { init(); patchPacks(); initFormation(); patchTextes(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();
 })();
