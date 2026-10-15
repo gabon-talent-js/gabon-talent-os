@@ -193,7 +193,7 @@ async function submit(){
     btn.textContent = "Redirection vers le paiement…";
     if(api){
       try {
-        const r = await fetch(api, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "cv", ref: id }) });
+        const r = await fetch(api, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "cv", ref: id, offre: OFFRE, prenom: v("prenom"), nom: v("nom"), email: v("email").toLowerCase(), whatsapp: v("whatsapp") }) });
         const j = await r.json().catch(() => ({}));
         if(r.ok && /^https:\/\//i.test(j.checkout_url || "")){ location.href = j.checkout_url; return; }
         if(!lienOk){ err(j.error || "Paiement indisponible. Réessayez."); return; }
