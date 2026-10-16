@@ -255,9 +255,9 @@ $("addPackBtn").onclick = () => {
 
 /* ---------- INITIALISATION DES PACKS ---------- */
 const PACKS_PAR_DEFAUT = {
-  decouverte: { nom: "PACK DÉCOUVERTE", prix: 0, maxOffres: 1, features: ["1 offre", "7 jours"], cible: "tous", duree: 7, ordre: 1, populaire: false, actif: true, lienPaiement: "", description: "Testez la plateforme gratuitement avec 1 offre pendant 7 jours." },
-  pro: { nom: "PACK PRO", prix: 25000, maxOffres: 5, features: ["5 offres", "Boost TOP 3j", "CV par WhatsApp"], cible: "recruteur", duree: 30, ordre: 2, populaire: true, actif: true, lienPaiement: "", description: "Publiez jusqu'à 5 offres, boostez-les en TOP pendant 3 jours et recevez les CV directement sur WhatsApp." },
-  entreprise: { nom: "PACK ENTREPRISE", prix: 75000, maxOffres: 1000, features: ["Illimité", "Logo + Badge OR"], cible: "recruteur", duree: 30, ordre: 3, populaire: false, actif: true, lienPaiement: "", description: "Offres illimitées, votre logo et un badge OR pour renforcer votre image employeur." }
+  decouverte: { nom: "PACK DÉCOUVERTE", prix: 1000, maxOffres: 2, features: ["2 offres", "30 jours"], cible: "tous", duree: 30, ordre: 2, populaire: false, actif: true, lienPaiement: "", description: "Testez la plateforme gratuitement avec 2 offre pendant 30 jours." },
+  pro: { nom: "PACK PRO", prix: 3000, maxOffres: 10, features: ["10 offres", "Boost TOP 30j", "CV par WhatsApp"], cible: "recruteur", duree: 30, ordre: 10, populaire: true, actif: true, lienPaiement: "", description: "Publiez jusqu'à 10 offres, boostez-les en TOP pendant 30 jours et recevez les CV directement sur WhatsApp." },
+  entreprise: { nom: "PACK ENTREPRISE", prix: 10000, maxOffres: 1000, features: ["Illimité", "Logo + Badge OR"], cible: "recruteur", duree: 30, ordre: 30, populaire: false, actif: true, lienPaiement: "", description: "Offres illimitées, votre logo et un badge OR pour renforcer votre image employeur." }
 };
 $("seedBtn").onclick = () => safe(async () => {
   let crees = 0;
