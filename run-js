@@ -319,6 +319,7 @@ async function reprises() {
   for (const s of q.docs) await livrerCv(s.id);
   const now = Date.now();
   for (const s of (await db.collection("livraisons").where("expiresAt", "<", Timestamp.now()).limit(50).get()).docs) await s.ref.delete();
+  for (const s of (await db.collection("cv_fichiers").where("createdAt", "<", Timestamp.fromMillis(now - 60 * 864e5)).limit(100).get()).docs) await s.ref.delete();
   for (const s of (await db.collection("commandes_cv").where("statut", "==", "livre").limit(200).get()).docs) {
     const t = s.data().livreAt; if (t && t.toMillis() < now - 30 * 864e5) await s.ref.delete();
   }
