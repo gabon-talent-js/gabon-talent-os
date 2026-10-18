@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>CV · Gabon Talent OS</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>:root{--ink:#0f2a1d;--green:#0b7a4b;--paper:#f6f7f4}body{background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.card{background:#fff;border:1px solid #e1e6df;border-radius:1.1rem;padding:1.5rem}.cta{display:block;text-align:center;border-radius:.8rem;padding:.8rem 1rem;font-weight:700;background:var(--green);color:#fff;margin-top:.75rem}</style>
+</head>
+<body class="min-h-screen">
+<main class="max-w-xl mx-auto px-4 py-12">
+  <div class="card text-center">
+    <div class="text-5xl" aria-hidden="true">📄</div>
+    <h1 class="text-xl font-extrabold mt-3">CV du candidat</h1>
+    <p id="msg" class="mt-3 text-slate-600">Chargement…</p>
+    <div id="actions"></div>
+    <a class="cta" style="background:#12201a" href="index.html">Gabon Talent OS</a>
+  </div>
+</main>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const db = getFirestore(initializeApp({ apiKey: "AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70", authDomain: "gabon-talent-os.firebaseapp.com", projectId: "gabon-talent-os" }));
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const id = (new URLSearchParams(location.search).get("id") || "").replace(/[^\w-]/g, "");
+(async () => {
+  try {
+    const s = id ? await getDoc(doc(db, "cv_fichiers", id)) : null;
+    if (!s || !s.exists()) { document.getElementById("msg").textContent = "Ce CV n'existe plus ou le lien est invalide."; return; }
+    const d = s.data();
+    const bytes = Uint8Array.from(atob(d.data), c => c.charCodeAt(0));
+    const url = URL.createObjectURL(new Blob([bytes], { type: d.mime || "application/octet-stream" }));
+    document.getElementById("msg").textContent = d.nom || "CV";
+    document.getElementById("actions").innerHTML =
+      `<a class="cta" href="${url}" download="${esc(d.nom || "cv")}">Télécharger le CV</a>` +
+      (d.mime === "application/pdf" ? `<a class="cta" style="background:#1f5fa8" href="${url}" target="_blank" rel="noopener">Ouvrir le CV</a>` : "");
+  } catch (_) { document.getElementById("msg").textContent = "Impossible de charger le CV pour le moment."; }
+})();
+</script>
+</body>
+</html>
