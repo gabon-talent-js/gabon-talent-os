@@ -47,6 +47,7 @@
     <button class="tab btn bg-white border" role="tab" data-tab="offres" aria-selected="false">Offres</button>
     <button class="tab btn bg-white border" role="tab" data-tab="site" aria-selected="false">Site</button>
     <button class="tab btn bg-white border" role="tab" data-tab="paiements" aria-selected="false">Paiements</button>
+    <button class="tab btn bg-white border" role="tab" data-tab="cvs" aria-selected="false">CV déposés</button>
   </nav>
 
   <!-- PACKS -->
@@ -102,6 +103,11 @@
     <h2 class="font-bold mt-6">Produits à paiement (CV, formation)</h2>
     <p class="text-xs text-slate-500">Les packs PRO / ENTREPRISE se règlent dans l'onglet Packs.</p>
     <div id="produits" class="grid md:grid-cols-3 gap-4 mt-3"></div>
+  </section>
+  <!-- CV DÉPOSÉS -->
+  <section id="tab-cvs" class="mt-5 hidden">
+    <p class="text-xs text-slate-500 mb-3">CV ajoutés par les candidats (vivier) ou joints à leur profil. Supprimés automatiquement après 60 jours.</p>
+    <div id="cvs" class="grid gap-2"></div>
   </section>
 </main>
 
@@ -168,11 +174,11 @@ $("logoutBtn").onclick = () => signOut(auth);
 /* ---------- ONGLETS ---------- */
 document.querySelectorAll(".tab").forEach(b => b.onclick = () => {
   document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x === b));
-  ["packs","offres","site","paiements"].forEach(n => show($("tab-" + n), n === b.dataset.tab));
+  ["packs","offres","site","paiements","cvs"].forEach(n => show($("tab-" + n), n === b.dataset.tab));
 });
 
 /* ---------- CHARGEMENT ---------- */
-async function loadAll(){ await Promise.all([loadPacks(), loadOffres(), loadSite(), loadProduits()]); }
+async function loadAll(){ await Promise.all([loadPacks(), loadOffres(), loadSite(), loadProduits(), loadCvs()]); }
 
 function renderStats(packsCount){
   const by = (s) => offres.filter(o => o.status === s).length;
@@ -255,9 +261,9 @@ $("addPackBtn").onclick = () => {
 
 /* ---------- INITIALISATION DES PACKS ---------- */
 const PACKS_PAR_DEFAUT = {
-  decouverte: { nom: "PACK DÉCOUVERTE", prix: 1000, maxOffres: 2, features: ["2 offres", "30 jours"], cible: "tous", duree: 30, ordre: 2, populaire: false, actif: true, lienPaiement: "", description: "Testez la plateforme gratuitement avec 2 offre pendant 30 jours." },
-  pro: { nom: "PACK PRO", prix: 3000, maxOffres: 10, features: ["10 offres", "Boost TOP 30j", "CV par WhatsApp"], cible: "recruteur", duree: 30, ordre: 10, populaire: true, actif: true, lienPaiement: "", description: "Publiez jusqu'à 10 offres, boostez-les en TOP pendant 30 jours et recevez les CV directement sur WhatsApp." },
-  entreprise: { nom: "PACK ENTREPRISE", prix: 10000, maxOffres: 1000, features: ["Illimité", "Logo + Badge OR"], cible: "recruteur", duree: 30, ordre: 30, populaire: false, actif: true, lienPaiement: "", description: "Offres illimitées, votre logo et un badge OR pour renforcer votre image employeur." }
+  decouverte: { nom: "PACK DÉCOUVERTE", prix: 0, maxOffres: 1, features: ["1 offre", "7 jours"], cible: "tous", duree: 7, ordre: 1, populaire: false, actif: true, lienPaiement: "", description: "Testez la plateforme gratuitement avec 1 offre pendant 7 jours." },
+  pro: { nom: "PACK PRO", prix: 25000, maxOffres: 5, features: ["5 offres", "Boost TOP 3j", "CV par WhatsApp"], cible: "recruteur", duree: 30, ordre: 2, populaire: true, actif: true, lienPaiement: "", description: "Publiez jusqu'à 5 offres, boostez-les en TOP pendant 3 jours et recevez les CV directement sur WhatsApp." },
+  entreprise: { nom: "PACK ENTREPRISE", prix: 75000, maxOffres: 1000, features: ["Illimité", "Logo + Badge OR"], cible: "recruteur", duree: 30, ordre: 3, populaire: false, actif: true, lienPaiement: "", description: "Offres illimitées, votre logo et un badge OR pour renforcer votre image employeur." }
 };
 $("seedBtn").onclick = () => safe(async () => {
   let crees = 0;
@@ -334,11 +340,37 @@ $("saveSiteBtn").onclick = () => safe(async () => {
   toast("Site mis à jour");
 });
 
+/* ---------- CV DÉPOSÉS ---------- */
+let cvsCache = {};
+async function loadCvs(){
+  await safe(async () => {
+    const snap = await getDocs(collection(db, "cv_fichiers"));
+    const list = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => ((b.createdAt && b.createdAt.seconds) || 0) - ((a.createdAt && a.createdAt.seconds) || 0));
+    cvsCache = Object.fromEntries(list.map(x => [x.id, x]));
+    $("cvs").innerHTML = list.map(x => `<div class="card flex flex-wrap items-center justify-between gap-2" data-cv="${esc(x.id)}">
+      <div class="min-w-0"><div class="font-semibold truncate">${esc(x.candidat || "(CV joint à un profil)")}</div>
+      <div class="text-xs text-slate-500">${esc([x.poste, x.tel, x.email].filter(Boolean).join(" · "))}</div>
+      <div class="text-xs text-slate-400">${esc(x.nom || "")}${x.createdAt && x.createdAt.seconds ? " · " + new Date(x.createdAt.seconds * 1000).toLocaleDateString("fr-FR") : ""}</div></div>
+      <div class="flex gap-2"><button class="btn btn-main" data-act="dlCv">Télécharger</button><button class="btn btn-red" data-act="delCv">Supprimer</button></div></div>`).join("") || `<p class="text-sm text-slate-500">Aucun CV déposé.</p>`;
+  });
+}
+$("cvs").addEventListener("click", (e) => {
+  const act = e.target.dataset.act; if(!act) return;
+  const id = e.target.closest("[data-cv]").dataset.cv, x = cvsCache[id];
+  if(act === "dlCv" && x){
+    const bytes = Uint8Array.from(atob(x.data), c => c.charCodeAt(0));
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([bytes], { type: x.mime || "application/octet-stream" }));
+    a.download = x.nom || "cv"; a.click();
+  }
+  if(act === "delCv" && confirm("Supprimer ce CV définitivement ?")) safe(async () => { await deleteDoc(doc(db, "cv_fichiers", id)); toast("CV supprimé"); loadCvs(); });
+});
+
 /* ---------- PAIEMENTS CHARIOW ---------- */
 const PRODUITS = [
   ["cv_express", "CV Express", 1100, "CV professionnel rédigé par IA, reçu par e-mail et WhatsApp."],
   ["cv_premium", "CV Premium", 5000, "CV + lettre de motivation + optimisation LinkedIn."],
-  ["formation", "Formations", 0, "Formation qualifiante et certifiante au Gabon."]
+  ["formation", "Formation Développeur", 0, "Formation certifiante CCTI Gabon."]
 ];
 async function loadProduits(){
   await safe(async () => {
