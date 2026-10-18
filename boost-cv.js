@@ -133,7 +133,7 @@
     if (!page || page.dataset.payReady) return;
     page.dataset.payReady = "1";
     var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
-    fetch("https://firestore.googleapis.com/v1/projects/gabon-talent-os/databases/(default)/documents/config_produits/formation")
+    fetch("https://firestore.googleapis.com/v1/projects/gabon-talent-os/databases/(default)/documents/config_produits/formation?key=AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70")
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) {
         if (!d || !d.fields || !d.fields.actif || d.fields.actif.booleanValue !== true) return;
@@ -165,7 +165,52 @@
     }
   }
 
-  function start() { init(); patchPacks(); initFormation(); patchTextes(); }
+  /* ---- CV : téléchargement d'un fichier à la place d'un lien Drive, Dropbox ou LinkedIn ---- */
+  var BASE = "https://gabon-talent-js.github.io/gabon-talent-os/";
+  var FS = "https://firestore.googleapis.com/v1/projects/gabon-talent-os/databases/(default)/documents/cv_fichiers";
+  var KEY = "AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70";
+  var TYPES = { pdf: "application/pdf", doc: "application/msword", docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" };
+  function nouvelId() { return (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now().toString(36) + Math.random().toString(36).slice(2, 12)); }
+  function enhanceCv(input) {
+    if (!input || input.dataset.up) return;
+    input.dataset.up = "1";
+    var busy = false;
+    var label = document.querySelector('label[for="' + input.id + '"]');
+    if (label) label.innerHTML = 'Votre CV <small>(PDF ou Word, 600 Ko max – optionnel)</small>';
+    input.type = "hidden";   // le lien est généré automatiquement, le reste du formulaire ne change pas
+    var f = document.createElement("input");
+    f.type = "file"; f.accept = ".pdf,.doc,.docx"; f.setAttribute("aria-label", "Téléverser mon CV");
+    var st = document.createElement("p");
+    st.className = "note"; st.setAttribute("aria-live", "polite");
+    input.insertAdjacentElement("afterend", f); f.insertAdjacentElement("afterend", st);
+    var refresh = function () { if (!busy) st.textContent = input.value ? "✓ CV enregistré sur le site. Choisissez un autre fichier pour le remplacer." : "Aucun fichier choisi."; };
+    f.addEventListener("change", async function () {
+      var file = f.files[0];
+      if (!file) return;
+      var ext = (file.name.split(".").pop() || "").toLowerCase();
+      if (!TYPES[ext]) { st.textContent = "Format non accepté : PDF ou Word uniquement."; f.value = ""; return; }
+      if (file.size > 600 * 1024) { st.textContent = "Fichier trop lourd (600 Ko maximum)."; f.value = ""; return; }
+      busy = true; st.textContent = "Envoi du CV…";
+      try {
+        var data = await new Promise(function (ok, ko) { var r = new FileReader(); r.onload = function () { ok(String(r.result).split(",")[1] || ""); }; r.onerror = ko; r.readAsDataURL(file); });
+        var id = nouvelId();
+        var res = await fetch(FS + "?documentId=" + id + "&key=" + KEY, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fields: { nom: { stringValue: file.name.slice(0, 120) }, mime: { stringValue: TYPES[ext] }, data: { stringValue: data }, createdAt: { timestampValue: new Date().toISOString() } } })
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        input.value = BASE + "cv-view.html?id=" + id;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        busy = false; refresh();
+      } catch (e) { busy = false; st.textContent = "Envoi impossible. Réessayez avec un fichier plus léger, ou plus tard."; f.value = ""; }
+    });
+    var form = input.closest("form");
+    if (form) form.addEventListener("reset", function () { setTimeout(refresh, 0); });
+    setInterval(refresh, 1500); refresh();
+  }
+  function initCvUpload() { enhanceCv(document.getElementById("c_cv")); enhanceCv(document.getElementById("p_cv")); }
+
+  function start() { init(); patchPacks(); initFormation(); patchTextes(); initCvUpload(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();
 })();
