@@ -1,35 +1,191 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Espace Candidat - Gabon Talent OS</title><script src="https://cdn.tailwindcss.com"></script></head>
-<body class="bg-[#f8fafc]">
-<header class="h-20 bg-white border-b flex items-center px-6 justify-between"><a href="index.html" class="font-bold">Gabon Talent OS</a><span class="text-sm">Espace Candidat</span></header>
-<div class="max-w-5xl mx-auto px-6 py-12">
-<h1 class="text-3xl font-bold text-center">Boostez votre candidature</h1>
-<div class="grid md:grid-cols-3 gap-6 mt-10">
-<!-- GRATUIT -->
-<div class="bg-white border rounded-xl p-6"><h3 class="font-bold">Gratuit</h3><p class="text-3xl font-bold mt-2">0 FCFA</p><ul class="text-sm mt-4 space-y-2 text-gray-600"><li>✓ 2 candidatures / mois</li><li>✓ Profil visible</li><li>✗ Non prioritaire</li></ul><button onclick="selectPlan(0)" class="w-full border mt-6 py-2 rounded text-sm">Choisir</button></div>
-<!-- 2000 FCFA -->
-<div class="bg-white border-2 border-[#0f172a] rounded-xl p-6 relative"><span class="absolute -top-3 left-6 bg-[#0f172a] text-white text-[10px] px-2 py-1 rounded">POPULAIRE</span><h3 class="font-bold">Essentiel</h3><p class="text-3xl font-bold mt-2">2 000 FCFA</p><ul class="text-sm mt-4 space-y-2 text-gray-600"><li>✓ 10 candidatures / mois</li><li>✓ Profil prioritaire</li><li>✓ Alertes WhatsApp</li></ul><button onclick="selectPlan(2000)" class="w-full bg-[#0f172a] text-white mt-6 py-2 rounded text-sm">Payer via Chariow</button></div>
-<!-- 5000 FCFA -->
-<div class="bg-white border rounded-xl p-6"><h3 class="font-bold">Premium</h3><p class="text-3xl font-bold mt-2">5 000 FCFA</p><ul class="text-sm mt-4 space-y-2 text-gray-600"><li>✓ Candidatures illimitées</li><li>✓ Mise en avant RH</li><li>✓ Coaching CV</li></ul><button onclick="selectPlan(5000)" class="w-full border mt-6 py-2 rounded text-sm">Payer via Chariow</button></div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Boostez votre candidature – Gabon Talent OS</title>
+<meta name="description" content="Créez un CV professionnel, déposez votre CV et multipliez vos chances d'être contacté par les recruteurs au Gabon.">
+<meta name="theme-color" content="#0b6b4a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>try{var t=JSON.parse(localStorage.getItem("theme"));if(!t&&matchMedia("(prefers-color-scheme:dark)").matches)t="dark";if(t==="dark")document.documentElement.dataset.theme="dark"}catch(e){}</script>
+<style>
+:root{--green:#0b6b4a;--green-d:#084f37;--sun:#f5b800;--sea:#1f5fa8;--bg:#f3f6f4;--card:#fff;--ink:#12201a;--mute:#5a6b63;--line:#e0e7e3;--soft:#eaf1ed;--ok:#166534;--okbg:#dcfce7;--danger:#b91c1c;--r:14px;--rs:9px;--fh:'Bricolage Grotesque','Instrument Sans',system-ui,sans-serif;--fb:'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif}
+:root[data-theme="dark"]{--bg:#0d1511;--card:#14201a;--ink:#e8f1ec;--mute:#93a79c;--line:#243229;--soft:#1a2820;--okbg:#12361f;--ok:#86efac;--green:#14a06f;--green-d:#0f7f58}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--fb);background:var(--bg);color:var(--ink);line-height:1.5;-webkit-text-size-adjust:100%}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:6px}
+header{background:#0b1a13;color:#fff;position:sticky;top:0;z-index:50}
+header::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--green) 33.3%,var(--sun) 33.3% 66.6%,var(--sea) 66.6%)}
+.bar{max-width:1100px;margin:0 auto;height:56px;display:flex;align-items:center;gap:10px;padding:0 14px}
+.logo{font-family:var(--fh);font-weight:800;font-size:17px;text-decoration:none;margin-right:auto;white-space:nowrap}
+.bar nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.bar nav a{padding:7px 11px;border-radius:99px;font-size:13px;font-weight:600;text-decoration:none;color:#cfe0d7;white-space:nowrap}
+.bar nav a:hover{background:#1c2f25}
+.bar nav a[aria-current]{background:var(--sun);color:#1a1300}
+.wrap{max-width:1100px;margin:0 auto;padding:0 14px}
+.hero{text-align:center;padding:34px 14px 8px;max-width:760px;margin:0 auto}
+.hero h1{font-family:var(--fh);font-size:clamp(26px,6vw,42px);font-weight:800;line-height:1.1;letter-spacing:-.02em}
+.hero p{color:var(--mute);margin-top:10px;font-size:15px}
+.plans{display:grid;gap:12px;margin:24px 0}
+@media(min-width:800px){.plans{grid-template-columns:repeat(3,1fr)}}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column}
+.plan.pop{border:2px solid var(--green)}
+.badge{align-self:flex-start;font-size:10px;font-weight:700;background:var(--soft);color:var(--green);padding:3px 9px;border-radius:99px;margin-bottom:8px}
+.plan h2{font-family:var(--fh);font-size:20px}
+.price{font-family:var(--fh);font-size:32px;font-weight:800;color:var(--green);margin:6px 0}
+.price small{font-size:13px;color:var(--mute);font-family:var(--fb);font-weight:500}
+.plan ul{padding-left:18px;font-size:14px;flex:1;margin:6px 0 4px}
+.plan li{margin-bottom:3px}
+.btn{display:block;width:100%;text-align:center;background:var(--green);color:#fff;border:0;border-radius:12px;padding:13px;font-weight:700;font-size:15px;margin-top:14px;text-decoration:none;cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--green-d)}
+.btn.dark{background:#12201a}.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn[aria-disabled="true"],.btn[disabled]{opacity:.55;pointer-events:none}
+.sec{margin:30px auto}.sec h2{font-family:var(--fh);font-size:22px;font-weight:800;margin-bottom:6px}.sub{color:var(--mute);font-size:14px;margin-bottom:12px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;max-width:640px}
+label{font-size:13px;font-weight:600;margin-top:12px;display:block}label small{font-weight:400;color:var(--mute)}
+input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:var(--rs);margin-top:6px;font-size:15px;font-family:inherit;background:var(--bg);color:var(--ink)}
+input[type=checkbox]{width:auto;margin:3px 0 0}
+.row2{display:grid;gap:0 12px}@media(min-width:600px){.row2{grid-template-columns:1fr 1fr}}
+.hp{position:absolute;left:-9999px;height:0;overflow:hidden}
+.err{color:var(--danger);font-size:13px;margin-top:8px}
+.ok-box{background:var(--okbg);color:var(--ok);border-radius:var(--r);padding:16px;margin-top:14px;font-size:14px}.ok-box b{display:block;font-size:16px;margin-bottom:4px}
+.steps{display:grid;gap:10px}@media(min-width:700px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;font-size:14px}.step b{display:block;font-family:var(--fh);font-size:16px;margin-bottom:2px}
+.note{font-size:12px;color:var(--mute);margin-top:8px}
+footer{background:#0b1a13;color:#9db3a7;padding:26px 14px;margin-top:34px;font-size:13px;line-height:1.9;text-align:center}footer a{color:#cfe0d7}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <a class="logo" href="index.html">Gabon Talent OS</a>
+  <nav aria-label="Navigation principale">
+    <a href="index.html#/">Offres</a><a href="candidat.html" aria-current="page">Candidat</a><a href="index.html#/recruteur">Recruteur</a>
+    <a href="index.html#/tarifs">Tarifs</a><a href="index.html#/boost">Mon CV</a><a href="index.html#/compte">Mon compte</a>
+  </nav>
+</div></header>
+
+<main>
+<div class="hero">
+  <h1>Boostez votre candidature</h1>
+  <p>Un profil complet, un CV professionnel et un dossier prêt à envoyer : mettez toutes les chances de votre côté auprès des recruteurs du Gabon.</p>
 </div>
 
-<!-- PAIEMENT CHARIOW -->
-<div id="pay" class="hidden mt-10 bg-white border rounded-xl p-6 max-w-md mx-auto">
-<h3 class="font-bold">Paiement Chariow - <span id="amount">2000</span> FCFA</h3>
-<p class="text-xs text-gray-500 mt-1">Pays: GA - Gabon uniquement</p>
-<select class="w-full border rounded p-2 mt-3 text-sm"><option>GA - Gabon</option></select>
-<input id="tel" placeholder="Numéro local: 74995745" class="w-full border rounded p-2 mt-2 text-sm">
-<div class="flex gap-2 mt-2"><span class="text-xs border px-2 py-1 rounded">Airtel Money</span><span class="text-xs border px-2 py-1 rounded">Moov Money</span></div>
-<button onclick="pay()" class="w-full bg-[#0f172a] text-white py-2.5 rounded mt-4 text-sm">Confirmer paiement</button>
-<p id="status" class="text-xs mt-3 text-center"></p>
+<div class="wrap">
+  <div class="plans" id="plans">
+    <div class="plan">
+      <span class="badge">Pour commencer</span>
+      <h2>Profil gratuit</h2>
+      <div class="price">0 <small>FCFA</small></div>
+      <ul><li>Créez votre profil en quelques minutes</li><li>Postulez aux offres de toutes les provinces</li><li>Suivez l'avancement de vos candidatures</li></ul>
+      <a class="btn dark" href="index.html#/candidat">Créer mon profil gratuit</a>
+      <a class="btn ghost" href="index.html#/">Voir les offres</a>
+    </div>
+    <div class="plan pop" data-p="cv_express">
+      <span class="badge">Le plus simple</span>
+      <h2>CV Express</h2>
+      <div class="price"><span data-prix>1 100</span> <small>FCFA</small></div>
+      <ul><li>CV professionnel rédigé pour vous</li><li>Votre photo incluse</li><li>Reçu par e-mail, avec téléchargement</li></ul>
+      <a class="btn" data-cta href="cv.html?offre=express">Créer mon CV Express</a>
+    </div>
+    <div class="plan" data-p="cv_premium">
+      <span class="badge">Le plus complet</span>
+      <h2>CV Premium</h2>
+      <div class="price"><span data-prix>5 000</span> <small>FCFA</small></div>
+      <ul><li>CV professionnel avec photo</li><li>Lettre de motivation adaptée à votre cible</li><li>Textes prêts pour votre profil LinkedIn</li></ul>
+      <a class="btn dark" data-cta href="cv.html?offre=premium">Créer mon CV Premium</a>
+    </div>
+  </div>
+  <p class="note" style="text-align:center">Paiement sécurisé par Mobile Money (Airtel Money, Moov Money) via Chariow. Vos documents arrivent par e-mail après le paiement.</p>
+
+  <div class="sec">
+    <h2>Déposez votre CV</h2>
+    <p class="sub">Vous avez déjà un CV ? Ajoutez-le gratuitement à notre vivier de talents.</p>
+    <form class="box" id="depot" novalidate>
+      <div class="row2">
+        <div><label for="d_nom">Nom complet *</label><input id="d_nom" autocomplete="name"></div>
+        <div><label for="d_poste">Poste recherché *</label><input id="d_poste" placeholder="Ex : Comptable"></div>
+      </div>
+      <div class="row2">
+        <div><label for="d_tel">WhatsApp *</label><input id="d_tel" type="tel" value="+241 " inputmode="tel" autocomplete="tel"></div>
+        <div><label for="d_email">E-mail *</label><input id="d_email" type="email" autocomplete="email"></div>
+      </div>
+      <label for="d_file">Votre CV * <small>(PDF ou Word, 600 Ko maximum)</small></label>
+      <input id="d_file" type="file" accept=".pdf,.doc,.docx">
+      <label style="display:flex;gap:8px;align-items:flex-start;font-weight:400"><input id="d_consent" type="checkbox"><span>J'accepte que mon CV soit conservé 60 jours et transmis à des recruteurs, selon la <a href="index.html#/confidentialite">politique de confidentialité</a>. *</span></label>
+      <div class="hp" aria-hidden="true"><label>Ne pas remplir<input id="d_site" tabindex="-1" autocomplete="off"></label></div>
+      <button class="btn" type="submit" id="d_btn">Déposer mon CV</button>
+      <div class="err" id="d_err" role="alert"></div>
+    </form>
+    <div id="d_done"></div>
+  </div>
+
+  <div class="sec">
+    <h2>Comment ça marche</h2>
+    <div class="steps">
+      <div class="step"><b>1. Choisissez</b>Profil gratuit, CV Express ou CV Premium selon votre besoin.</div>
+      <div class="step"><b>2. Remplissez</b>Quelques étapes simples : identité, formation, expériences, compétences.</div>
+      <div class="step"><b>3. Recevez</b>Après le paiement, votre CV arrive par e-mail et reste téléchargeable 7 jours.</div>
+    </div>
+  </div>
 </div>
-</div>
-<script>
-let current=0;
-function selectPlan(m){current=m; if(m===0){localStorage.setItem('plan','gratuit');alert('Plan gratuit activé'); return;} document.getElementById('amount').innerText=m; document.getElementById('pay').classList.remove('hidden'); window.scrollTo(0,document.body.scrollHeight)}
-function pay(){const tel=document.getElementById('tel').value; if(tel.length<8){alert('Numéro invalide, ex: 74995745');return;}
-document.getElementById('status').innerText='Redirection Chariow... (mode démo, branche API /api/chariow.js)';
-localStorage.setItem('plan',current); localStorage.setItem('tel',tel);
-setTimeout(()=>{document.getElementById('status').innerText='✓ Paiement simulé réussi. Plan activé.'},1000)}
+</main>
+
+<footer>
+  <a href="index.html">Accueil</a> · <a href="index.html#/tarifs">Tarifs</a> · <a href="index.html#/confidentialite">Confidentialité</a><br>
+  Tél : <a href="tel:+24174995745">+241 74995745</a> · E-mail : <a href="mailto:gabontalent9provinces@gmail.com">gabontalent9provinces@gmail.com</a><br>
+  <span style="color:#5eead4">© 2026 Gabon Talent OS</span>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, getDoc, setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const db = getFirestore(initializeApp({ apiKey: "AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70", authDomain: "gabon-talent-os.firebaseapp.com", projectId: "gabon-talent-os" }));
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+
+/* Prix et disponibilité lus depuis la console : un produit non actif affiche « Bientôt disponible » */
+for (const card of document.querySelectorAll("[data-p]")) {
+  try {
+    const s = await getDoc(doc(db, "config_produits", card.dataset.p));
+    const d = s.exists() ? s.data() : null, cta = $("[data-cta]", card);
+    if (d && Number(d.prix) > 0) $("[data-prix]", card).textContent = Number(d.prix).toLocaleString("fr-FR");
+    if (!d || d.actif !== true) { cta.setAttribute("aria-disabled", "true"); cta.textContent = "Bientôt disponible"; cta.removeAttribute("href"); }
+  } catch (_) {}
+}
+
+/* Dépôt de CV */
+const TYPES = { pdf: "application/pdf", doc: "application/msword", docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" };
+let dernier = 0;
+$("#depot").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const err = $("#d_err"); err.textContent = "";
+  if ($("#d_site").value) return;                                           // anti-spam
+  const nom = $("#d_nom").value.trim(), poste = $("#d_poste").value.trim(), tel = $("#d_tel").value.trim(), email = $("#d_email").value.trim(), file = $("#d_file").files[0];
+  if (!nom || !poste || !file) return (err.textContent = "Complétez les champs marqués * et choisissez votre CV.");
+  if (tel.replace(/\D/g, "").length < 9) return (err.textContent = "Numéro WhatsApp invalide. Exemple : +241 74 99 57 45");
+  if (!/^\S+@\S+\.\S+$/.test(email)) return (err.textContent = "Adresse e-mail invalide.");
+  const ext = (file.name.split(".").pop() || "").toLowerCase();
+  if (!TYPES[ext]) return (err.textContent = "Format non accepté : PDF ou Word uniquement.");
+  if (file.size > 600 * 1024) return (err.textContent = "Fichier trop lourd (600 Ko maximum).");
+  if (!$("#d_consent").checked) return (err.textContent = "Veuillez accepter les conditions pour continuer.");
+  if (Date.now() - dernier < 8000) return (err.textContent = "Patientez quelques secondes avant un nouvel envoi.");
+  dernier = Date.now();
+  const btn = $("#d_btn"); btn.disabled = true; btn.textContent = "Envoi…";
+  try {
+    const data = await new Promise((ok, ko) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(",")[1] || ""); r.onerror = ko; r.readAsDataURL(file); });
+    await setDoc(doc(db, "cv_fichiers", crypto.randomUUID()), {
+      nom: file.name.slice(0, 120), mime: TYPES[ext], data, createdAt: serverTimestamp(),
+      candidat: nom.slice(0, 100), tel: tel.slice(0, 30), email: email.slice(0, 150), poste: poste.slice(0, 150)
+    });
+    $("#depot").reset(); $("#d_tel").value = "+241 ";
+    $("#d_done").innerHTML = `<div class="ok-box"><b>CV déposé, merci !</b>Votre CV a été ajouté à notre vivier de talents. Pour postuler aux offres et suivre vos candidatures, créez votre profil.<a class="btn" href="index.html#/candidat">Créer mon profil</a></div>`;
+  } catch (ex) { console.error(ex); err.textContent = "Envoi impossible. Vérifiez votre connexion et réessayez."; }
+  btn.disabled = false; btn.textContent = "Déposer mon CV";
+});
 </script>
-</body></html>
+</body>
+</html>
