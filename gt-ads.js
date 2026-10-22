@@ -3,7 +3,7 @@ import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12
 import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDf6CpRIt9x1x2a2k0y9bK5cJq1aK8vY9w",
+  apiKey: "AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70",
   authDomain: "gabon-talent-os.firebaseapp.com",
   projectId: "gabon-talent-os",
   storageBucket: "gabon-talent-os.appspot.com",
