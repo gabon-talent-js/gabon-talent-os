@@ -3,301 +3,172 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin - Gabon Talent OS</title>
+<title>Admin - Gabon Talent OS - V4 Pubs</title>
 <style>
-:root{--bg:#0f2415;--gold:#ffcc00;--line:#e5e7eb;--red:#dc2626}
+:root{--bg:#0f2415;--gold:#ffcc00;--line:#e5e7eb;--red:#dc2626;--green:#0b7a4b}
 *{box-sizing:border-box}
 body{margin:0;font-family:Inter,Arial;background:#f6f7f4}
-.header{
-  background:var(--bg);color:#fff;
-  padding:16px 20px;display:flex;
-  justify-content:space-between;
-  align-items:center;
-  position:sticky;top:0;z-index:10
-}
-.badge{
-  background:var(--gold);color:var(--bg);
-  padding:4px 10px;border-radius:999px;
-  font-weight:900;font-size:12px
-}
-.wrap{max-width:1100px;margin:0 auto;padding:18px;display:grid;gap:18px}
-.grid{display:grid;gap:18px;grid-template-columns:1.2fr.8fr}
+.header{background:var(--bg);color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.badge{background:var(--gold);color:var(--bg);padding:4px 10px;border-radius:999px;font-weight:900;font-size:12px}
+.wrap{max-width:1150px;margin:0 auto;padding:18px;display:grid;gap:18px}
+.tabs{display:flex;gap:8px}
+.tab{padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:800;font-size:13px}
+.tab.active{background:var(--bg);color:#fff;border-color:var(--bg)}
+.grid{display:grid;gap:18px;grid-template-columns:1.2fr .8fr}
 @media(max-width:900px){.grid{grid-template-columns:1fr}}
 .box{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
-.box h2{margin:0;padding:14px 16px;border-bottom:1px solid var(--line);font-size:15px;background:#fafaf7}
+.box h2{margin:0;padding:14px 16px;border-bottom:1px solid var(--line);font-size:14px;background:#fafaf7;display:flex;justify-content:space-between;align-items:center}
 .content{padding:16px}
 label{font-size:11px;font-weight:800;color:#374151;display:block;margin:10px 0 5px;text-transform:uppercase}
 input,select,textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;font-size:14px}
-textarea{min-height:110px}
+textarea{min-height:90px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .btn{border:0;border-radius:10px;padding:11px 14px;font-weight:800;cursor:pointer}
 .btn-gold{background:var(--gold);color:var(--bg);width:100%}
 .btn-ghost{background:#fff;border:1px solid var(--line)}
+.btn-green{background:var(--green);color:#fff;width:100%}
 .btn-danger{background:var(--red);color:#fff}
 .btn-sm{padding:7px 10px;font-size:12px}
-#login{
-  position:fixed;inset:0;
-  background:rgba(15,36,21,.95);
-  display:flex;align-items:center;
-  justify-content:center;z-index:100;padding:20px
-}
+.upload-box{border:2px dashed #cbd5e1;border-radius:12px;padding:12px;text-align:center;background:#f8fafc}
+.upload-preview{width:100%;max-height:160px;object-fit:contain;border-radius:10px;margin-top:8px;display:none}
+#login{position:fixed;inset:0;background:rgba(15,36,21,.95);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
 .login-card{background:#fff;border-radius:18px;max-width:380px;width:100%;padding:20px}
+.ad-card{border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;gap:10px;margin-bottom:8px;align-items:center}
+.ad-card img{width:56px;height:56px;border-radius:10px;object-fit:cover}
 </style>
 </head>
 <body>
 <div class="header">
-  <h1 style="margin:0;font-size:17px">Admin Gabon Talent - V3</h1>
-  <div>
+  <h1 style="margin:0;font-size:16px">Admin Gabon Talent - V4</h1>
+  <div style="display:flex;gap:8px;align-items:center">
     <span class="badge" id="countBadge">0 OFFRES</span>
-    <button class="btn btn-ghost btn-sm" onclick="location.href='./'">Voir site</button>
+    <button class="btn btn-ghost btn-sm" onclick="location.href='./?v=999'">Voir site</button>
   </div>
 </div>
 <div id="login">
   <div class="login-card">
     <h3 style="margin:0">Acces Admin</h3>
-    <p style="font-size:12px;color:#6b7280">
-      Config ligne 553 deja dedans<br>
-      Mot de passe: <b>gabon2026</b>
-    </p>
+    <p style="font-size:12px;color:#6b7280">Mot de passe: <b>gabon2026</b></p>
     <label>Mot de passe</label>
     <input id="pwd" type="text" value="gabon2026">
     <button class="btn btn-gold" style="margin-top:12px" onclick="doLogin()">Entrer</button>
-    <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="forceLogin()">Forcer l'entree</button>
+    <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="forceLogin()">Forcer</button>
     <p id="loginErr" style="display:none;color:red;font-size:12px"></p>
   </div>
 </div>
 <div class="wrap">
-  <div class="box">
-    <h2>Ajouter une offre</h2>
-    <div class="content">
-      <form onsubmit="return false">
-        <input type="hidden" id="docId">
-        <label>Titre *</label>
-        <input id="title">
-        <div class="row">
-          <div><label>Entreprise *</label><input id="company"></div>
-          <div><label>Secteur</label><select id="sector">
-              <option>Banque / Finance</option>
-              <option>Petrole & Gaz</option>
-              <option>BTP / Construction</option>
-              <option>Commerce / Vente</option>
-              <option>Informatique / IT</option>
-              <option>Education</option>
-              <option>Sante</option>
-              <option>Telecom</option>
-              <option>Autre</option>
-            </select></div>
-        </div>
-        <div class="row3">
-          <div><label>Province</label><select id="province">
-              <option>Estuaire</option>
-              <option>Haut-Ogooue</option>
-              <option>Moyen-Ogooue</option>
-              <option>Ngounie</option>
-              <option>Nyanga</option>
-              <option>Ogooue-Ivindo</option>
-              <option>Ogooue-Lolo</option>
-              <option>Ogooue-Maritime</option>
-              <option>Woleu-Ntem</option>
-            </select></div>
-          <div><label>Ville *</label><input id="city" value="Libreville"></div>
-          <div><label>Type</label><select id="type">
-              <option>CDI</option><option>CDD</option>
-              <option>Stage</option><option>Freelance</option>
-            </select></div>
-        </div>
-        <label>Description *</label>
-        <textarea id="description"></textarea>
-        <div class="row">
-          <div><label>Lien / Email</label><input id="applyLink"></div>
-          <div><label>Salaire</label><input id="salary"></div>
-        </div>
-        <div style="margin-top:10px">
-          <label><input type="checkbox" id="active" checked> Active</label>
-          <label><input type="checkbox" id="featured"> Mise en avant</label>
-        </div>
-        <button class="btn btn-gold" onclick="saveOffer()">PUBLIER</button>
-      </form>
+  <div class="tabs">
+    <div class="tab active" id="tabOffers" onclick="switchTab('offers')">📋 Offres</div>
+    <div class="tab" id="tabAds" onclick="switchTab('ads')">🔥 Publicités <span id="adsCount"></span></div>
+  </div>
+  <div id="panelOffers">
+    <div class="grid">
+      <div class="box"><h2>Ajouter une offre</h2><div class="content">
+        <form onsubmit="return false">
+          <input type="hidden" id="docId">
+          <label>Titre *</label><input id="title">
+          <div class="row"><div><label>Entreprise *</label><input id="company"></div><div><label>Secteur</label><select id="sector"><option>Banque / Finance</option><option>Petrole & Gaz</option><option>BTP</option><option>Commerce</option><option>Informatique</option><option>Education</option><option>Sante</option><option>Telecom</option><option>Autre</option></select></div></div>
+          <div class="row"><div><label>Ville *</label><input id="city" value="Lastoursville"></div><div><label>Type</label><select id="type"><option>CDI</option><option>CDD</option><option>Stage</option><option>Freelance</option></select></div></div>
+          <label>Description *</label><textarea id="description"></textarea>
+          <div class="row"><div><label>Lien / Email</label><input id="applyLink"></div><div><label>Salaire</label><input id="salary"></div></div>
+          <button class="btn btn-gold" style="margin-top:10px" onclick="saveOffer()">PUBLIER L'OFFRE</button>
+        </form>
+      </div></div>
+      <div class="box"><h2>Liste offres</h2><div class="content"><input id="search" placeholder="Rechercher..." oninput="renderTable()"><table style="width:100%;margin-top:10px"><tbody id="tbody"></tbody></table></div></div>
     </div>
   </div>
-  <div class="box">
-    <h2>Liste</h2>
-    <div class="content">
-      <input id="search" placeholder="Rechercher..." oninput="renderTable()">
-      <table style="width:100%;margin-top:10px">
-        <thead><tr><th>Titre</th><th>Action</th></tr></thead>
-        <tbody id="tbody"></tbody>
-      </table>
-      <div style="margin-top:10px;display:flex;gap:6px">
-        <button class="btn btn-ghost btn-sm" onclick="exportJSON()">Export</button>
-        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importFile').click()">Import JSON</button>
-        <input type="file" id="importFile" hidden accept=".json" onchange="importJSON(event)">
-      </div>
+  <div id="panelAds" style="display:none">
+    <div class="grid">
+      <div class="box"><h2>Creer une pub 🔥</h2><div class="content">
+        <form onsubmit="return false">
+          <input type="hidden" id="adId">
+          <label>Titre pub *</label><input id="adTitle" placeholder="COMILOG Recrute">
+          <label>Lien WhatsApp / Facebook *</label><input id="adLink" placeholder="https://wa.me/241...">
+          <label>Image * - Choisis depuis ton tel</label>
+          <div class="upload-box">
+            <input type="file" id="adFile" accept="image/*" onchange="handleFile(this)">
+            <img id="adPreview" class="upload-preview">
+            <div id="uploadStatus" style="font-size:11px;margin-top:6px;color:#0b7a4b"></div>
+          </div>
+          <input type="hidden" id="adImageUrl">
+          <label>Description courte</label><input id="adDesc" placeholder="Offre exclusive Lastoursville">
+          <div class="row"><div><label>Plan</label><select id="adPlan"><option>BASIC</option><option>PREMIUM</option><option>VIP</option></select></div><div><label>Statut</label><select id="adStatus"><option value="active">active</option><option value="paused">paused</option></select></div></div>
+          <button class="btn btn-green" style="margin-top:12px" onclick="saveAd()" id="btnSaveAd">PUBLIER LA PUB</button>
+        </form>
+      </div></div>
+      <div class="box"><h2>Pubs actives <span id="adsBadge"></span></h2><div class="content" id="adsList">Chargement...</div></div>
     </div>
   </div>
 </div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore, collection, addDoc, doc,
-  updateDoc, deleteDoc, onSnapshot,
-  serverTimestamp, query, orderBy
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 const firebaseConfig = {
   apiKey: "AIzaSyATIRQPYhVPFpId1v13zk4axeJA_IQ70",
   authDomain: "gabon-talent-os.firebaseapp.com",
   projectId: "gabon-talent-os",
   storageBucket: "gabon-talent-os.firebasestorage.app",
   messagingSenderId: "66563433244",
-  appId: "1:66563433244:web:1c6e82435544d7a839ee59",
-  measurementId: "G-7FVW7XZMC"
+  appId: "1:66563433244:web:1c6e82435544d7a839ee59"
 };
-
-let db = null;
-try {
-  const app = initializeApp(firebaseConfig);
-  db = getFirestore(app);
-} catch(e) {
-  alert("Firebase erreur: " + e.message);
-}
-
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
 const ADMIN_PWD = "gabon2026";
-
-window.doLogin = () => {
-  const v = document.getElementById('pwd').value.trim().toLowerCase();
-  if(v === ADMIN_PWD){
-    document.getElementById('login').style.display='none';
-    localStorage.setItem('gt_admin','1');
-    init();
-  } else {
-    document.getElementById('loginErr').style.display='block';
-    document.getElementById('loginErr').textContent = "Mauvais mdp";
-  }
+window.doLogin = () => { const v=document.getElementById('pwd').value.trim().toLowerCase(); if(v===ADMIN_PWD){ document.getElementById('login').style.display='none'; localStorage.setItem('gt_admin','1'); init(); } else { document.getElementById('loginErr').style.display='block'; document.getElementById('loginErr').textContent="Mauvais mdp"; } };
+window.forceLogin = () => { document.getElementById('login').style.display='none'; localStorage.setItem('gt_admin','1'); init(); };
+if(localStorage.getItem('gt_admin')==='1'){ document.getElementById('login').style.display='none'; }
+window.switchTab = (t) => {
+  document.getElementById('panelOffers').style.display = t==='offers' ? 'block' : 'none';
+  document.getElementById('panelAds').style.display = t==='ads' ? 'block' : 'none';
+  document.getElementById('tabOffers').classList.toggle('active', t==='offers');
+  document.getElementById('tabAds').classList.toggle('active', t==='ads');
 };
-
-window.forceLogin = () => {
-  document.getElementById('login').style.display='none';
-  localStorage.setItem('gt_admin','1');
-  init();
-};
-
-if(localStorage.getItem('gt_admin')==='1'){
-  document.getElementById('login').style.display='none';
-}
-
-let OFFERS = [];
-
+let OFFERS=[]; let ADS=[];
 function init(){
-  if(!db){ alert("Firebase non init"); return; }
-  const q = query(
-    collection(db,"offers"),
-    orderBy("createdAt","desc")
-  );
-  onSnapshot(q, snap => {
-    OFFERS = snap.docs.map(d => ({id:d.id,...d.data()}));
-    renderTable();
-    document.getElementById('countBadge').textContent = OFFERS.length + " OFFRES";
-  }, err => {
-    alert("Firestore erreur: " + err.message);
-  });
+  onSnapshot(query(collection(db,"offers"), orderBy("createdAt","desc")), snap => { OFFERS = snap.docs.map(d=>({id:d.id,...d.data()})); renderTable(); document.getElementById('countBadge').textContent = OFFERS.length+" OFFRES"; });
+  onSnapshot(query(collection(db,"gt_ads"), orderBy("createdAt","desc")), snap => { ADS = snap.docs.map(d=>({id:d.id,...d.data()})); renderAds(); });
 }
-
 window.renderTable = () => {
-  const s = document.getElementById('search').value.toLowerCase();
-  const tbody = document.getElementById('tbody');
-  let list = OFFERS.filter(o =>
-   !s || (o.title + o.company).toLowerCase().includes(s)
-  );
-  tbody.innerHTML = list.map(o => `
-    <tr>
-      <td><b>${o.title}</b><br><small>${o.company}</small></td>
-      <td>
-        <button class="btn btn-ghost btn-sm" onclick="editOffer('${o.id}')">Edit</button>
-        <button class="btn btn-danger btn-sm" onclick="delOffer('${o.id}')">X</button>
-      </td>
-    </tr>
-  `).join('') || '<tr><td colspan=2>0 offre</td></tr>';
+  const s=document.getElementById('search').value.toLowerCase();
+  const tbody=document.getElementById('tbody');
+  let list=OFFERS.filter(o=>!s || (o.title+o.company).toLowerCase().includes(s));
+  tbody.innerHTML = list.map(o=>`<tr><td><b>${o.title}</b><br><small>${o.company}</small></td><td><button class="btn btn-ghost btn-sm" onclick="editOffer('${o.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="delOffer('${o.id}')">X</button></td></tr>`).join('') || '<tr><td>0 offre</td></tr>';
 };
-
 window.saveOffer = async () => {
-  if(!db) return alert("Firebase non configure");
-  const data = {
-    title: document.getElementById('title').value.trim(),
-    company: document.getElementById('company').value.trim(),
-    sector: document.getElementById('sector').value,
-    province: document.getElementById('province').value,
-    city: document.getElementById('city').value.trim(),
-    type: document.getElementById('type').value,
-    description: document.getElementById('description').value.trim(),
-    applyLink: document.getElementById('applyLink').value.trim(),
-    salary: document.getElementById('salary').value.trim(),
-    active: document.getElementById('active').checked,
-    featured: document.getElementById('featured').checked,
-    createdAt: serverTimestamp(),
-    source: "admin-v3"
-  };
-  if(!data.title ||!data.company ||!data.description){
-    return alert("Remplis Titre Entreprise Description");
-  }
-  const id = document.getElementById('docId').value;
-  try {
-    if(id){
-      await updateDoc(doc(db,"offers",id), {...data, createdAt:undefined});
-    } else {
-      await addDoc(collection(db,"offers"), data);
-    }
-    alert("Publiee!");
-    document.getElementById('title').value='';
-    document.getElementById('company').value='';
-    document.getElementById('description').value='';
-  } catch(e){
-    alert("Erreur: " + e.message);
-  }
+  const data={ title:document.getElementById('title').value.trim(), company:document.getElementById('company').value.trim(), sector:document.getElementById('sector').value, city:document.getElementById('city').value.trim(), type:document.getElementById('type').value, description:document.getElementById('description').value.trim(), applyLink:document.getElementById('applyLink').value.trim(), salary:document.getElementById('salary').value.trim(), active:true, createdAt:serverTimestamp() };
+  if(!data.title||!data.company||!data.description) return alert("Remplis Titre Entreprise Description");
+  const id=document.getElementById('docId').value;
+  try{ if(id){ await updateDoc(doc(db,"offers",id), {...data, createdAt:undefined}); } else { await addDoc(collection(db,"offers"), data); } alert("Publiee!"); document.getElementById('title').value=''; document.getElementById('company').value=''; document.getElementById('description').value=''; }catch(e){ alert("Erreur: "+e.message); }
 };
-
-window.editOffer = (id) => {
-  const o = OFFERS.find(x => x.id === id);
-  if(!o) return;
-  document.getElementById('docId').value = o.id;
-  document.getElementById('title').value = o.title||'';
-  document.getElementById('company').value = o.company||'';
-  document.getElementById('description').value = o.description||'';
-  window.scrollTo({top:0,behavior:'smooth'});
+window.editOffer = (id) => { const o=OFFERS.find(x=>x.id===id); document.getElementById('docId').value=o.id; document.getElementById('title').value=o.title||''; document.getElementById('company').value=o.company||''; document.getElementById('description').value=o.description||''; window.scrollTo({top:0,behavior:'smooth'}); };
+window.delOffer = async (id) => { if(!confirm("Supprimer?")) return; await deleteDoc(doc(db,"offers",id)); };
+window.handleFile = async (input) => {
+  const file=input.files[0]; if(!file) return;
+  const preview=document.getElementById('adPreview');
+  preview.src=URL.createObjectURL(file); preview.style.display='block';
+  document.getElementById('uploadStatus').textContent='Upload en cours...';
+  document.getElementById('btnSaveAd').disabled=true;
+  try{ const r=ref(storage, `gt_ads/${Date.now()}_${file.name}`); await uploadBytes(r, file); const url=await getDownloadURL(r); document.getElementById('adImageUrl').value=url; document.getElementById('uploadStatus').textContent='✅ Image uploadee !'; }catch(e){ document.getElementById('uploadStatus').textContent='❌ Erreur: '+e.message; }
+  document.getElementById('btnSaveAd').disabled=false;
 };
-
-window.delOffer = async (id) => {
-  if(!confirm("Supprimer?")) return;
-  await deleteDoc(doc(db,"offers",id));
+window.saveAd = async () => {
+  const title=document.getElementById('adTitle').value.trim(); const link=document.getElementById('adLink').value.trim(); const imageUrl=document.getElementById('adImageUrl').value.trim(); const desc=document.getElementById('adDesc').value.trim(); const plan=document.getElementById('adPlan').value; const status=document.getElementById('adStatus').value;
+  if(!title||!link||!imageUrl) return alert("Upload une image d'abord !"); if(!link.startsWith('http')) return alert("Lien doit commencer par https://");
+  const data={ title, link, imageUrl, description:desc, plan, status, views:0, clicks:0, createdAt:serverTimestamp() };
+  const id=document.getElementById('adId').value;
+  try{ if(id){ await updateDoc(doc(db,"gt_ads",id), {title, link, imageUrl, description:desc, plan, status}); } else { await addDoc(collection(db,"gt_ads"), data); } alert("Pub publiee !"); document.getElementById('adTitle').value=''; document.getElementById('adLink').value=''; document.getElementById('adImageUrl').value=''; document.getElementById('adDesc').value=''; document.getElementById('adPreview').style.display='none'; document.getElementById('adFile').value=''; document.getElementById('uploadStatus').textContent=''; }catch(e){ alert("Erreur pub: "+e.message); }
 };
-
-window.exportJSON = () => {
-  const blob = new Blob([JSON.stringify(OFFERS,null,2)],{type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download='offers.json'; a.click();
+window.renderAds = () => {
+  const list=document.getElementById('adsList');
+  document.getElementById('adsCount').textContent = ADS.length ? `(${ADS.length})` : '';
+  document.getElementById('adsBadge').textContent = ADS.length + ' actives';
+  if(!ADS.length){ list.innerHTML='0 pub'; return; }
+  list.innerHTML = ADS.map(a=>`<div class="ad-card"><img src="${a.imageUrl}"><div style="flex:1"><b style="font-size:13px">${a.title}</b><br><small>${a.plan} • ${a.status} • ${a.views||0} vues • ${a.clicks||0} clics</small></div><button class="btn btn-danger btn-sm" onclick="delAd('${a.id}')">X</button></div>`).join('');
 };
-
-window.importJSON = async (e) => {
-  const file = e.target.files[0];
-  if(!file) return;
-  const text = await file.text();
-  try {
-    const arr = JSON.parse(text);
-    for(const o of arr){
-      const {id, createdAt,...rest} = o;
-      await addDoc(collection(db,"offers"), {...rest, createdAt: serverTimestamp()});
-    }
-    alert("Importe " + arr.length + " offres");
-  } catch(err){
-    alert("JSON invalide: " + err.message);
-  }
-};
-
-if(localStorage.getItem('gt_admin')==='1'){
-  init();
-}
+window.delAd = async (id) => { if(!confirm("Supprimer cette pub?")) return; await deleteDoc(doc(db,"gt_ads",id)); };
+if(localStorage.getItem('gt_admin')==='1'){ init(); }
 </script>
 </body>
 </html>
