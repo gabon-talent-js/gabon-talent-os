@@ -210,7 +210,19 @@
   }
   function initCvUpload() { enhanceCv(document.getElementById("c_cv")); enhanceCv(document.getElementById("p_cv")); }
 
-  function start() { init(); patchPacks(); initFormation(); patchTextes(); initCvUpload(); }
+  /* ---- Annonces sponsorisées (module ads.js) et lien « Annonceurs » en pied de page ---- */
+  function loadAds() {
+    if (document.querySelector("script[data-gta]")) return;
+    var s = document.createElement("script");
+    s.type = "module"; s.src = "ads.js"; s.dataset.gta = "1";
+    document.head.appendChild(s);
+    var fl = document.querySelector("footer .fl");
+    if (fl && !fl.querySelector('[href="annonceur.html"]')) {
+      var a = document.createElement("a"); a.href = "annonceur.html"; a.textContent = "Annonceurs"; fl.appendChild(a);
+    }
+  }
+
+  function start() { init(); patchPacks(); initFormation(); patchTextes(); initCvUpload(); loadAds(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();
 })();
