@@ -126,6 +126,8 @@
       </div>
       <button id="anCreer" class="btn btn-main mt-3">Créer l'annonce</button>
     </div>
+    <h2 class="font-bold">À valider</h2>
+    <div id="briefs" class="grid gap-3 mt-2 mb-6"></div>
     <h2 class="font-bold">Annonces</h2>
     <div id="annonces" class="grid gap-3 mt-2"></div>
     <h2 class="font-bold mt-6">Demandes d'annonceurs</h2>
@@ -403,7 +405,38 @@ async function compresserImage(file){
   throw new Error("Image trop lourde");
 }
 const dFR = (t) => (t && t.seconds ? new Date(t.seconds * 1000).toLocaleDateString("fr-FR") : "");
+const DUREES = { ads_7j: 7, ads_30j: 30, ads_premium: 30 };
+let briefsCache = {};
+async function loadBriefs(){
+  await safe(async () => {
+    const snap = await getDocs(collection(db, "annonces_brouillons"));
+    const list = snap.docs.map(x => ({ id: x.id, ...x.data() })).filter(x => x.statut === "soumis");
+    briefsCache = Object.fromEntries(list.map(x => [x.id, x]));
+    $("briefs").innerHTML = list.map(x => `<div class="card" data-br="${esc(x.id)}"><div class="flex gap-3">
+      ${x.image && /^data:image\//.test(x.image) ? `<img src="${esc(x.image)}" alt="" class="w-20 h-20 object-cover rounded-lg">` : ""}
+      <div class="min-w-0 flex-1"><div class="font-bold">${esc(x.titre)}</div><p class="text-sm">${esc(x.texte)}</p>
+      <div class="text-xs text-slate-500 mt-1">${esc(x.annonceur)} · ${esc([x.tel, x.email].join(" · "))}</div>
+      <div class="text-xs text-slate-500">Début souhaité : ${esc(x.debutSouhaite)} · ${esc(x.produit)} (${DUREES[x.produit] || 7} j) · Bouton « ${esc(x.cta)} » → <a class="underline" target="_blank" rel="noopener" href="${esc(x.lien)}">tester le lien</a></div></div></div>
+      <div class="flex gap-2 mt-3"><button class="btn btn-main" data-act="brOk">Approuver et publier</button><button class="btn btn-red" data-act="brKo">Demander une correction</button></div></div>`).join("") || `<p class="text-sm text-slate-500">Aucune annonce en attente.</p>`;
+  });
+}
+$("briefs").addEventListener("click", (e) => {
+  const act = e.target.dataset.act; if (!act) return;
+  const id = e.target.closest("[data-br]").dataset.br, b = briefsCache[id]; if (!b) return;
+  if (act === "brOk") safe(async () => {
+    const d0 = Math.max(Date.now(), new Date((b.debutSouhaite || "") + "T00:00:00+01:00").getTime() || 0);
+    const jour = new Date(d0 + 3600e3).toISOString().slice(0, 10);
+    const debut = new Date(jour + "T00:00:00+01:00"), fin = new Date(debut.getTime() + (DUREES[b.produit] || 7) * 864e5 - 1000);
+    const annonceId = crypto.randomUUID();
+    await setDoc(doc(db, "annonces", annonceId), { annonceur: b.annonceur, titre: b.titre, texte: b.texte, cta: b.cta, lien: b.lien, image: b.image || "", debut, fin, statut: "active", createdAt: serverTimestamp() });
+    await updateDoc(doc(db, "annonces_brouillons", id), { statut: "approuve", annonceId });
+    toast("Annonce publiée : l'annonceur recevra son rapport par e-mail"); loadAnnonces();
+  });
+  if (act === "brKo") { const motif = prompt("Motif de la correction (envoyé à l'annonceur) :"); if (!motif) return;
+    safe(async () => { await updateDoc(doc(db, "annonces_brouillons", id), { statut: "a_corriger", motif: motif.slice(0, 300) }); toast("Correction demandée"); loadAnnonces(); }); }
+});
 async function loadAnnonces(){
+  loadBriefs();
   await safe(async () => {
     const [a, s, d] = await Promise.all([getDocs(collection(db, "annonces")), getDocs(collection(db, "annonces_stats")), getDocs(collection(db, "demandes_annonceurs"))]);
     const tot = {};
