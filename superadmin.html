@@ -19,6 +19,8 @@
 </style>
 </head>
 <body class="min-h-screen">
+
+<!-- CONNEXION -->
 <section id="login" class="hidden max-w-sm mx-auto mt-24 card p-8">
   <h1 class="text-xl font-extrabold">Accès réservé</h1>
   <p class="text-sm text-slate-500 mt-1">Connecte-toi avec ton compte administrateur.</p>
@@ -27,128 +29,472 @@
   <p id="loginErr" class="text-sm text-red-600 mt-3 hidden break-words"></p>
   <button id="loginBtn" class="btn btn-dark w-full mt-4">Se connecter</button>
 </section>
-<main id="panel" class="hidden max-w-6xl mx-auto p-4">
+
+<!-- PANEL -->
+<main id="panel" class="hidden max-w-6xl mx-auto">
   <header class="flex flex-wrap items-center justify-between gap-3">
-    <div><h1 class="text-2xl md:text-3xl font-extrabold">Console admin · Gabon Talent OS</h1><p id="who" class="text-sm text-slate-500"></p></div>
+    <div>
+      <h1 class="text-2xl md:text-3xl font-extrabold">Console admin · Gabon Talent OS</h1>
+      <p id="who" class="text-sm text-slate-500"></p>
+    </div>
     <button id="logoutBtn" class="btn btn-red">Se déconnecter</button>
   </header>
-  <div id="stats" class="grid grid-cols-2 md:grid-cols-5 gap-3 mt-6"></div>
+
+  <div id="stats" class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6"></div>
+
   <nav class="flex gap-2 mt-8 overflow-x-auto" role="tablist">
     <button class="tab btn bg-white border" role="tab" data-tab="packs" aria-selected="true">Packs</button>
-    <button class="tab btn bg-white border" role="tab" data-tab="pubs" aria-selected="false">🔥 Publicités</button>
     <button class="tab btn bg-white border" role="tab" data-tab="offres" aria-selected="false">Offres</button>
     <button class="tab btn bg-white border" role="tab" data-tab="site" aria-selected="false">Site</button>
     <button class="tab btn bg-white border" role="tab" data-tab="paiements" aria-selected="false">Paiements</button>
     <button class="tab btn bg-white border" role="tab" data-tab="cvs" aria-selected="false">CV déposés</button>
+    <button class="tab btn bg-white border" role="tab" data-tab="annonces" aria-selected="false">Annonces</button>
   </nav>
 
+  <!-- PACKS -->
   <section id="tab-packs" class="mt-5">
-    <div class="card mb-4"><h2 class="font-bold">Créer un pack</h2><div class="flex flex-wrap gap-2 mt-2"><input id="newPackId" class="field max-w-[200px]" placeholder="identifiant (ex: pro)"><button id="addPackBtn" class="btn btn-main">Créer le pack</button><button id="seedBtn" class="btn btn-sun">Initialiser les 3 packs</button></div></div>
+    <div class="card mb-4">
+      <h2 class="font-bold">Créer un pack</h2>
+      <div class="flex flex-wrap gap-2 mt-2">
+        <input id="newPackId" class="field max-w-[200px]" placeholder="identifiant (ex: pro)">
+        <button id="addPackBtn" class="btn btn-main">Créer le pack</button>
+        <button id="seedBtn" class="btn btn-sun">Initialiser les 3 packs</button>
+      </div>
+    </div>
     <div id="packs" class="grid md:grid-cols-3 gap-4"></div>
   </section>
 
-  <section id="tab-pubs" class="mt-5 hidden">
-    <div class="grid lg:grid-cols-3 gap-4">
-      <div class="card h-fit"><h2 class="font-bold">Nouvelle pub premium</h2>
-        <input id="adTitle" class="field mt-3" placeholder="Titre ex: Besoin de 10 soudeurs Moanda">
-        <input id="adLink" class="field mt-2" placeholder="Lien WhatsApp https://wa.me/241...">
-        <input id="adImage" class="field mt-2" placeholder="URL image https://...">
-        <textarea id="adDesc" class="field mt-2 h-20" placeholder="Description courte"></textarea>
-        <select id="adPlan" class="field mt-2"><option value="BASIC">BASIC - 5 000 F / 7j</option><option value="PREMIUM">PREMIUM - 15 000 F / 15j</option><option value="ELITE">ELITE - 30 000 F / 30j + Top</option></select>
-        <button id="createAdBtn" class="btn btn-main w-full mt-3">Publier la pub</button>
-      </div>
-      <div class="lg:col-span-2 card"><h2 class="font-bold">Pubs actives (gt_ads)</h2><div id="adsList" class="mt-3 grid gap-3"></div></div>
+  <!-- OFFRES -->
+  <section id="tab-offres" class="mt-5 hidden">
+    <div class="flex flex-wrap gap-2 mb-3">
+      <input id="search" class="field max-w-xs" placeholder="Rechercher une offre…">
+      <select id="filterStatus" class="field max-w-[180px]">
+        <option value="">Tous les statuts</option>
+        <option value="active">Active</option>
+        <option value="en_attente">En attente</option>
+        <option value="clos">Clôturée</option>
+      </select>
     </div>
+    <div id="offres" class="grid gap-2"></div>
   </section>
 
-  <section id="tab-offres" class="mt-5 hidden"><div class="flex flex-wrap gap-2 mb-3"><input id="search" class="field max-w-xs" placeholder="Rechercher une offre…"><select id="filterStatus" class="field max-w-[180px]"><option value="">Tous les statuts</option><option value="active">Active</option><option value="en_attente">En attente</option><option value="clos">Clôturée</option></select></div><div id="offres" class="grid gap-2"></div></section>
-  <section id="tab-site" class="mt-5 hidden"><div class="card grid gap-3 max-w-2xl"><h2 class="font-bold">Textes du site (collection config_site, document « main »)</h2><label class="text-sm">Titre principal<input id="s_heroTitre" class="field mt-1"></label><label class="text-sm">Sous-titre<textarea id="s_heroSousTitre" class="field mt-1 h-20"></textarea></label><label class="text-sm">WhatsApp de contact<input id="s_whatsapp" class="field mt-1" placeholder="+241…"></label><label class="text-sm">Bandeau d'annonce<input id="s_banniere" class="field mt-1"></label><div><button id="saveSiteBtn" class="btn btn-main">Enregistrer le site</button></div></div><p class="text-sm mt-4"><a class="underline text-green-800" href="index.html" target="_blank">Voir index.html</a> · <a class="underline text-green-800" href="tarifs.html" target="_blank">Voir tarifs.html</a></p></section>
-  <section id="tab-paiements" class="mt-5 hidden"><div class="card max-w-2xl grid gap-3"><h2 class="font-bold">Connexion Chariow</h2><label class="text-sm">URL de la fonction de paiement<input id="s_urlPaiement" type="url" class="field mt-1" placeholder="https://worker-cloudflare..."></label><p class="text-xs text-slate-500">Tant qu'elle est vide, le site utilise les liens de secours.</p><div><button id="savePayUrl" class="btn btn-main">Enregistrer</button></div></div><h2 class="font-bold mt-6">Produits à paiement</h2><p class="text-xs text-slate-500">Les packs PRO / ENTREPRISE se règlent dans l'onglet Packs.</p><div id="produits" class="grid md:grid-cols-3 gap-4 mt-3"></div></section>
-  <section id="tab-cvs" class="mt-5 hidden"><p class="text-xs text-slate-500 mb-3">CV ajoutés par les candidats (vivier) ou joints à leur profil. Supprimés automatiquement après 60 jours.</p><div id="cvs" class="grid gap-2"></div></section>
+  <!-- SITE -->
+  <section id="tab-site" class="mt-5 hidden">
+    <div class="card grid gap-3 max-w-2xl">
+      <h2 class="font-bold">Textes du site (collection config_site, document « main »)</h2>
+      <label class="text-sm">Titre principal<input id="s_heroTitre" class="field mt-1"></label>
+      <label class="text-sm">Sous-titre<textarea id="s_heroSousTitre" class="field mt-1 h-20"></textarea></label>
+      <label class="text-sm">WhatsApp de contact<input id="s_whatsapp" class="field mt-1" placeholder="+241…"></label>
+      <label class="text-sm">Bandeau d'annonce (laisser vide pour masquer)<input id="s_banniere" class="field mt-1"></label>
+      <div><button id="saveSiteBtn" class="btn btn-main">Enregistrer le site</button></div>
+    </div>
+    <p class="text-sm mt-4">
+      <a class="underline text-green-800" href="index.html" target="_blank" rel="noopener">Voir index.html</a> ·
+      <a class="underline text-green-800" href="tarifs.html" target="_blank" rel="noopener">Voir tarifs.html</a>
+    </p>
+  </section>
+  <!-- PAIEMENTS -->
+  <section id="tab-paiements" class="mt-5 hidden">
+    <div class="card max-w-2xl grid gap-3">
+      <h2 class="font-bold">Connexion Chariow</h2>
+      <label class="text-sm">URL de la fonction de paiement (creerPaiement)<input id="s_urlPaiement" type="url" class="field mt-1" placeholder="https://…"></label>
+      <p class="text-xs text-slate-500">À remplir après le déploiement du serveur. Tant qu'elle est vide, le site utilise les liens de secours ci-dessous.</p>
+      <div><button id="savePayUrl" class="btn btn-main">Enregistrer</button></div>
+    </div>
+    <h2 class="font-bold mt-6">Produits à paiement (CV, formation)</h2>
+    <p class="text-xs text-slate-500">Les packs PRO / ENTREPRISE se règlent dans l'onglet Packs.</p>
+    <div id="produits" class="grid md:grid-cols-3 gap-4 mt-3"></div>
+  </section>
+  <!-- CV DÉPOSÉS -->
+  <section id="tab-cvs" class="mt-5 hidden">
+    <p class="text-xs text-slate-500 mb-3">CV ajoutés par les candidats (vivier) ou joints à leur profil. Supprimés automatiquement après 60 jours.</p>
+    <div id="cvs" class="grid gap-2"></div>
+  </section>
+  <!-- ANNONCES -->
+  <section id="tab-annonces" class="mt-5 hidden">
+    <div class="card mb-4">
+      <h2 class="font-bold">Nouvelle annonce</h2>
+      <div class="grid gap-2 mt-2 md:grid-cols-2">
+        <input id="an_annonceur" class="field" placeholder="Annonceur (entreprise) *">
+        <input id="an_titre" class="field" placeholder="Titre de l'annonce *" maxlength="90">
+        <textarea id="an_texte" class="field md:col-span-2 h-20" placeholder="Texte court (2 lignes)" maxlength="220"></textarea>
+        <input id="an_cta" class="field" placeholder="Texte du bouton (ex. Postuler sur WhatsApp)" maxlength="40">
+        <div class="flex gap-2"><input id="an_lien" class="field" placeholder="Lien https:// *"><button type="button" id="anWa" class="btn btn-sun">WhatsApp</button></div>
+        <label class="text-xs">Début *<input id="an_debut" type="date" class="field mt-1"></label>
+        <label class="text-xs">Fin *<input id="an_fin" type="date" class="field mt-1"></label>
+        <label class="text-xs md:col-span-2">Visuel (facultatif, redimensionné automatiquement)<input id="an_image" type="file" accept="image/*" class="field mt-1"></label>
+      </div>
+      <button id="anCreer" class="btn btn-main mt-3">Créer l'annonce</button>
+    </div>
+    <h2 class="font-bold">Annonces</h2>
+    <div id="annonces" class="grid gap-3 mt-2"></div>
+    <h2 class="font-bold mt-6">Demandes d'annonceurs</h2>
+    <div id="demandes" class="grid gap-2 mt-2"></div>
+  </section>
 </main>
+
 <div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-sm px-4 py-2 rounded-full hidden z-50"></div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, getDocs, collection, deleteDoc, updateDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, getDocs, collection, deleteDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-const firebaseConfig = { apiKey: "AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70", authDomain: "gabon-talent-os.firebaseapp.com", projectId: "gabon-talent-os" };
-const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app);
-const $ = (id) => document.getElementById(id); const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
-const show = (el, on) => el.classList.toggle("hidden", !on); let offres = []; let cvsCache = {}; let adsCache = [];
-function toast(msg){ const t=$("toast"); t.textContent=msg; show(t,true); clearTimeout(toast.t); toast.t=setTimeout(()=>show(t,false),2800); }
-async function safe(fn){ try{ return await fn(); } catch(e){ console.error(e); toast(e.code==="permission-denied"?"Accès refusé par Firestore":"Erreur : "+(e.message||e)); } }
+
+// ⚠️ Colle ici la config de ta console Firebase (Paramètres du projet > Tes applications).
+// Cette clé est publique par conception : la vraie protection = règles Firestore (voir guide).
+const firebaseConfig = {
+  apiKey: "AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70",
+  authDomain: "gabon-talent-os.firebaseapp.com",
+  projectId: "gabon-talent-os"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const show = (el, on) => el.classList.toggle("hidden", !on);
+let offres = [];
+
+function toast(msg){
+  const t = $("toast"); t.textContent = msg; show(t, true);
+  clearTimeout(toast.t); toast.t = setTimeout(() => show(t, false), 2800);
+}
+async function safe(fn){
+  try { return await fn(); }
+  catch(e){ console.error(e); toast(e.code === "permission-denied" ? "Accès refusé par Firestore" : "Erreur : " + (e.message || e)); }
+}
+
+/* ---------- AUTH ---------- */
+// Seul cet email est admin. La vraie protection est dans les règles Firestore (même email).
 const ADMIN_EMAIL = "gabontalent9provinces@gmail.com";
 onAuthStateChanged(auth, async (user) => {
   if(user && user.email && user.email.toLowerCase() === ADMIN_EMAIL){
-    show($("loginErr"), false); show($("login"), false); show($("panel"), true); $("who").textContent = "Connecté : " + user.email; loadAll();
-  } else { if(user) await signOut(auth); show($("panel"), false); show($("login"), true); }
+    show($("loginErr"), false);
+    show($("login"), false); show($("panel"), true);
+    $("who").textContent = "Connecté : " + user.email;
+    loadAll();
+  } else {
+    if(user) await signOut(auth);
+    show($("panel"), false); show($("login"), true);
+  }
 });
 $("loginBtn").onclick = async () => {
-  const err=$("loginErr"); show(err,false);
-  try{ await signInWithEmailAndPassword(auth, $("email").value.trim(), $("pass").value); }
-  catch(e){ err.textContent = e.code==="auth/operation-not-allowed"?"Email/Mot de passe non activé":e.code==="auth/too-many-requests"?"Trop d'essais":"Email ou mot de passe incorrect."; show(err,true); }
+  const err = $("loginErr"); show(err, false);
+  try { await signInWithEmailAndPassword(auth, $("email").value.trim(), $("pass").value); }
+  catch(e){
+    err.textContent = e.code === "auth/operation-not-allowed" ? "Email/Mot de passe non activé dans Firebase."
+      : e.code === "auth/too-many-requests" ? "Trop d'essais, réessaie dans quelques minutes."
+      : "Email ou mot de passe incorrect.";
+    show(err, true);
+  }
 };
-$("pass").addEventListener("keydown", e=>{ if(e.key==="Enter") $("loginBtn").click(); });
-$("logoutBtn").onclick = ()=> signOut(auth);
-document.querySelectorAll(".tab").forEach(b=> b.onclick=()=>{
-  document.querySelectorAll(".tab").forEach(x=> x.setAttribute("aria-selected", x===b));
-  ["packs","pubs","offres","site","paiements","cvs"].forEach(n=> show($("tab-"+n), n===b.dataset.tab));
+$("pass").addEventListener("keydown", e => { if(e.key === "Enter") $("loginBtn").click(); });
+$("logoutBtn").onclick = () => signOut(auth);
+
+/* ---------- ONGLETS ---------- */
+document.querySelectorAll(".tab").forEach(b => b.onclick = () => {
+  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x === b));
+  ["packs","offres","site","paiements","cvs","annonces"].forEach(n => show($("tab-" + n), n === b.dataset.tab));
 });
-async function loadAll(){ await Promise.all([loadPacks(), loadOffres(), loadSite(), loadProduits(), loadCvs(), loadAds()]); }
+
+/* ---------- CHARGEMENT ---------- */
+async function loadAll(){ await Promise.all([loadPacks(), loadOffres(), loadSite(), loadProduits(), loadCvs(), loadAnnonces()]); }
+
 function renderStats(packsCount){
-  const by=(s)=> offres.filter(o=> o.status===s).length;
-  const items=[["Offres",offres.length],["Actives",by("active")],["En TOP",offres.filter(o=>o.isTop).length],["Packs",packsCount],["Pubs",adsCache.length]];
-  $("stats").innerHTML = items.map(([l,v])=> `<div class="card"><div class="text-3xl font-extrabold">${v}</div><div class="text-sm text-slate-500">${l}</div></div>`).join("");
+  const by = (s) => offres.filter(o => o.status === s).length;
+  const items = [
+    ["Offres", offres.length], ["Actives", by("active")],
+    ["En TOP", offres.filter(o => o.isTop).length], ["Packs", packsCount]
+  ];
+  $("stats").innerHTML = items.map(([l, v]) =>
+    `<div class="card"><div class="text-3xl font-extrabold">${v}</div><div class="text-sm text-slate-500">${l}</div></div>`).join("");
 }
+
+/* ---------- PACKS ---------- */
 async function loadPacks(){
-  await safe(async()=>{
-    const snap=await getDocs(collection(db,"config_packs"));
-    $("packs").innerHTML = snap.docs.map(d=>{
-      const p=d.data(), id=esc(d.id);
+  await safe(async () => {
+    const snap = await getDocs(collection(db, "config_packs"));
+    $("packs").innerHTML = snap.docs.map(d => {
+      const p = d.data(), id = esc(d.id);
       return `<div class="card" data-pack="${id}">
-        <input data-f="nom" value="${esc(p.nom)}" class="field font-bold">
-        <div class="flex items-center gap-2 mt-2 text-sm"><input data-f="prix" type="number" min="0" value="${esc(p.prix??0)}" class="field w-28"> FCFA<input data-f="maxOffres" type="number" min="0" value="${esc(p.maxOffres??0)}" class="field w-20"> offres</div>
-        <textarea data-f="features" class="field mt-2 h-24 text-xs">${esc((p.features||[]).join("\n"))}</textarea>
-        <textarea data-f="description" class="field mt-2 h-20 text-xs" placeholder="Description détaillée">${esc(p.description||"")}</textarea>
-        <div class="grid grid-cols-2 gap-2 mt-2 text-xs">
-          <select data-f="cible" class="field">${[["tous","Tous"],["recruteur","Recruteurs"],["candidat","Candidats"]].map(([v,l])=> `<option value="${v}" ${(p.cible||"tous")===v?"selected":""}>${l}</option>`).join("")}</select>
-          <input data-f="duree" type="number" min="0" value="${esc(p.duree??30)}" class="field" placeholder="Durée jours">
-          <input data-f="ordre" type="number" value="${esc(p.ordre??0)}" class="field" placeholder="Ordre">
-          <label class="flex items-center gap-1"><input data-f="populaire" type="checkbox" ${p.populaire?"checked":""}> Populaire</label>
-          <label class="flex items-center gap-1 col-span-2"><input data-f="actif" type="checkbox" ${p.actif!==false?"checked":""}> Visible</label>
+        <input data-f="nom" value="${esc(p.nom)}" class="field font-bold" aria-label="Nom du pack">
+        <div class="flex items-center gap-2 mt-2 text-sm">
+          <input data-f="prix" type="number" min="0" value="${esc(p.prix ?? 0)}" class="field w-28"> FCFA
+          <input data-f="maxOffres" type="number" min="0" value="${esc(p.maxOffres ?? 0)}" class="field w-20"> offres
         </div>
-        <input data-f="lienPaiement" type="url" value="${esc(p.lienPaiement||"")}" class="field mt-2 text-xs" placeholder="Lien paiement https://…">
-        <input data-f="chariowProductId" value="${esc(p.chariowProductId||"")}" class="field mt-2 text-xs" placeholder="ID produit Chariow prd_…">
-        <div class="flex gap-2 mt-3"><button class="btn btn-main" data-act="savePack">Enregistrer</button><button class="btn btn-red" data-act="delPack">Supprimer</button></div>
-        <p class="text-[11px] text-slate-400 mt-2">ID : ${id}</p></div>`;
-    }).join("")||"Aucun pack";
+        <textarea data-f="features" class="field mt-2 h-24 text-xs" placeholder="Une fonctionnalité par ligne">${esc((p.features || []).join("\n"))}</textarea>
+        <textarea data-f="description" class="field mt-2 h-20 text-xs" placeholder="Description détaillée (page du pack)">${esc(p.description || "")}</textarea>
+        <div class="grid grid-cols-2 gap-2 mt-2 text-xs">
+          <select data-f="cible" class="field">
+            ${[["tous","Tous"],["recruteur","Recruteurs"],["candidat","Candidats"]].map(([v, l]) => `<option value="${v}" ${(p.cible || "tous") === v ? "selected" : ""}>${l}</option>`).join("")}
+          </select>
+          <input data-f="duree" type="number" min="0" value="${esc(p.duree ?? 30)}" class="field" placeholder="Durée (jours)" title="Durée en jours">
+          <input data-f="ordre" type="number" value="${esc(p.ordre ?? 0)}" class="field" placeholder="Ordre" title="Ordre d'affichage">
+          <label class="flex items-center gap-1"><input data-f="populaire" type="checkbox" ${p.populaire ? "checked" : ""}> Populaire</label>
+          <label class="flex items-center gap-1 col-span-2"><input data-f="actif" type="checkbox" ${p.actif !== false ? "checked" : ""}> Visible sur le site</label>
+        </div>
+        <input data-f="lienPaiement" type="url" value="${esc(p.lienPaiement || "")}" class="field mt-2 text-xs" placeholder="Lien de paiement Chariow (https://…)">
+        <input data-f="chariowProductId" value="${esc(p.chariowProductId || "")}" class="field mt-2 text-xs" placeholder="ID produit Chariow (prd_…) · activation automatique">
+        <div class="flex gap-2 mt-3">
+          <button class="btn btn-main" data-act="savePack">Enregistrer</button>
+          <button class="btn btn-red" data-act="delPack">Supprimer</button>
+        </div>
+        <p class="text-[11px] text-slate-400 mt-2">ID : ${id}</p>
+      </div>`;
+    }).join("") || `<p class="text-sm text-slate-500">Aucun pack. Crée le premier ci-dessus.</p>`;
     renderStats(snap.size);
   });
 }
-$("packs").addEventListener("click",(e)=>{ const act=e.target.dataset.act; if(!act) return; const card=e.target.closest("[data-pack]"), id=card.dataset.pack; const v=(f)=> card.querySelector(`[data-f=${f}]`).value; const chk=(f)=> card.querySelector(`[data-f=${f}]`).checked; if(act==="savePack") safe(async()=>{ const lien=v("lienPaiement").trim(); if(lien && !/^https:\/\//i.test(lien)) return toast("Lien doit commencer par https://"); await setDoc(doc(db,"config_packs",id),{ nom:v("nom").trim(), prix:Math.max(0,Number(v("prix"))||0), maxOffres:Math.max(0,Number(v("maxOffres"))||0), features:v("features").split("\n").map(s=>s.trim()).filter(Boolean), description:v("description").trim(), cible:v("cible"), duree:Math.max(0,Number(v("duree"))||0), ordre:Number(v("ordre"))||0, populaire:chk("populaire"), actif:chk("actif"), lienPaiement:lien, chariowProductId:v("chariowProductId").trim(), updatedAt:serverTimestamp() },{merge:true}); toast("Pack enregistré"); }); if(act==="delPack" && confirm("Supprimer "+id+" ?")) safe(async()=>{ await deleteDoc(doc(db,"config_packs",id)); toast("Supprimé"); loadPacks(); }); });
-$("addPackBtn").onclick=()=>{ const id=$("newPackId").value.trim().toLowerCase().replace(/[^a-z0-9_-]/g,""); if(!id) return toast("ID invalide"); safe(async()=>{ const ref=doc(db,"config_packs",id); if((await getDoc(ref)).exists()) return toast("Existe déjà"); await setDoc(ref,{nom:id,prix:0,maxOffres:1,features:[],createdAt:serverTimestamp()}); $("newPackId").value=""; loadPacks(); }); };
-const PACKS_PAR_DEFAUT={ decouverte:{nom:"PACK DÉCOUVERTE",prix:0,maxOffres:1,features:["1 offre","7 jours"],cible:"tous",duree:7,ordre:1,populaire:false,actif:true,lienPaiement:"",description:"Testez gratuitement"}, pro:{nom:"PACK PRO",prix:25000,maxOffres:5,features:["5 offres","Boost TOP 3j","CV par WhatsApp"],cible:"recruteur",duree:30,ordre:2,populaire:true,actif:true,lienPaiement:"",description:"5 offres + TOP"}, entreprise:{nom:"PACK ENTREPRISE",prix:75000,maxOffres:1000,features:["Illimité","Logo + Badge OR"],cible:"recruteur",duree:30,ordre:3,populaire:false,actif:true,lienPaiement:"",description:"Illimité"} };
-$("seedBtn").onclick=()=> safe(async()=>{ let c=0; for(const [id,pack] of Object.entries(PACKS_PAR_DEFAUT)){ const ref=doc(db,"config_packs",id); if((await getDoc(ref)).exists()) continue; await setDoc(ref,{...pack,createdAt:serverTimestamp()}); c++; } toast(c?c+" pack(s) créé(s)":"Existe déjà"); loadPacks(); });
+$("packs").addEventListener("click", (e) => {
+  const act = e.target.dataset.act; if(!act) return;
+  const card = e.target.closest("[data-pack]"), id = card.dataset.pack;
+  const v = (f) => card.querySelector(`[data-f=${f}]`).value;
+  if(act === "savePack") safe(async () => {
+    const lien = v("lienPaiement").trim();
+    if(lien && !/^https:\/\//i.test(lien)) return toast("Le lien de paiement doit commencer par https://");
+    const chk = (f) => card.querySelector(`[data-f=${f}]`).checked;
+    await setDoc(doc(db, "config_packs", id), {
+      nom: v("nom").trim(), prix: Math.max(0, Number(v("prix")) || 0),
+      maxOffres: Math.max(0, Number(v("maxOffres")) || 0),
+      features: v("features").split("\n").map(s => s.trim()).filter(Boolean),
+      description: v("description").trim(), cible: v("cible"),
+      duree: Math.max(0, Number(v("duree")) || 0), ordre: Number(v("ordre")) || 0,
+      populaire: chk("populaire"), actif: chk("actif"), lienPaiement: lien, chariowProductId: v("chariowProductId").trim(),
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+    toast("Pack « " + id + " » enregistré");
+  });
+  if(act === "delPack" && confirm("Supprimer le pack « " + id + " » ?")) safe(async () => {
+    await deleteDoc(doc(db, "config_packs", id)); toast("Pack supprimé"); loadPacks();
+  });
+});
+$("addPackBtn").onclick = () => {
+  const id = $("newPackId").value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "");
+  if(!id) return toast("Identifiant invalide (lettres, chiffres, - et _)");
+  safe(async () => {
+    const ref = doc(db, "config_packs", id);
+    if((await getDoc(ref)).exists()) return toast("Ce pack existe déjà");
+    await setDoc(ref, { nom: id, prix: 0, maxOffres: 1, features: [], createdAt: serverTimestamp() });
+    $("newPackId").value = ""; toast("Pack créé"); loadPacks();
+  });
+};
 
-// --- PUBS ---
-async function loadAds(){ await safe(async()=>{ const snap=await getDocs(collection(db,"gt_ads")); adsCache=snap.docs.map(d=>({id:d.id,...d.data()})); $("adsList").innerHTML = adsCache.map(a=> `<div class="border rounded-xl p-3 flex gap-3 justify-between items-center"><div class="flex gap-3 items-center"><img src="${esc(a.imageUrl)}" class="w-14 h-14 rounded-xl object-cover"><div><p class="font-bold text-sm">${esc(a.title)}</p><p class="text-xs text-slate-500">${esc(a.plan)} • ${esc(a.status)} • ${a.views||0} vues</p></div></div><button data-id="${a.id}" class="delAd btn btn-red text-xs">Supprimer</button></div>`).join("")||"<p class='text-sm text-slate-500'>Aucune pub</p>"; renderStats(document.querySelectorAll("[data-pack]").length); $("adsList").querySelectorAll(".delAd").forEach(b=> b.onclick=async()=>{ if(!confirm("Supprimer ?")) return; await deleteDoc(doc(db,"gt_ads",b.dataset.id)); loadAds(); }); }); }
-$("createAdBtn").onclick=()=> safe(async()=>{ const data={ title:$("adTitle").value.trim(), link:$("adLink").value.trim(), imageUrl:$("adImage").value.trim()||"https://images.unsplash.com/photo-1521737604893-d14cc237f11d", description:$("adDesc").value.trim(), plan:$("adPlan").value, status:"active", clicks:0, views:0, createdAt:serverTimestamp() }; if(!data.title||!data.link) return toast("Titre + lien obligatoires"); await addDoc(collection(db,"gt_ads"), data); toast("Pub publiée !"); $("adTitle").value=""; $("adLink").value=""; $("adImage").value=""; $("adDesc").value=""; loadAds(); });
+/* ---------- INITIALISATION DES PACKS ---------- */
+const PACKS_PAR_DEFAUT = {
+  decouverte: { nom: "PACK DÉCOUVERTE", prix: 0, maxOffres: 1, features: ["1 offre", "7 jours"], cible: "tous", duree: 7, ordre: 1, populaire: false, actif: true, lienPaiement: "", description: "Testez la plateforme gratuitement avec 1 offre pendant 7 jours." },
+  pro: { nom: "PACK PRO", prix: 25000, maxOffres: 5, features: ["5 offres", "Boost TOP 3j", "CV par WhatsApp"], cible: "recruteur", duree: 30, ordre: 2, populaire: true, actif: true, lienPaiement: "", description: "Publiez jusqu'à 5 offres, boostez-les en TOP pendant 3 jours et recevez les CV directement sur WhatsApp." },
+  entreprise: { nom: "PACK ENTREPRISE", prix: 75000, maxOffres: 1000, features: ["Illimité", "Logo + Badge OR"], cible: "recruteur", duree: 30, ordre: 3, populaire: false, actif: true, lienPaiement: "", description: "Offres illimitées, votre logo et un badge OR pour renforcer votre image employeur." }
+};
+$("seedBtn").onclick = () => safe(async () => {
+  let crees = 0;
+  for (const [id, pack] of Object.entries(PACKS_PAR_DEFAUT)) {
+    const ref = doc(db, "config_packs", id);
+    if ((await getDoc(ref)).exists()) continue;
+    await setDoc(ref, { ...pack, createdAt: serverTimestamp() });
+    crees++;
+  }
+  toast(crees ? crees + " pack(s) créé(s)" : "Les packs existent déjà");
+  loadPacks();
+});
 
-async function loadOffres(){ await safe(async()=>{ const snap=await getDocs(collection(db,"offres")); offres=snap.docs.map(d=>({id:d.id,...d.data()})); renderOffres(); }); }
-function renderOffres(){ const q=$("search").value.toLowerCase(), st=$("filterStatus").value; const list=offres.filter(o=> (!st||o.status===st)&&(!q||String(o.titre||"").toLowerCase().includes(q))); $("offres").innerHTML = list.map(o=> `<div class="card flex flex-wrap items-center justify-between gap-2" data-offre="${esc(o.id)}"><div class="min-w-0"><div class="font-semibold truncate">${o.isTop?"★ ":""}${esc(o.titre||"(sans titre)")}</div><div class="text-xs text-slate-500">${esc(o.entreprise||"")}</div></div><div class="flex items-center gap-2"><select data-act="status" class="field !w-auto text-sm">${[["active","Active"],["en_attente","En attente"],["clos","Clôturée"]].map(([v,l])=> `<option value="${v}" ${o.status===v?"selected":""}>${l}</option>`).join("")}</select><button class="btn btn-sun" data-act="top">${o.isTop?"Retirer TOP":"Mettre en TOP"}</button><button class="btn btn-red" data-act="del">Supprimer</button></div></div>`).join("")||"Aucune offre"; }
-$("search").oninput=renderOffres; $("filterStatus").onchange=renderOffres;
-$("offres").addEventListener("click",(e)=>{ const act=e.target.dataset.act; if(!act||act==="status") return; const id=e.target.closest("[data-offre]").dataset.offre, o=offres.find(x=>x.id===id); if(act==="top") safe(async()=>{ await updateDoc(doc(db,"offres",id),{isTop:!o.isTop}); o.isTop=!o.isTop; renderOffres(); toast(o.isTop?"TOP activé":"TOP retiré"); }); if(act==="del" && confirm("Supprimer ?")) safe(async()=>{ await deleteDoc(doc(db,"offres",id)); offres=offres.filter(x=>x.id!==id); renderOffres(); }); });
-$("offres").addEventListener("change",(e)=>{ if(e.target.dataset.act!=="status") return; const id=e.target.closest("[data-offre]").dataset.offre; safe(async()=>{ await updateDoc(doc(db,"offres",id),{status:e.target.value}); toast("Statut mis à jour"); }); });
-const SITE_FIELDS=["heroTitre","heroSousTitre","whatsapp","banniere","urlPaiement"];
-async function loadSite(){ await safe(async()=>{ const s=await getDoc(doc(db,"config_site","main")); const d=s.exists()?s.data():{}; SITE_FIELDS.forEach(f=> $("s_"+f).value=d[f]||""); }); }
-$("saveSiteBtn").onclick=()=> safe(async()=>{ const data={updatedAt:serverTimestamp()}; SITE_FIELDS.forEach(f=> data[f]=$("s_"+f).value.trim()); await setDoc(doc(db,"config_site","main"),data,{merge:true}); toast("Site mis à jour"); });
-let cvsCacheFull={};
-async function loadCvs(){ await safe(async()=>{ const snap=await getDocs(collection(db,"cv_fichiers")); const list=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=> (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)); cvsCacheFull=Object.fromEntries(list.map(x=>[x.id,x])); $("cvs").innerHTML = list.map(x=> `<div class="card flex flex-wrap items-center justify-between gap-2" data-cv="${esc(x.id)}"><div class="min-w-0"><div class="font-semibold truncate">${esc(x.candidat||"(CV joint)")}</div><div class="text-xs text-slate-500">${esc([x.poste,x.tel,x.email].filter(Boolean).join(" · "))}</div><div class="text-xs text-slate-400">${esc(x.nom||"")}${x.createdAt?.seconds?" · "+new Date(x.createdAt.seconds*1000).toLocaleDateString("fr-FR"):""}</div></div><div class="flex gap-2"><button class="btn btn-main" data-act="dlCv">Télécharger</button><button class="btn btn-red" data-act="delCv">Supprimer</button></div></div>`).join("")||"Aucun CV"; }); }
-$("cvs").addEventListener("click",(e)=>{ const act=e.target.dataset.act; if(!act) return; const id=e.target.closest("[data-cv]").dataset.cv, x=cvsCacheFull[id]; if(act==="dlCv"&&x){ const bytes=Uint8Array.from(atob(x.data),c=>c.charCodeAt(0)); const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([bytes],{type:x.mime||"application/octet-stream"})); a.download=x.nom||"cv"; a.click(); } if(act==="delCv"&&confirm("Supprimer ?")) safe(async()=>{ await deleteDoc(doc(db,"cv_fichiers",id)); loadCvs(); }); });
-const PRODUITS=[["cv_express","CV Express",1100,"CV professionnel rédigé par IA"],["cv_premium","CV Premium",5000,"CV + lettre + LinkedIn"],["formation","Formation Développeur",0,"Formation certifiante"]];
-async function loadProduits(){ await safe(async()=>{ const docs=await Promise.all(PRODUITS.map(([id])=> getDoc(doc(db,"config_produits",id)))); $("produits").innerHTML = PRODUITS.map(([id,nom,prix,desc],i)=>{ const p=docs[i].exists()?docs[i].data():{}; return `<div class="card" data-produit="${id}"><input data-f="nom" value="${esc(p.nom??nom)}" class="field font-bold"><div class="flex items-center gap-2 mt-2 text-sm"><input data-f="prix" type="number" min="0" value="${esc(p.prix??prix)}" class="field w-28"> FCFA</div><textarea data-f="description" class="field mt-2 h-16 text-xs">${esc(p.description??desc)}</textarea><input data-f="chariowProductId" value="${esc(p.chariowProductId||"")}" class="field mt-2 text-xs" placeholder="ID produit Chariow"><input data-f="lienPaiement" type="url" value="${esc(p.lienPaiement||"")}" class="field mt-2 text-xs" placeholder="Lien secours https://…"><label class="flex items-center gap-1 text-xs mt-2"><input data-f="actif" type="checkbox" ${p.actif?"checked":""}> Actif</label><button class="btn btn-main mt-3" data-act="saveProduit">Enregistrer</button><p class="text-[11px] text-slate-400 mt-2">ID : ${id}</p></div>`; }).join(""); }); }
-$("produits").addEventListener("click",(e)=>{ if(e.target.dataset.act!=="saveProduit") return; const card=e.target.closest("[data-produit]"), id=card.dataset.produit; const v=(f)=> card.querySelector(`[data-f=${f}]`).value.trim(); const lien=v("lienPaiement"); if(lien && !/^https:\/\//i.test(lien)) return toast("Lien https:// requis"); safe(async()=>{ await setDoc(doc(db,"config_produits",id),{ nom:v("nom"), prix:Math.max(0,Number(v("prix"))||0), description:v("description"), chariowProductId:v("chariowProductId"), lienPaiement:lien, actif:card.querySelector("[data-f=actif]").checked, updatedAt:serverTimestamp() },{merge:true}); toast("Produit enregistré"); }); });
-$("savePayUrl").onclick=()=> $("saveSiteBtn").click();
+/* ---------- OFFRES ---------- */
+async function loadOffres(){
+  await safe(async () => {
+    const snap = await getDocs(collection(db, "offres"));
+    offres = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderOffres();
+    const n = document.querySelectorAll("[data-pack]").length;
+    renderStats(n);
+  });
+}
+function renderOffres(){
+  const q = $("search").value.toLowerCase(), st = $("filterStatus").value;
+  const list = offres.filter(o => (!st || o.status === st) && (!q || String(o.titre || "").toLowerCase().includes(q)));
+  $("offres").innerHTML = list.map(o => `
+    <div class="card flex flex-wrap items-center justify-between gap-2" data-offre="${esc(o.id)}">
+      <div class="min-w-0">
+        <div class="font-semibold truncate">${o.isTop ? "★ " : ""}${esc(o.titre || "(sans titre)")}</div>
+        <div class="text-xs text-slate-500">${esc(o.entreprise || "")}</div>
+      </div>
+      <div class="flex items-center gap-2">
+        <select data-act="status" class="field !w-auto text-sm" aria-label="Statut">
+          ${[["active","Active"],["en_attente","En attente"],["clos","Clôturée"]].map(([v, l]) =>
+            `<option value="${v}" ${o.status === v ? "selected" : ""}>${l}</option>`).join("")}
+        </select>
+        <button class="btn btn-sun" data-act="top">${o.isTop ? "Retirer TOP" : "Mettre en TOP"}</button>
+        <button class="btn btn-red" data-act="del">Supprimer</button>
+      </div>
+    </div>`).join("") || `<p class="text-sm text-slate-500">Aucune offre ne correspond.</p>`;
+}
+$("search").oninput = renderOffres; $("filterStatus").onchange = renderOffres;
+$("offres").addEventListener("click", (e) => {
+  const act = e.target.dataset.act; if(!act || act === "status") return;
+  const id = e.target.closest("[data-offre]").dataset.offre, o = offres.find(x => x.id === id);
+  if(act === "top") safe(async () => {
+    await updateDoc(doc(db, "offres", id), { isTop: !o.isTop }); o.isTop = !o.isTop; renderOffres(); renderStats(document.querySelectorAll("[data-pack]").length);
+    toast(o.isTop ? "Offre mise en TOP" : "TOP retiré");
+  });
+  if(act === "del" && confirm("Supprimer définitivement « " + (o.titre || id) + " » ?")) safe(async () => {
+    await deleteDoc(doc(db, "offres", id)); offres = offres.filter(x => x.id !== id); renderOffres(); toast("Offre supprimée");
+  });
+});
+$("offres").addEventListener("change", (e) => {
+  if(e.target.dataset.act !== "status") return;
+  const id = e.target.closest("[data-offre]").dataset.offre, o = offres.find(x => x.id === id);
+  safe(async () => { await updateDoc(doc(db, "offres", id), { status: e.target.value }); o.status = e.target.value; toast("Statut mis à jour"); });
+});
+
+/* ---------- SITE ---------- */
+const SITE_FIELDS = ["heroTitre", "heroSousTitre", "whatsapp", "banniere", "urlPaiement"];
+async function loadSite(){
+  await safe(async () => {
+    const s = await getDoc(doc(db, "config_site", "main"));
+    const d = s.exists() ? s.data() : {};
+    SITE_FIELDS.forEach(f => $("s_" + f).value = d[f] || "");
+  });
+}
+$("saveSiteBtn").onclick = () => safe(async () => {
+  const data = { updatedAt: serverTimestamp() };
+  SITE_FIELDS.forEach(f => data[f] = $("s_" + f).value.trim());
+  await setDoc(doc(db, "config_site", "main"), data, { merge: true });
+  toast("Site mis à jour");
+});
+
+/* ---------- CV DÉPOSÉS ---------- */
+let cvsCache = {};
+async function loadCvs(){
+  await safe(async () => {
+    const snap = await getDocs(collection(db, "cv_fichiers"));
+    const list = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => ((b.createdAt && b.createdAt.seconds) || 0) - ((a.createdAt && a.createdAt.seconds) || 0));
+    cvsCache = Object.fromEntries(list.map(x => [x.id, x]));
+    $("cvs").innerHTML = list.map(x => `<div class="card flex flex-wrap items-center justify-between gap-2" data-cv="${esc(x.id)}">
+      <div class="min-w-0"><div class="font-semibold truncate">${esc(x.candidat || "(CV joint à un profil)")}</div>
+      <div class="text-xs text-slate-500">${esc([x.poste, x.tel, x.email].filter(Boolean).join(" · "))}</div>
+      <div class="text-xs text-slate-400">${esc(x.nom || "")}${x.createdAt && x.createdAt.seconds ? " · " + new Date(x.createdAt.seconds * 1000).toLocaleDateString("fr-FR") : ""}</div></div>
+      <div class="flex gap-2"><button class="btn btn-main" data-act="dlCv">Télécharger</button><button class="btn btn-red" data-act="delCv">Supprimer</button></div></div>`).join("") || `<p class="text-sm text-slate-500">Aucun CV déposé.</p>`;
+  });
+}
+$("cvs").addEventListener("click", (e) => {
+  const act = e.target.dataset.act; if(!act) return;
+  const id = e.target.closest("[data-cv]").dataset.cv, x = cvsCache[id];
+  if(act === "dlCv" && x){
+    const bytes = Uint8Array.from(atob(x.data), c => c.charCodeAt(0));
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([bytes], { type: x.mime || "application/octet-stream" }));
+    a.download = x.nom || "cv"; a.click();
+  }
+  if(act === "delCv" && confirm("Supprimer ce CV définitivement ?")) safe(async () => { await deleteDoc(doc(db, "cv_fichiers", id)); toast("CV supprimé"); loadCvs(); });
+});
+
+/* ---------- ANNONCES (GT Ads Manager) ---------- */
+const RAPPORT = "https://gabon-talent-js.github.io/gabon-talent-os/rapport.html?id=";
+let annoncesCache = {};
+async function compresserImage(file){
+  const bmp = await createImageBitmap(file);
+  for (const [w, q] of [[900, .82], [720, .7], [560, .6]]) {
+    const k = Math.min(1, w / bmp.width), c = document.createElement("canvas");
+    c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+    c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+    const url = c.toDataURL("image/jpeg", q);
+    if (url.length < 160000) return url;
+  }
+  throw new Error("Image trop lourde");
+}
+const dFR = (t) => (t && t.seconds ? new Date(t.seconds * 1000).toLocaleDateString("fr-FR") : "");
+async function loadAnnonces(){
+  await safe(async () => {
+    const [a, s, d] = await Promise.all([getDocs(collection(db, "annonces")), getDocs(collection(db, "annonces_stats")), getDocs(collection(db, "demandes_annonceurs"))]);
+    const tot = {};
+    s.docs.forEach(x => { const v = x.data(), t = tot[v.annonce] || (tot[v.annonce] = { i: 0, c: 0 }); t.i += v.impressions || 0; t.c += v.clics || 0; });
+    const list = a.docs.map(x => ({ id: x.id, ...x.data() })).sort((p, q) => ((q.createdAt && q.createdAt.seconds) || 0) - ((p.createdAt && p.createdAt.seconds) || 0));
+    annoncesCache = Object.fromEntries(list.map(x => [x.id, x]));
+    $("annonces").innerHTML = list.map(x => {
+      const t = tot[x.id] || { i: 0, c: 0 }, ctr = t.i ? (t.c / t.i * 100).toFixed(2) : "0.00";
+      const actif = x.statut === "active" && x.fin && x.fin.seconds * 1000 > Date.now();
+      return `<div class="card" data-an="${esc(x.id)}"><div class="flex gap-3">
+        ${x.image && /^data:image\//.test(x.image) ? `<img src="${esc(x.image)}" alt="" class="w-20 h-20 object-cover rounded-lg">` : ""}
+        <div class="min-w-0 flex-1"><div class="font-bold truncate">${esc(x.titre)}</div><div class="text-xs text-slate-500">${esc(x.annonceur)} · ${dFR(x.debut)} → ${dFR(x.fin)}</div>
+        <div class="text-xs mt-1"><span class="font-semibold">${actif ? "● En diffusion" : x.statut === "pause" ? "⏸ En pause" : "■ Terminée"}</span> · ${t.i} impressions · ${t.c} clics · CTR ${ctr} %</div></div></div>
+        <div class="flex flex-wrap gap-2 mt-3"><button class="btn btn-main" data-act="anCopier">Copier le lien du rapport</button>
+        <button class="btn btn-sun" data-act="anPause">${x.statut === "active" ? "Mettre en pause" : "Activer"}</button><button class="btn btn-red" data-act="anSuppr">Supprimer</button></div></div>`;
+    }).join("") || `<p class="text-sm text-slate-500">Aucune annonce.</p>`;
+    $("demandes").innerHTML = d.docs.map(x => ({ id: x.id, ...x.data() })).sort((p, q) => ((q.createdAt && q.createdAt.seconds) || 0) - ((p.createdAt && p.createdAt.seconds) || 0)).map(x =>
+      `<div class="card" data-dem="${esc(x.id)}"><div class="font-semibold">${esc(x.entreprise)} <span class="text-xs text-slate-500">${esc(x.contact || "")}</span></div>
+       <div class="text-xs text-slate-500">${esc([x.tel, x.email, x.objectif, x.budget ? x.budget + " FCFA" : ""].filter(Boolean).join(" · "))} · ${dFR(x.createdAt)}</div>
+       <p class="text-sm mt-1">${esc(x.message)}</p><div class="flex gap-2 mt-2"><a class="btn btn-main" target="_blank" rel="noopener" href="https://wa.me/${esc(String(x.tel || "").replace(/\D/g, ""))}?text=${encodeURIComponent("Bonjour, merci pour votre demande d'annonce sur Gabon Talent OS.")}">Répondre sur WhatsApp</a>
+       <button class="btn btn-red" data-act="demSuppr">Supprimer</button></div></div>`).join("") || `<p class="text-sm text-slate-500">Aucune demande.</p>`;
+  });
+}
+$("anWa").onclick = () => {
+  const n = prompt("Numéro WhatsApp de l'annonceur (ex. +241 74 99 57 45)"); if (!n) return;
+  const m = prompt("Message prérempli pour les clients (facultatif)") || "";
+  $("an_lien").value = "https://wa.me/" + n.replace(/\D/g, "") + (m ? "?text=" + encodeURIComponent(m) : "");
+};
+$("anCreer").onclick = () => safe(async () => {
+  const v = (id) => $(id).value.trim();
+  const annonceur = v("an_annonceur"), titre = v("an_titre"), lien = v("an_lien"), d1 = v("an_debut"), d2 = v("an_fin");
+  if (!annonceur || !titre || !lien || !d1 || !d2) return toast("Complétez annonceur, titre, lien et dates");
+  if (!/^https:\/\/[^\s"'<>]+$/i.test(lien)) return toast("Le lien doit commencer par https:// (ex. https://wa.me/241…)");
+  const debut = new Date(d1 + "T00:00:00+01:00"), fin = new Date(d2 + "T23:59:59+01:00");
+  if (!(fin > debut)) return toast("La date de fin doit suivre la date de début");
+  const f = $("an_image").files[0], image = f ? await compresserImage(f) : "";
+  await setDoc(doc(db, "annonces", crypto.randomUUID()), { annonceur, titre, texte: v("an_texte"), cta: v("an_cta") || "En savoir plus", lien, image, debut, fin, statut: "active", createdAt: serverTimestamp() });
+  ["an_annonceur", "an_titre", "an_texte", "an_cta", "an_lien", "an_debut", "an_fin", "an_image"].forEach(i => $(i).value = "");
+  toast("Annonce créée"); loadAnnonces();
+});
+$("tab-annonces").addEventListener("click", async (e) => {
+  const act = e.target.dataset.act; if (!act) return;
+  const an = e.target.closest("[data-an]"), dem = e.target.closest("[data-dem]");
+  if (act === "anCopier") { try { await navigator.clipboard.writeText(RAPPORT + an.dataset.an); toast("Lien du rapport copié"); } catch { prompt("Copiez ce lien :", RAPPORT + an.dataset.an); } }
+  if (act === "anPause") safe(async () => { const x = annoncesCache[an.dataset.an]; await updateDoc(doc(db, "annonces", x.id), { statut: x.statut === "active" ? "pause" : "active" }); loadAnnonces(); });
+  if (act === "anSuppr" && confirm("Supprimer cette annonce ?")) safe(async () => { await deleteDoc(doc(db, "annonces", an.dataset.an)); toast("Annonce supprimée"); loadAnnonces(); });
+  if (act === "demSuppr" && confirm("Supprimer cette demande ?")) safe(async () => { await deleteDoc(doc(db, "demandes_annonceurs", dem.dataset.dem)); loadAnnonces(); });
+});
+
+/* ---------- PAIEMENTS CHARIOW ---------- */
+const PRODUITS = [
+  ["cv_express", "CV Express", 1100, "CV professionnel rédigé par IA, reçu par e-mail et WhatsApp."],
+  ["cv_premium", "CV Premium", 5000, "CV + lettre de motivation + optimisation LinkedIn."],
+  ["formation", "Formation Développeur", 0, "Formation certifiante CCTI Gabon."],
+  ["ads_7j", "Annonce 7 jours", 0, "Annonce sur la page d'accueil pendant 7 jours, avec rapport de campagne."],
+  ["ads_30j", "Annonce 30 jours", 0, "Annonce sur la page d'accueil pendant 30 jours, avec rapport de campagne."],
+  ["ads_premium", "Campagne Premium", 0, "Annonce 30 jours, conseil sur le message et bilan final."]
+];
+async function loadProduits(){
+  await safe(async () => {
+    const docs = await Promise.all(PRODUITS.map(([id]) => getDoc(doc(db, "config_produits", id))));
+    $("produits").innerHTML = PRODUITS.map(([id, nom, prix, desc], i) => {
+      const p = docs[i].exists() ? docs[i].data() : {};
+      return `<div class="card" data-produit="${id}">
+        <input data-f="nom" value="${esc(p.nom ?? nom)}" class="field font-bold" aria-label="Nom">
+        <div class="flex items-center gap-2 mt-2 text-sm"><input data-f="prix" type="number" min="0" value="${esc(p.prix ?? prix)}" class="field w-28"> FCFA</div>
+        <textarea data-f="description" class="field mt-2 h-16 text-xs">${esc(p.description ?? desc)}</textarea>
+        <input data-f="chariowProductId" value="${esc(p.chariowProductId || "")}" class="field mt-2 text-xs" placeholder="ID produit Chariow (prd_…)">
+        <input data-f="lienPaiement" type="url" value="${esc(p.lienPaiement || "")}" class="field mt-2 text-xs" placeholder="Lien de paiement de secours (https://…)">
+        <label class="flex items-center gap-1 text-xs mt-2"><input data-f="actif" type="checkbox" ${p.actif ? "checked" : ""}> Actif (visible et payable)</label>
+        <button class="btn btn-main mt-3" data-act="saveProduit">Enregistrer</button>
+        <p class="text-[11px] text-slate-400 mt-2">ID : ${id}</p></div>`;
+    }).join("");
+  });
+}
+$("produits").addEventListener("click", (e) => {
+  if(e.target.dataset.act !== "saveProduit") return;
+  const card = e.target.closest("[data-produit]"), id = card.dataset.produit;
+  const v = (f) => card.querySelector(`[data-f=${f}]`).value.trim();
+  const lien = v("lienPaiement");
+  if(lien && !/^https:\/\//i.test(lien)) return toast("Le lien doit commencer par https://");
+  safe(async () => {
+    await setDoc(doc(db, "config_produits", id), {
+      nom: v("nom"), prix: Math.max(0, Number(v("prix")) || 0), description: v("description"),
+      chariowProductId: v("chariowProductId"), lienPaiement: lien,
+      actif: card.querySelector("[data-f=actif]").checked, updatedAt: serverTimestamp()
+    }, { merge: true });
+    toast("Produit enregistré");
+  });
+});
+$("savePayUrl").onclick = () => $("saveSiteBtn").click();
 </script>
 </body>
 </html>
