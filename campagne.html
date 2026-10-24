@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Créer mon annonce – Gabon Talent OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--green:#0b6b4a;--green-d:#084f37;--sun:#f5b800;--sea:#1f5fa8;--bg:#f3f6f4;--card:#fff;--ink:#12201a;--mute:#5a6b63;--line:#e0e7e3;--soft:#eaf1ed;--okbg:#dcfce7;--ok:#166534;--warnbg:#ffedd5;--warn:#9a3412;--danger:#b91c1c;--r:14px;--rs:9px;--fh:'Bricolage Grotesque','Instrument Sans',system-ui,sans-serif;--fb:'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:var(--fb);background:var(--bg);color:var(--ink);line-height:1.5;-webkit-text-size-adjust:100%}a{color:inherit}
+header{background:#0b1a13;color:#fff}header::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--green) 33.3%,var(--sun) 33.3% 66.6%,var(--sea) 66.6%)}
+.bar{max-width:760px;margin:0 auto;height:56px;display:flex;align-items:center;padding:0 14px;font-family:var(--fh);font-weight:800;font-size:17px}
+main{max-width:760px;margin:0 auto;padding:22px 14px 40px}h1{font-family:var(--fh);font-size:26px;font-weight:800}.sub{color:var(--mute);font-size:14px;margin:4px 0 14px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px}
+label{font-size:13px;font-weight:600;margin-top:12px;display:block}label small{font-weight:400;color:var(--mute)}
+input,select,textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:var(--rs);margin-top:6px;font-size:15px;font-family:inherit;background:var(--bg);color:var(--ink)}textarea{min-height:80px;resize:vertical}input[type=checkbox],input[type=radio]{width:auto;margin:3px 6px 0 0}
+.row2{display:grid;gap:0 12px}@media(min-width:600px){.row2{grid-template-columns:1fr 1fr}}
+.btn{display:block;width:100%;text-align:center;background:var(--green);color:#fff;border:0;border-radius:12px;padding:13px;font-weight:700;font-size:15px;margin-top:16px;text-decoration:none;cursor:pointer;font-family:inherit}.btn:hover{background:var(--green-d)}.btn[disabled]{opacity:.55}
+.err{color:var(--danger);font-size:13px;margin-top:8px}.msg{border-radius:var(--r);padding:14px;font-size:14px;margin-bottom:14px}.msg.ok{background:var(--okbg);color:var(--ok)}.msg.warn{background:var(--warnbg);color:var(--warn)}
+.gta{position:relative;max-width:330px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column}.gta img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:var(--soft)}
+.gta-body{padding:14px;display:flex;flex-direction:column;gap:6px}.gta h3{font-size:16px;line-height:1.3}.gta p{font-size:13px;color:var(--mute)}
+.gta-tag{position:absolute;top:10px;left:10px;background:rgba(18,32,26,.82);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px}
+.gta-cta{display:block;text-align:center;background:var(--green);color:#fff;border-radius:11px;padding:11px;font-weight:700;font-size:14px;margin-top:6px}
+</style>
+</head>
+<body>
+<header><div class="bar">Gabon Talent OS · Créer mon annonce</div></header>
+<main>
+  <h1>Créez votre annonce</h1>
+  <p class="sub" id="intro">Vérification de votre paiement…</p>
+  <div id="statut"></div>
+  <form id="f" class="box" novalidate hidden>
+    <div class="row2"><div><label for="entreprise">Entreprise ou marque *</label><input id="entreprise" maxlength="150" autocomplete="organization"></div>
+      <div><label for="tel">Votre WhatsApp *</label><input id="tel" type="tel" value="+241 " inputmode="tel" autocomplete="tel"></div></div>
+    <label for="email">Votre e-mail * <small>(vous y recevrez le lien de votre rapport)</small></label><input id="email" type="email" autocomplete="email">
+    <label for="titre">Titre * <small>(90 caractères maximum)</small></label><input id="titre" maxlength="90">
+    <label for="texte">Texte court * <small>(220 caractères maximum)</small></label><textarea id="texte" maxlength="220"></textarea>
+    <label for="cta">Texte du bouton <small>(ex. Postuler sur WhatsApp)</small></label><input id="cta" maxlength="40" placeholder="En savoir plus">
+    <label>Où mène le bouton ? *</label>
+    <div><label style="display:inline-block;font-weight:400"><input type="radio" name="tl" value="wa" checked>Une conversation WhatsApp</label> &nbsp; <label style="display:inline-block;font-weight:400"><input type="radio" name="tl" value="web">Un site ou une page</label></div>
+    <div id="bloc-wa"><label for="wa">Numéro WhatsApp * <small>(avec l'indicatif)</small></label><input id="wa" type="tel" value="+241 " inputmode="tel">
+      <label for="wamsg">Message prérempli <small>(facultatif)</small></label><input id="wamsg" maxlength="140" placeholder="Bonjour, je vous contacte depuis Gabon Talent OS."></div>
+    <div id="bloc-web" hidden><label for="url">Adresse du site * <small>(commence par https://)</small></label><input id="url" type="url" placeholder="https://"></div>
+    <label for="image">Visuel <small>(facultatif, image JPG ou PNG, redimensionnée automatiquement)</small></label><input id="image" type="file" accept="image/*">
+    <label for="debut">Date de début souhaitée *</label><input id="debut" type="date">
+    <label style="display:flex;gap:6px;align-items:flex-start;font-weight:400"><input id="ok" type="checkbox"><span>Je certifie que ce contenu est légal, exact et que j'ai le droit de l'utiliser. J'accepte qu'il soit validé par l'équipe avant diffusion. *</span></label>
+    <h2 style="font-family:var(--fh);font-size:16px;margin-top:16px">Aperçu</h2><div id="apercu" style="margin-top:8px"></div>
+    <div class="err" id="err" role="alert"></div>
+    <button class="btn" id="go" type="submit">Envoyer mon annonce</button>
+  </form>
+</main>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, getDoc, setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const db = getFirestore(initializeApp({ apiKey: "AIzaSyATIRQfPyhvPFp1dIvil3zk4axejA_1q70", authDomain: "gabon-talent-os.firebaseapp.com", projectId: "gabon-talent-os" }));
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const ref = (new URLSearchParams(location.search).get("c") || "").replace(/[^\w-]/g, "");
+const DUREES = { ads_7j: 7, ads_30j: 30, ads_premium: 30 };
+let produit = "", image = "";
+const today = () => new Date(Date.now() + 3600e3).toISOString().slice(0, 10);
+
+function lienFinal() {
+  if (document.querySelector('input[name="tl"]:checked').value === "wa") {
+    const n = $("wa").value.replace(/\D/g, ""), m = $("wamsg").value.trim();
+    return n.length >= 9 ? "https://wa.me/" + n + (m ? "?text=" + encodeURIComponent(m) : "") : "";
+  }
+  const u = $("url").value.trim();
+  return /^https:\/\/[^\s"'<>]+$/i.test(u) ? u : "";
+}
+function apercu() {
+  $("apercu").innerHTML = `<article class="gta"><span class="gta-tag">Annonce</span>${image ? `<img src="${esc(image)}" alt="">` : ""}<div class="gta-body"><h3>${esc($("titre").value || "Votre titre")}</h3><p>${esc($("texte").value || "Votre texte court apparaîtra ici.")}</p><span class="gta-cta">${esc($("cta").value || "En savoir plus")}</span></div></article>`;
+}
+async function compresser(file) {
+  const bmp = await createImageBitmap(file);
+  for (const [w, q] of [[900, .82], [720, .7], [560, .6]]) {
+    const k = Math.min(1, w / bmp.width), c = document.createElement("canvas");
+    c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+    c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+    const u = c.toDataURL("image/jpeg", q);
+    if (u.length < 160000) return u;
+  }
+  throw new Error("trop lourde");
+}
+function bloquer(m) { $("intro").textContent = m; }
+function statut(b) {
+  const el = $("statut");
+  if (b.statut === "approuve") el.innerHTML = `<div class="msg ok"><b>Votre annonce est validée et en ligne.</b><br>Suivez vos résultats : <a href="rapport.html?id=${esc(b.annonceId)}">ouvrir mon rapport de campagne</a>. Le lien vous a aussi été envoyé par e-mail.</div>`;
+  else if (b.statut === "a_corriger") el.innerHTML = `<div class="msg warn"><b>Une modification est nécessaire.</b><br>${esc(b.motif || "Merci de revoir le contenu.")}<br>Corrigez le formulaire ci-dessous puis renvoyez-le.</div>`;
+  else el.innerHTML = `<div class="msg ok"><b>Annonce reçue : validation en cours (sous 24 h).</b><br>Vous pouvez encore la modifier ci-dessous.</div>`;
+}
+function remplir(b) {
+  $("entreprise").value = b.annonceur || ""; $("tel").value = b.tel || "+241 "; $("email").value = b.email || "";
+  $("titre").value = b.titre || ""; $("texte").value = b.texte || ""; $("cta").value = b.cta || ""; $("debut").value = b.debutSouhaite || "";
+  image = b.image || "";
+  if (/^https:\/\/wa\.me\//.test(b.lien || "")) { document.querySelector('input[name="tl"][value="wa"]').checked = true; $("wa").value = "+" + (b.lien.match(/wa\.me\/(\d+)/) || [, ""])[1]; try { $("wamsg").value = new URL(b.lien).searchParams.get("text") || ""; } catch (_) {} }
+  else { document.querySelector('input[name="tl"][value="web"]').checked = true; $("url").value = b.lien || ""; basculer(); }
+}
+function basculer() { const wa = document.querySelector('input[name="tl"]:checked').value === "wa"; $("bloc-wa").hidden = !wa; $("bloc-web").hidden = wa; }
+
+(async () => {
+  try {
+    if (!ref) return bloquer("Lien invalide.");
+    const s = await getDoc(doc(db, "suivi", ref));
+    if (!s.exists()) return bloquer("Commande introuvable. Vérifiez le lien reçu après votre paiement.");
+    const d = s.data();
+    if (!String(d.produit || "").startsWith("ads_")) return bloquer("Ce lien ne correspond pas à une formule d'annonce.");
+    if (d.statut !== "payee") return bloquer("Votre paiement n'est pas encore confirmé. Réessayez dans quelques minutes.");
+    produit = d.produit;
+    $("intro").textContent = "Paiement confirmé. Renseignez le contenu de votre annonce, nous la validons sous 24 h. Durée de diffusion : " + (DUREES[produit] || 7) + " jours à partir de la date choisie.";
+    $("debut").min = today(); $("debut").value = today();
+    const b = await getDoc(doc(db, "annonces_brouillons", ref));
+    if (b.exists()) { remplir(b.data()); statut(b.data()); }
+    $("f").hidden = false; basculer(); apercu();
+  } catch (e) { console.error(e); bloquer("Impossible de charger la page. Réessayez dans un instant."); }
+})();
+document.querySelectorAll('input[name="tl"]').forEach((r) => r.addEventListener("change", basculer));
+["titre", "texte", "cta"].forEach((i) => $(i).addEventListener("input", apercu));
+$("image").addEventListener("change", async (e) => {
+  const f = e.target.files[0]; if (!f) { image = ""; return apercu(); }
+  try { image = await compresser(f); $("err").textContent = ""; } catch { image = ""; e.target.value = ""; $("err").textContent = "Image illisible ou trop lourde."; }
+  apercu();
+});
+$("f").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const err = $("err"); err.textContent = "";
+  const v = (id) => $(id).value.trim();
+  const lien = lienFinal(), debut = v("debut");
+  if (!v("entreprise") || !v("titre") || !v("texte")) return (err.textContent = "Complétez entreprise, titre et texte.");
+  if (v("tel").replace(/\D/g, "").length < 9) return (err.textContent = "Numéro WhatsApp invalide.");
+  if (!/^\S+@\S+\.\S+$/.test(v("email"))) return (err.textContent = "Adresse e-mail invalide.");
+  if (!lien) return (err.textContent = "Indiquez un numéro WhatsApp valide ou une adresse https:// pour le bouton.");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(debut) || debut < today()) return (err.textContent = "Choisissez une date de début à partir d'aujourd'hui.");
+  if (!$("ok").checked) return (err.textContent = "Veuillez confirmer la légalité du contenu.");
+  const btn = $("go"); btn.disabled = true; btn.textContent = "Envoi…";
+  try {
+    await setDoc(doc(db, "annonces_brouillons", ref), {
+      annonceur: v("entreprise").slice(0, 150), email: v("email").slice(0, 150), tel: v("tel").slice(0, 30),
+      titre: v("titre").slice(0, 90), texte: v("texte").slice(0, 220), cta: (v("cta") || "En savoir plus").slice(0, 40),
+      lien, image, debutSouhaite: debut, produit, duree: DUREES[produit] || 7, statut: "soumis", createdAt: serverTimestamp()
+    });
+    statut({ statut: "soumis" }); window.scrollTo({ top: 0, behavior: "smooth" });
+  } catch (ex) { console.error(ex); err.textContent = "Envoi impossible. Vérifiez votre connexion et réessayez."; }
+  btn.disabled = false; btn.textContent = "Envoyer mon annonce";
+});
+</script>
+</body>
+</html>
