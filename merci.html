@@ -72,6 +72,8 @@ else {
       const st = s.exists() ? s.data().statut : "";
       if (st === "livre") { await afficherLivraison(); return; }
       if (st === "payee") {
+        const ads = s.exists() && String(s.data().produit || "").startsWith("ads_");
+        if (ads) { show("✅", "Paiement reçu !", "Dernière étape : envoyez le contenu de votre annonce (titre, texte, visuel, bouton). Notre équipe la valide sous 24 h.", [["Créer mon annonce", "campagne.html?c=" + cmd]]); return; }
         show("✅", OK[type][0], OK[type][1], OK[type][2]);
         if (type !== "cv") return;            // pour un CV, on continue d'attendre la livraison
       } else if (st === "a_verifier") { show("🔎", "Paiement reçu", "Votre paiement est en cours de vérification par notre équipe. Vous serez prévenu rapidement.", []); showWa(); return; }
