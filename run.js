@@ -292,7 +292,7 @@ async function venteReussie(sale, payload = {}) {
     await alerteAdmin(`Nouveau pack vendu : ${nom}`, `<p>${esc(email)} · ${esc(meta.entreprise || "")}</p><p><a href="${wa}">Écrire au client sur WhatsApp</a></p>`);
   } else {
     const ads = String(produitId).startsWith("ads_");
-    await envoyer(email, ads ? "Réservation d'annonce confirmée · Gabon Talent OS" : "Inscription confirmée · Gabon Talent OS", `<p>Bonjour,</p><p>${ads ? "Votre paiement est bien reçu : votre campagne est réservée. L'équipe vous contacte sur WhatsApp sous 24 h pour recevoir votre visuel, puis la diffusion démarre après validation." : "Votre paiement est bien reçu : votre place est réservée. L'équipe vous contacte sur WhatsApp sous 24 h."}</p><p>L'équipe Gabon Talent OS</p>`).catch((e) => log("Mail client :", e.message));
+    await envoyer(email, ads ? "Réservation d'annonce confirmée · Gabon Talent OS" : "Inscription confirmée · Gabon Talent OS", `<p>Bonjour,</p><p>${ads ? `Votre paiement est bien reçu : votre campagne est réservée. Dernière étape : <a href="${SITE}campagne.html?c=${ref}">envoyez le contenu de votre annonce</a> (titre, texte, visuel, bouton). Notre équipe la valide sous 24 h, puis la diffusion démarre.` : "Votre paiement est bien reçu : votre place est réservée. L'équipe vous contacte sur WhatsApp sous 24 h."}</p><p>L'équipe Gabon Talent OS</p>`).catch((e) => log("Mail client :", e.message));
     await alerteAdmin(ads ? `Nouvelle réservation d'annonce : ${produitId}` : "Nouvelle inscription formation", `<p>${esc(email)}</p><p><a href="${wa}">Écrire au client sur WhatsApp</a></p>`);
   }
   log("Vente traitée :", type, ref);
@@ -315,7 +315,29 @@ async function traiterPulse(deliveryId, p) {
 }
 
 /* ---------- filet de sécurité + nettoyage (RGPD) ---------- */
+/* Annonces : alerte pour toute annonce soumise, e-mail à l'annonceur à la validation ou en cas de correction */
+async function annonces() {
+  const col = db.collection("annonces_brouillons");
+  for (const s of (await col.where("statut", "==", "soumis").limit(20).get()).docs) {
+    const d = s.data(); if (d.notifie) continue;
+    await alerteAdmin("Annonce à valider", `<p>${esc(d.annonceur)} · « ${esc(d.titre)} »</p><p><a href="${SITE}superadmin.html">Ouvrir la console → Annonces</a></p>`);
+    await s.ref.update({ notifie: true });
+  }
+  for (const s of (await col.where("statut", "==", "approuve").limit(20).get()).docs) {
+    const d = s.data(); if (d.emailEnvoye || !d.email || !d.annonceId) continue;
+    const rapport = `${SITE}rapport.html?id=${d.annonceId}`;
+    await envoyer(d.email, "Votre annonce est en ligne · Gabon Talent OS", `<p>Bonjour,</p><p>Votre annonce « ${esc(d.titre)} » est validée et diffusée sur la page d'accueil de Gabon Talent OS.</p><p><a href="${rapport}">Ouvrir mon rapport de campagne</a> (impressions, clics, taux de clic, jour par jour).</p><p>L'équipe Gabon Talent OS</p>`);
+    await s.ref.update({ emailEnvoye: true });
+  }
+  for (const s of (await col.where("statut", "==", "a_corriger").limit(20).get()).docs) {
+    const d = s.data(); if (d.emailCorrection || !d.email) continue;
+    await envoyer(d.email, "Votre annonce demande une modification · Gabon Talent OS", `<p>Bonjour,</p><p>Votre annonce « ${esc(d.titre)} » ne peut pas être diffusée en l'état :</p><p><b>${esc(d.motif || "Merci de revoir le contenu.")}</b></p><p><a href="${SITE}campagne.html?c=${esc(s.id)}">Modifier mon annonce</a></p><p>L'équipe Gabon Talent OS</p>`);
+    await s.ref.update({ emailCorrection: true });
+  }
+}
+
 async function reprises() {
+  await annonces().catch((e) => log("Annonces :", e.message));
   const q = await db.collection("commandes_cv").where("statut", "in", ["payee", "erreur", "en_cours"]).limit(10).get();
   for (const s of q.docs) await livrerCv(s.id);
   const now = Date.now();
@@ -354,7 +376,7 @@ async function main() {
   await reprises();
 }
 
-module.exports = { htmlCv, htmlLettre, normaliser, contenuBrut, promptIA, lireJson, main, produire };
+module.exports = { htmlCv, htmlLettre, normaliser, contenuBrut, promptIA, lireJson, main, produire, annonces, _setTest(d, m) { db = d; mailer = m; } };
 if (require.main === module) {
   main().then(() => process.exit(0)).catch((e) => { console.error("ERREUR :", e.message); process.exit(1); });
 }
