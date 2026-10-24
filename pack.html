@@ -74,7 +74,7 @@ const err = (m) => { $("err").textContent = m || ""; $("err").classList.toggle("
       ${prod.description ? `<p class="mt-4">${esc(prod.description)}</p>` : ""}
       ${feats ? `<h2 class="font-bold mt-4">Ce qui est inclus</h2><ul class="mt-2 space-y-2 text-sm">${feats}</ul>` : ""}
       <h2 class="font-bold mt-4">Comment ça se passe</h2>
-      <ol class="mt-2 text-sm list-decimal pl-5 space-y-1"><li>Vous renseignez vos informations ci-dessous.</li><li>Vous payez en toute sécurité sur Chariow.</li><li>${KIND === "pack" ? "Votre pack s'active automatiquement : vous pouvez publier vos offres." : "Vous êtes inscrit et l'équipe vous contacte sur WhatsApp."}</li></ol>`;
+      <ol class="mt-2 text-sm list-decimal pl-5 space-y-1"><li>Vous renseignez vos informations ci-dessous.</li><li>Vous payez en toute sécurité sur Chariow.</li><li>${KIND === "pack" ? "Votre pack s'active automatiquement : vous pouvez publier vos offres." : (ID.startsWith("ads_") ? "Notre équipe vous contacte sur WhatsApp pour recevoir votre visuel et lancer la diffusion." : "Vous êtes inscrit et l'équipe vous contacte sur WhatsApp.")}</li></ol>`;
     if(gratuit){
       $("detail").insertAdjacentHTML("beforeend", `<a class="cta mt-5" href="index.html#/recruteur">Commencer gratuitement</a>`);
       return;
@@ -83,10 +83,10 @@ const err = (m) => { $("err").textContent = m || ""; $("err").classList.toggle("
       $("detail").insertAdjacentHTML("beforeend", `<p class="mt-5 text-sm font-semibold">Le paiement en ligne sera bientôt disponible.</p>`);
       return;
     }
-    if(KIND !== "pack") $("rowEnt").classList.add("hidden");
+    if(KIND !== "pack" && !ID.startsWith("ads_")) $("rowEnt").classList.add("hidden");
     $("lblMail").textContent = KIND === "pack" ? "E-mail professionnel *" : "E-mail *";
     $("mailHint").textContent = KIND === "pack" ? "Utilisez la même adresse que pour publier vos offres : c'est elle qui est rattachée à votre pack." : "";
-    $("go").textContent = (KIND === "pack" ? "S'abonner au pack" : "S'inscrire") + " · " + Number(prod.prix).toLocaleString("fr-FR") + " FCFA";
+    $("go").textContent = (KIND === "pack" ? "S'abonner au pack" : ID.startsWith("ads_") ? "Réserver mon annonce" : "S'inscrire") + " · " + Number(prod.prix).toLocaleString("fr-FR") + " FCFA";
     $("f").classList.remove("hidden");
   } catch(e){ console.error(e); fail(); }
 })();
@@ -96,7 +96,7 @@ $("f").addEventListener("submit", async (e) => {
   e.preventDefault(); err("");
   const v = (n) => $("f").querySelector(`[name=${n}]`).value.trim();
   const data = { type: KIND, produit: ID, prenom: v("prenom"), nom: v("nom"), entreprise: v("entreprise"), email: v("email").toLowerCase(), whatsapp: v("whatsapp") };
-  if(!data.prenom || !data.nom || (KIND === "pack" && !data.entreprise)) return err("Merci de remplir tous les champs marqués *.");
+  if(!data.prenom || !data.nom || ((KIND === "pack" || ID.startsWith("ads_")) && !data.entreprise)) return err("Merci de remplir tous les champs marqués *.");
   if(!/^\S+@\S+\.\S+$/.test(data.email)) return err("Adresse e-mail invalide.");
   if(data.whatsapp.replace(/\D/g, "").length < 9) return err("Numéro WhatsApp invalide.");
   if(!$("consent").checked) return err("Veuillez accepter le consentement.");
