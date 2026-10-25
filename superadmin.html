@@ -49,6 +49,7 @@
     <button class="tab btn bg-white border" role="tab" data-tab="paiements" aria-selected="false">Paiements</button>
     <button class="tab btn bg-white border" role="tab" data-tab="cvs" aria-selected="false">CV déposés</button>
     <button class="tab btn bg-white border" role="tab" data-tab="annonces" aria-selected="false">Annonces</button>
+    <button class="tab btn bg-white border" role="tab" data-tab="controle" aria-selected="false">Contrôle</button>
   </nav>
 
   <!-- PACKS -->
@@ -133,6 +134,37 @@
     <h2 class="font-bold mt-6">Demandes d'annonceurs</h2>
     <div id="demandes" class="grid gap-2 mt-2"></div>
   </section>
+  <!-- CONTRÔLE -->
+  <section id="tab-controle" class="mt-5 hidden">
+    <div class="card mb-4">
+      <h2 class="font-bold">Centre de contrôle</h2>
+      <p class="text-xs text-slate-500">Vérifie en un clic que chaque brique est configurée et te dit quoi corriger. Aucune donnée n'est modifiée.</p>
+      <button id="ctlRun" class="btn btn-main mt-2">Vérifier le système</button>
+      <div id="ctlOut" class="mt-3 grid gap-2"></div>
+    </div>
+    <div class="card mb-4">
+      <h2 class="font-bold">Générer un test sans payer</h2>
+      <p class="text-xs text-slate-500">Crée le texte exact à coller dans GitHub : plus aucune faute de frappe possible.</p>
+      <select id="tstType" class="field mt-2">
+        <option value="ads_7j">Annonce 7 jours</option><option value="ads_30j">Annonce 30 jours</option><option value="ads_premium">Campagne Premium</option>
+        <option value="pro">Pack PRO</option><option value="entreprise">Pack ENTREPRISE</option>
+      </select>
+      <input id="tstEmail" type="email" class="field mt-2" placeholder="Ton e-mail (pour recevoir les messages)">
+      <button id="tstGen" class="btn btn-main mt-2">Générer le texte de test</button>
+      <textarea id="tstJson" class="field mt-2 h-28 text-xs" readonly></textarea>
+      <button id="tstCopy" class="btn btn-sun mt-2">Copier le texte</button>
+      <div id="tstLinks" class="text-sm mt-3"></div>
+    </div>
+    <div class="card">
+      <h2 class="font-bold">Liens utiles</h2>
+      <ul class="text-sm mt-2 space-y-1 list-disc pl-5">
+        <li><a class="underline" target="_blank" rel="noopener" href="https://github.com/gabon-talent-js/gabon-talent-os/actions">Journal des livraisons (GitHub → Actes)</a></li>
+        <li><a class="underline" target="_blank" rel="noopener" href="https://github.com/gabon-talent-js/gabon-talent-os/actions/workflows/livraison.yml">Relancer le traitement (Exécuter le workflow, champs vides)</a></li>
+        <li><a class="underline" target="_blank" rel="noopener" href="https://console.firebase.google.com/project/gabon-talent-os/firestore">Base de données Firestore</a></li>
+        <li><a class="underline" target="_blank" rel="noopener" href="https://dash.cloudflare.com/">Cloudflare (serveur de paiement)</a></li>
+      </ul>
+    </div>
+  </section>
 </main>
 
 <div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-sm px-4 py-2 rounded-full hidden z-50"></div>
@@ -198,7 +230,7 @@ $("logoutBtn").onclick = () => signOut(auth);
 /* ---------- ONGLETS ---------- */
 document.querySelectorAll(".tab").forEach(b => b.onclick = () => {
   document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x === b));
-  ["packs","offres","site","paiements","cvs","annonces"].forEach(n => show($("tab-" + n), n === b.dataset.tab));
+  ["packs","offres","site","paiements","cvs","annonces","controle"].forEach(n => show($("tab-" + n), n === b.dataset.tab));
 });
 
 /* ---------- CHARGEMENT ---------- */
@@ -389,6 +421,58 @@ $("cvs").addEventListener("click", (e) => {
   }
   if(act === "delCv" && confirm("Supprimer ce CV définitivement ?")) safe(async () => { await deleteDoc(doc(db, "cv_fichiers", id)); toast("CV supprimé"); loadCvs(); });
 });
+
+/* ---------- CENTRE DE CONTRÔLE ---------- */
+const CTL_PRODUITS = [["config_packs", "pro", "Pack PRO"], ["config_packs", "entreprise", "Pack ENTREPRISE"], ["config_produits", "cv_express", "CV Express"],
+  ["config_produits", "cv_premium", "CV Premium"], ["config_produits", "ads_7j", "Annonce 7 jours"], ["config_produits", "ads_30j", "Annonce 30 jours"], ["config_produits", "ads_premium", "Campagne Premium"]];
+const R = { ok: (m) => ({ s: "ok", m }), ko: (m) => ({ s: "ko", m }), warn: (m) => ({ s: "warn", m }) };
+async function controle(){
+  const rows = [];
+  const site = await getDoc(doc(db, "config_site", "main")), sd = site.exists() ? site.data() : {};
+  const url = String(sd.urlPaiement || "").replace(/\/+$/, "");
+  rows.push(["Adresse du serveur de paiement", !url ? R.ko("Vide : onglet Paiements, champ « URL de la fonction de paiement »") : /^https:\/\//.test(url) ? R.ok("Renseignée") : R.ko("Doit commencer par https://")]);
+  if (url) {
+    try { await fetch(url, { mode: "no-cors" }); rows.push(["Serveur de paiement joignable", R.ok("Le serveur répond")]); }
+    catch { rows.push(["Serveur de paiement joignable", R.ko("Ne répond pas : vérifie l'adresse et que le Worker est déployé")]); }
+    rows.push(["Clés du serveur (Chariow, GitHub)", R.warn("À contrôler une fois : ouvre " + url + "/health, les 3 valeurs doivent être true")]);
+  }
+  rows.push(["Numéro WhatsApp du site", sd.whatsapp ? R.ok(sd.whatsapp) : R.warn("Onglet Site, champ WhatsApp")]);
+  for (const [col, id, nom] of CTL_PRODUITS) {
+    const s = await getDoc(doc(db, col, id)), where = col === "config_packs" ? "onglet Packs" : "onglet Paiements";
+    if (!s.exists()) { rows.push([nom, R.ko("Non créé : " + where)]); continue; }
+    const p = s.data(), pb = [];
+    if (!(Number(p.prix) > 0)) pb.push("prix à 0");
+    if (!p.chariowProductId) pb.push("ID produit Chariow manquant");
+    if (col === "config_produits" ? p.actif !== true : p.actif === false) pb.push("case « Actif » non cochée");
+    rows.push([nom, pb.length ? R.ko(pb.join(", ") + " (" + where + ")") : R.ok(Number(p.prix).toLocaleString("fr-FR") + " FCFA · prêt")]);
+  }
+  const cv = await getDocs(collection(db, "commandes_cv")), bloq = cv.docs.filter(x => ["payee", "erreur", "en_cours"].includes(x.data().statut)).length;
+  rows.push(["Commandes CV bloquées", bloq ? R.warn(bloq + " à relancer : lien « Relancer le traitement » plus bas, champs vides") : R.ok("Aucune")]);
+  const cm = await getDocs(collection(db, "commandes")), verif = cm.docs.filter(x => x.data().statut === "a_verifier").length;
+  rows.push(["Paiements à vérifier (montant inférieur)", verif ? R.warn(verif + " : ouvre Firestore → commandes") : R.ok("Aucun")]);
+  const br = await getDocs(collection(db, "annonces_brouillons")), att = br.docs.filter(x => x.data().statut === "soumis").length;
+  rows.push(["Annonces à valider", att ? R.warn(att + " en attente : onglet Annonces → À valider") : R.ok("Aucune")]);
+  return rows;
+}
+$("ctlRun").onclick = () => safe(async () => {
+  $("ctlOut").innerHTML = '<p class="text-sm text-slate-500">Vérification en cours…</p>';
+  const rows = await controle(), ico = { ok: "✅", warn: "⚠️", ko: "❌" };
+  $("ctlOut").innerHTML = rows.map(([n, r]) => `<div class="card flex gap-2"><span>${ico[r.s]}</span><div><b class="text-sm">${esc(n)}</b><div class="text-xs text-slate-600">${esc(r.m)}</div></div></div>`).join("");
+});
+$("tstGen").onclick = () => safe(async () => {
+  const sel = $("tstType").value, email = $("tstEmail").value.trim().toLowerCase();
+  if (!/^\S+@\S+\.\S+$/.test(email)) return toast("Saisis ton e-mail");
+  const pack = ["pro", "entreprise"].includes(sel), s = await getDoc(doc(db, pack ? "config_packs" : "config_produits", sel)), p = s.exists() ? s.data() : null;
+  if (!p || !(Number(p.prix) > 0)) return toast("Ce produit n'a pas de prix dans la console");
+  const ref = "test-" + crypto.randomUUID().slice(0, 8);
+  const payload = { event: "successful.sale", sale: { id: "t-" + ref, amount: { value: Number(p.prix), currency: "XOF" }, custom_metadata: { type: pack ? "pack" : "formation", ref, produit: sel, email, whatsapp: "24174995745" } } };
+  $("tstJson").value = JSON.stringify(payload);
+  $("tstLinks").innerHTML = `<b>Identifiant du test : ${esc(ref)}</b><ol class="list-decimal pl-5 mt-1 space-y-1"><li>Touche « Copier le texte ».</li>
+    <li><a class="underline" target="_blank" rel="noopener" href="https://github.com/gabon-talent-js/gabon-talent-os/actions/workflows/livraison.yml">Ouvre le workflow</a> → Exécuter le workflow.</li>
+    <li>Dans <b>delivery_id</b> écris <b>${esc(ref)}</b> ; dans <b>payload</b> colle le texte ; laisse <b>mode</b> vide.</li>
+    <li>${pack ? "Ton pack est activé pour cet e-mail et tu reçois un e-mail de confirmation." : `Ouvre <a class="underline" target="_blank" rel="noopener" href="campagne.html?c=${esc(ref)}">campagne.html?c=${esc(ref)}</a> et remplis le formulaire.`}</li></ol>`;
+});
+$("tstCopy").onclick = async () => { const t = $("tstJson").value; if (!t) return toast("Génère d'abord le texte"); try { await navigator.clipboard.writeText(t); toast("Texte copié"); } catch { $("tstJson").select(); toast("Sélectionne et copie le texte"); } };
 
 /* ---------- ANNONCES (GT Ads Manager) ---------- */
 const RAPPORT = "https://gabon-talent-js.github.io/gabon-talent-os/rapport.html?id=";
