@@ -58,7 +58,7 @@ const db = getFirestore(initializeApp({ apiKey: "AIzaSyATIRQfPyhvPFp1dIvil3zk4ax
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 const ref = (new URLSearchParams(location.search).get("c") || "").replace(/[^\w-]/g, "");
-const DUREES = { ads_7j: 7, ads_30j: 30, ads_premium: 30 };
+const DUREES = { ads_7j: 7, ads_30j: 30, ads_premium: 30, "test-ads-001": 7 };
 let produit = "", image = "";
 const today = () => new Date(Date.now() + 3600e3).toISOString().slice(0, 10);
 
@@ -104,12 +104,21 @@ function basculer() { const wa = document.querySelector('input[name="tl"]:checke
   try {
     if (!ref) return bloquer("Lien invalide.");
     const s = await getDoc(doc(db, "suivi", ref));
-    if (!s.exists()) return bloquer("Commande introuvable. Vérifiez le lien reçu après votre paiement.");
+    if (!s.exists()) return bloquer("Commande introuvable. Vérifiez le lien reçu après votre paiement. Réf: " + ref);
     const d = s.data();
-    if (!String(d.produit || "").startsWith("ads_")) return bloquer("Ce lien ne correspond pas à une formule d'annonce (commande de type : " + (d.produit || "inconnu") + "). Si vous venez de payer une annonce, écrivez-nous sur WhatsApp au +241 74995745 avec cette référence : " + ref + ".");
-    if (d.statut !== "payee") return bloquer("Votre paiement n'est pas encore confirmé. Réessayez dans quelques minutes.");
-    produit = d.produit;
-    $("intro").textContent = "Paiement confirmé. Renseignez le contenu de votre annonce, nous la validons sous 24 h. Durée de diffusion : " + (DUREES[produit] || 7) + " jours à partir de la date choisie.";
+    
+    // === CORRECTION : AUTORISER LES TESTS ===
+    const isTest = ref.startsWith("test-ads-") || String(d.produit||"").startsWith("test-ads-");
+    const isAds = String(d.produit || "").startsWith("ads_");
+    
+    if (!isAds && !isTest) {
+      return bloquer("Ce lien ne correspond pas à une formule d'annonce (commande de type : " + (d.produit || "inconnu") + "). Si vous venez de payer une annonce, écrivez-nous sur WhatsApp au +241 74995745 avec cette référence : " + ref + ".");
+    }
+    
+    if (d.statut !== "payee" && !isTest) return bloquer("Votre paiement n'est pas encore confirmé. Réessayez dans quelques minutes.");
+    
+    produit = d.produit || ref;
+    $("intro").textContent = "Paiement confirmé" + (isTest ? " (MODE TEST) " : " ") + ". Renseignez le contenu de votre annonce, nous la validons sous 24 h. Durée de diffusion : " + (DUREES[produit] || DUREES[ref] || 7) + " jours à partir de la date choisie.";
     $("debut").min = today(); $("debut").value = today();
     const b = await getDoc(doc(db, "annonces_brouillons", ref));
     if (b.exists()) { remplir(b.data()); statut(b.data()); }
@@ -139,7 +148,7 @@ $("f").addEventListener("submit", async (e) => {
     await setDoc(doc(db, "annonces_brouillons", ref), {
       annonceur: v("entreprise").slice(0, 150), email: v("email").slice(0, 150), tel: v("tel").slice(0, 30),
       titre: v("titre").slice(0, 90), texte: v("texte").slice(0, 220), cta: (v("cta") || "En savoir plus").slice(0, 40),
-      lien, image, debutSouhaite: debut, produit, duree: DUREES[produit] || 7, statut: "soumis", createdAt: serverTimestamp()
+      lien, image, debutSouhaite: debut, produit, duree: DUREES[produit] || DUREES[ref] || 7, statut: "soumis", createdAt: serverTimestamp()
     });
     statut({ statut: "soumis" }); window.scrollTo({ top: 0, behavior: "smooth" });
   } catch (ex) { console.error(ex); err.textContent = "Envoi impossible. Vérifiez votre connexion et réessayez."; }
