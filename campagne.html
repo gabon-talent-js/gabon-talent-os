@@ -106,7 +106,7 @@ function basculer() { const wa = document.querySelector('input[name="tl"]:checke
     const s = await getDoc(doc(db, "suivi", ref));
     if (!s.exists()) return bloquer("Commande introuvable. Vérifiez le lien reçu après votre paiement.");
     const d = s.data();
-    if (!String(d.produit || "").startsWith("ads_")) return bloquer("Ce lien ne correspond pas à une formule d'annonce.");
+    if (!String(d.produit || "").startsWith("ads_")) return bloquer("Ce lien ne correspond pas à une formule d'annonce (commande de type : " + (d.produit || "inconnu") + "). Si vous venez de payer une annonce, écrivez-nous sur WhatsApp au +241 74995745 avec cette référence : " + ref + ".");
     if (d.statut !== "payee") return bloquer("Votre paiement n'est pas encore confirmé. Réessayez dans quelques minutes.");
     produit = d.produit;
     $("intro").textContent = "Paiement confirmé. Renseignez le contenu de votre annonce, nous la validons sous 24 h. Durée de diffusion : " + (DUREES[produit] || 7) + " jours à partir de la date choisie.";
