@@ -220,6 +220,9 @@
     if (fl && !fl.querySelector('[href="annonceur.html"]')) {
       var a = document.createElement("a"); a.href = "annonceur.html"; a.textContent = "Annonceurs"; fl.appendChild(a);
     }
+    if (fl && !fl.querySelector('[href="cgv.html"]')) {
+      var c = document.createElement("a"); c.href = "cgv.html"; c.textContent = "Conditions de vente"; fl.appendChild(c);
+    }
   }
 
   function start() { init(); patchPacks(); initFormation(); patchTextes(); initCvUpload(); loadAds(); }
